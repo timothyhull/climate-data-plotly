@@ -1,4 +1,4 @@
-# <Project_Name> Container
+# climate-data-plotly Container
 FROM python:3.10-slim-buster
 
 # Set the working directory

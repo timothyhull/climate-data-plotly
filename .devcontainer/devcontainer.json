@@ -2,7 +2,7 @@
 // https://code.visualstudio.com/docs/remote/devcontainerjson-reference
 {
     // Docker build instructions
-    "name": "<Project_Name>",
+    "name": "climate-data-plotly",
     "build": {
         "dockerfile": "../Dockerfile.dev",
         "context": ".."

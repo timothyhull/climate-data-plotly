@@ -2,7 +2,7 @@
 FROM python:3.10-slim-buster
 
 # Set the working directory
-WORKDIR /workspaces/<Project_Name>
+WORKDIR /workspaces/climate-data-plotly
 
 # Update OS package list and install git
 RUN apt-get update && \
@@ -18,7 +18,7 @@ RUN python -m pip install --upgrade pip && \
     rm -rf requirements
 
 # Set the PYTHONPATH environment variable
-ENV PYTHONPATH=/workspaces/<Project_Name>
+ENV PYTHONPATH=/workspaces/climate-data-plotly
 
 # Start the bash prompt
 CMD ["/bin/bash"]
