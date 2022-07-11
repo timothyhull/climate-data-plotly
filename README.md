@@ -2,6 +2,7 @@
 
 ## Application Framework
 
+```text
 |->| app  # Application folder
 |->|->| climate_data.py  # Runtime file with `main` function
 |->|->| ClimateData.py  # ClimateData class
@@ -11,3 +12,4 @@
 |->|->| app.py  # Flask app file
 |->|->| templates  # Flask templates folder
 |->|->|->| index.html  # Jinja template for `index.html`
+```
