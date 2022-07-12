@@ -21,3 +21,9 @@
 |->|->| templates  # Flask templates folder
 |->|->|->| index.html  # Jinja template for `index.html`
 ```
+
+## Sources
+
+Climate data sourced from the [IMF[^1] Climate Change Indicators Dashboard](https://climatedata.imf.org "IMF Climate Change Indicators Dashboard")
+
+[^1]: International Monetary Fund
