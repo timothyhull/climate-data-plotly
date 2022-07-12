@@ -1,22 +1,14 @@
 # Data formats
-pyyaml
+# pyyaml
+
+# Data visualization
+plotly
 
 # .env file support
 python_dotenv
 
-# Python formatting
-autopep8
-flake8
+# HTTP requests
+requests
 
-# Static code analysis
-bandit
-
-# Python interpreter
-ipython
-
-# Python testing
-pytest
-pytest-cov
-
-# YAML formatting
-yamllint
+# Web services
+Flask

@@ -1,5 +1,14 @@
+# Data visualization
+plotly
+
 # .env file support
 python_dotenv
+
+# HTTP requests
+requests
+
+# Web services
+Flask
 
 # Python testing
 pytest
