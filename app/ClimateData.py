@@ -2,6 +2,7 @@
 """ ClimateData class and methods. """
 
 # Imports - Python Standard Library
+from typing import Dict
 
 # Imports - Third-Party
 from requests import get
@@ -35,11 +36,11 @@ class ClimateData:
         """
 
         # Retrieve atmospheric Co2 levels data
-        self.get_atmospheric_co2_data()
+        self.atmospheric_co2_data = self.get_atmospheric_co2_data()
 
         return None
 
-    def get_atmospheric_co2_data(self) -> None:
+    def get_atmospheric_co2_data(self) -> Dict:
         """ Retrieve atmospheric Co2 levels data:
 
             Creates the self.atmospheric_co2_data attribute that contains
@@ -49,11 +50,12 @@ class ClimateData:
                 None.
 
             Returns:
-                None.
+                atmospheric_co2_data (Dict):
+                    Formatted Dict of atmospheric Co2 data
         """
 
         try:
-            # Attempt to retrieve atmospheric CO2 data
+            # Attempt to retrieve atmospheric Co2 data
             raw_data = get(
                 url=ATMOSPHERIC_CO2_URL,
                 timeout=5
@@ -62,14 +64,6 @@ class ClimateData:
             if raw_data.ok is True:
                 # Get the data in the atmospheric_co2_data 'features' key
                 atmospheric_co2_data = raw_data.json().get('features', None)
-
-                if atmospheric_co2_data is not None:
-                    # Set the self.atmospheric_co2_data value
-                    self.atmospheric_co2_data = atmospheric_co2_data
-
-                else:
-                    # TODO
-                    pass
 
             else:
                 # TODO
@@ -82,4 +76,4 @@ class ClimateData:
             # Raise the exception
             raise
 
-        return None
+        return atmospheric_co2_data
