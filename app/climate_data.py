@@ -6,6 +6,7 @@
 # Imports - Third-Party
 
 # Imports - Local
+from ClimateData import ClimateData
 
 
 def main() -> None:
@@ -17,6 +18,10 @@ def main() -> None:
             Returns:
                 None.
         """
+
+    # Create an instance of ClimateData
+    cd = ClimateData()
+    print(len(cd.atmospheric_co2_data))
 
     return None
 
