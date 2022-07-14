@@ -10,7 +10,7 @@ from ClimateData import ClimateData
 
 
 def main() -> None:
-    """ Main application:
+    """ Main application.
 
             Args:
                 None.
