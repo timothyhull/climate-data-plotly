@@ -12,6 +12,11 @@ from app.ClimateData import ClimateData
 # Create Flask object
 app = Flask(__name__)
 
+# Constants
+FLASK_HOST = 'localhost'
+FLASK_PORT = 8088
+FLASK_DEBUG = False
+
 
 @app.route(
     rule='/'
@@ -39,7 +44,7 @@ def index() -> str:
 if __name__ == '__main__':
     # Run the Flask application
     app.run(
-        host='localhost',
-        port=8088,
-        debug=True
+        host=FLASK_HOST,
+        port=FLASK_PORT,
+        debug=FLASK_DEBUG
     )
