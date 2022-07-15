@@ -18,9 +18,9 @@
         "streetsidesoftware.code-spell-checker"
     ],
     // Ports to forward to the devcontainer
-    // "forwardPorts": [
-    //     8080
-    // ],
+    "forwardPorts": [
+        8080
+    ],
     // Visual Studio Code environment configuration
     "settings": {
         // Set the default terminal application to bash
