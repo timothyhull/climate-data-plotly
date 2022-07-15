@@ -23,7 +23,7 @@ ENV PYTHONPATH=/app
 COPY /app /app
 
 # List exposure of port 8080 for Flask
-EXPOSE 8080
+EXPOSE 8080/TCP
 
 # Start the bash prompt
 CMD ["/bin/bash"]
