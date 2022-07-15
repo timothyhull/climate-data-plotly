@@ -30,6 +30,7 @@ def index() -> str:
     # Create an instance of ClimateData
     cd = ClimateData()
 
+    # Set the html_data variable
     html_data = cd.atmospheric_co2_data[0]
 
     return html_data
@@ -39,6 +40,6 @@ if __name__ == '__main__':
     # Run the Flask application
     app.run(
         host='localhost',
-        port=8080,
+        port=8088,
         debug=True
     )

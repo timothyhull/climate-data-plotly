@@ -19,7 +19,7 @@
     ],
     // Ports to forward to the devcontainer
     "forwardPorts": [
-        8080
+        8088
     ],
     // Visual Studio Code environment configuration
     "settings": {
