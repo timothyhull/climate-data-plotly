@@ -85,7 +85,7 @@ class ClimateData:
 
             Returns:
                 atmospheric_co2_data (Dict):
-                    Formatted Dict of atmospheric Co2 data
+                    Formatted Dict of atmospheric Co2 data.
         """
 
         try:
@@ -120,3 +120,22 @@ class ClimateData:
             raise
 
         return atmospheric_co2_data
+
+    def plot_atmospheric_co2_data(
+        self,
+        atmospheric_co2_data: Dict
+    ) -> None:
+        """ Display atmospheric Co2 Data.
+
+            Renders the self.atmospheric_co2_data in a graph.
+
+            Args:
+                atmospheric_co2_data (Dict):
+                    Formatted Dict of atmospheric Co2 data.
+
+
+            Returns:
+                None.
+        """
+
+        return None
