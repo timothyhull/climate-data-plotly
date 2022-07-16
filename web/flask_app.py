@@ -4,7 +4,7 @@
 # Imports - Python Standard Library
 
 # Imports - Third-Party
-from flask import Flask
+from flask import Flask, render_template
 
 # Imports - Local
 from app.ClimateData import ClimateData
@@ -35,8 +35,11 @@ def index() -> str:
     # Create an instance of ClimateData
     cd = ClimateData()
 
-    # Set the html_data variable
-    html_data = cd.atmospheric_co2_data[0]
+    # Render HTML from the index template
+    html_data = render_template(
+        template_name_or_list='index.html',
+        atmospheric_co2_data=cd.atmospheric_co2_data[:10]
+    )
 
     return html_data
 
