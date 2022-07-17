@@ -51,7 +51,7 @@ def test_convert_date_string(
         """
 
     # Assert that convert_date_string returns the expected values
-    assert ClimateData.convert_date_string(
+    assert ClimateData._convert_date_string(
         self=ClimateData,
         date_str=date_input
     ) == date_output
