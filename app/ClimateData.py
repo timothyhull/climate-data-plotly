@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Dict
 
 # Imports - Third-Party
+from plotly.offline import init_notebook_mode
 from requests import get
 from requests.exceptions import HTTPError
 
@@ -39,6 +40,30 @@ class ClimateData:
 
         # Retrieve atmospheric Co2 levels data
         self.atmospheric_co2_data = self._get_atmospheric_co2_data()
+
+        # Initialize Plotly in offline mode
+        # Reference: https://plot.ly/python/getting-started
+        self._init_plotly_offline_mode()
+
+        return None
+
+    def _init_plotly_offline_mode(self) -> None:
+        """ Initialize Plotly in offline mode.
+
+            Use plotly.offline.init_notebook_mode to initialize Plotly
+            in offline mode.
+
+            Args:
+                None.
+
+            Returns:
+                None.
+        """
+
+        # Initialize Plotly
+        init_notebook_mode(
+            connected=True
+        )
 
         return None
 
