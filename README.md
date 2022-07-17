@@ -16,8 +16,9 @@
 |->|->| ClimateData.py  # ClimateData class
 |->| tests  # Pytest folder
 |->|->| test_files.py  # Pytest files
+|->|->|->| test_ClimateData.py
 |->| web  # Flask application folder
-|->|->| app.py  # Flask app file
+|->|->| flask_app.py  # Flask app file
 |->|->| templates  # Flask templates folder
 |->|->|->| index.html  # Jinja template for `index.html`
 ```
