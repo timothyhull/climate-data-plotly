@@ -42,7 +42,7 @@ class ClimateData:
 
         return None
 
-    def convert_date_string(
+    def _convert_date_string(
         self,
         date_str: str,
         strptime_format: str = SRTPTIME_FORMAT
@@ -104,7 +104,7 @@ class ClimateData:
 
                 # convert the dates in _atmospheric_co2_data to datetime objs
                 for record in atmospheric_co2_data:
-                    record['attributes']['Date'] = self.convert_date_string(
+                    record['attributes']['Date'] = self._convert_date_string(
                         date_str=record['attributes']['Date']
                     )
 
