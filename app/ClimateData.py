@@ -146,6 +146,22 @@ class ClimateData:
 
         return atmospheric_co2_data
 
+    def transpose_data_for_graphing(self) -> None:
+        """ Transpose data for graphing.
+
+            Transpose data set values to X and Y-axis coordinates.
+
+                Args:
+                    None.
+
+                Returns:
+                    None.
+            """
+
+        # TODO
+
+        return None
+
     def plot_atmospheric_co2_data(
         self,
         atmospheric_co2_data: Dict
@@ -162,5 +178,7 @@ class ClimateData:
             Returns:
                 None.
         """
+
+        # TODO
 
         return None
