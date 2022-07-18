@@ -50,10 +50,55 @@ def test_convert_date_string(
                 None.
         """
 
-    # Assert that convert_date_string returns the expected values
+    # Assert that _convert_date_string returns the expected values
     assert ClimateData._convert_date_string(
         self=ClimateData,
         date_str=date_input
     ) == date_output
+
+    return None
+
+
+def test_get_atmospheric_co2_data() -> None:
+    """ Test the ClimateData._get_atmospheric_co2_data method.
+
+            Args:
+                None.
+
+            Returns:
+                None.
+        """
+
+    # TODO
+
+    return None
+
+
+def transpose_data_for_graphing() -> None:
+    """ Test the ClimateData.transpose_data_for_graphing method.
+
+            Args:
+                None.
+
+            Returns:
+                None.
+        """
+
+    # TODO
+
+    return None
+
+
+def test_plot_atmospheric_co2_data() -> None:
+    """ Test the ClimateData.plot_atmospheric_co2_data method.
+
+            Args:
+                None.
+
+            Returns:
+                None.
+        """
+
+    # TODO
 
     return None
