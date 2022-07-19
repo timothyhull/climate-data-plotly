@@ -74,7 +74,7 @@ def test_get_atmospheric_co2_data() -> None:
     return None
 
 
-def transpose_data_for_graphing() -> None:
+def test_transpose_data_for_graphing() -> None:
     """ Test the ClimateData.transpose_data_for_graphing method.
 
             Args:
@@ -91,6 +91,36 @@ def transpose_data_for_graphing() -> None:
 
 def test_plot_atmospheric_co2_data() -> None:
     """ Test the ClimateData.plot_atmospheric_co2_data method.
+
+            Args:
+                None.
+
+            Returns:
+                None.
+        """
+
+    # TODO
+
+    return None
+
+
+def test_get_co2_ppm_date_data() -> None:
+    """ Test the ClimateData._get_co2_ppm_date_data method.
+
+            Args:
+                None.
+
+            Returns:
+                None.
+        """
+
+    # TODO
+
+    return None
+
+
+def test_get_co2_yoy_change_data() -> None:
+    """ Test the ClimateData._get_co2_yoy_change_data method.
 
             Args:
                 None.
