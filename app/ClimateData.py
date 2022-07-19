@@ -3,7 +3,7 @@
 
 # Imports - Python Standard Library
 from datetime import datetime
-from typing import Dict
+from typing import Dict, List, Tuple, Union
 
 # Imports - Third-Party
 from plotly.offline import init_notebook_mode
@@ -23,6 +23,8 @@ ATMOSPHERIC_CO2_URL = (
     'outSR=4326&f=json'
 )
 SRTPTIME_FORMAT = '%YM%m'
+PPM_UNIT = 'Parts Per Million'
+PPM_YOY_UNIT = 'Percent'
 
 
 class ClimateData:
@@ -40,6 +42,12 @@ class ClimateData:
 
         # Retrieve atmospheric Co2 levels data
         self.atmospheric_co2_data = self._get_atmospheric_co2_data()
+
+        # Extract atmospheric Co2 PPM and matching data data
+        self.co2_ppm_date_data = self._get_co2_ppm_date_data()
+
+        # Extract atmospheric Co2 YoY % change and matching data data
+        self.co2_yoy_change_data = self._get_co2_yoy_change_data()
 
         # Initialize Plotly in offline mode
         # Reference: https://plot.ly/python/getting-started
@@ -102,15 +110,15 @@ class ClimateData:
     def _get_atmospheric_co2_data(self) -> Dict:
         """ Retrieve atmospheric Co2 levels data.
 
-            Creates the self.atmospheric_co2_data attribute that contains
-            Python-formatted atmospheric CO2 data.
+            Creates the self.atmospheric_co2_data attribute that
+            contains Python-formatted atmospheric CO2 data.
 
             Args:
                 None.
 
             Returns:
                 atmospheric_co2_data (Dict):
-                    Formatted Dict of atmospheric Co2 data.
+                    Formatted dictionary of atmospheric Co2 data.
         """
 
         try:
@@ -146,21 +154,82 @@ class ClimateData:
 
         return atmospheric_co2_data
 
-    def transpose_data_for_graphing(self) -> None:
+    def _get_co2_ppm_date_data(self) -> Dict:
+        """ Extract atmospheric Co2 ppm levels with dates.
+
+            Create a dictionary from data self.atmospheric_co2_data
+            that only contains parts per million (PPM) and
+            dates of measurement.
+
+            Args:
+                None.
+
+            Returns:
+                co2_ppm_date_data (Dict):
+                    Dictionary of atmospheric Co2 PPM and data data.
+        """
+
+        # Create a dictionary comprehension of PPM and dates of measurement
+        co2_ppm_date_data = {
+            data['attributes']['Value']: data['attributes']['Date']
+            for data in self.atmospheric_co2_data
+            if data['attributes']['Unit'] == PPM_UNIT
+        }
+
+        return co2_ppm_date_data
+
+    def _get_co2_yoy_change_data(self) -> Dict:
+        """ Extract atmospheric Co2 ppm YoY changes with dates.
+
+            Create a dictionary from data self.atmospheric_co2_data
+            that only contains year over year (YoY) percentage changes
+            and dates of measurement.
+
+            Args:
+                None.
+
+            Returns:
+                co2_yoy_change_data (Dict):
+                    Dictionary of atmospheric Co2 YoY changes and
+                    data data.
+        """
+
+        # Create a dictionary comprehension of YoY % changes with dates
+        co2_yoy_change_data = {
+            data['attributes']['Value']: data['attributes']['Date']
+            for data in self.atmospheric_co2_data
+            if data['attributes']['Unit'] == PPM_YOY_UNIT
+        }
+
+        return co2_yoy_change_data
+
+    def transpose_data_for_graphing(
+        self,
+        data: Union[Dict, List[Tuple]]
+    ) -> List[Tuple]:
         """ Transpose data for graphing.
 
             Transpose data set values to X and Y-axis coordinates.
 
                 Args:
-                    None.
+                    data (dict or List[Tuple]):
+                        Data to be transposed.  Can be a dictionary or
+                        one or more lists of tuples.
 
                 Returns:
-                    None.
+                    transposed_data (List[Tuple, Tuple]):
+
             """
 
-        # TODO
+        # Create a list of tuples from the data argument value
+        transposed_data = list(
+            zip(
+                # Unpack data.items into two iterables for the zip function
+                *data.items()
+            )
+        )
 
-        return None
+        return transposed_data
 
     def plot_atmospheric_co2_data(
         self,
