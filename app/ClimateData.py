@@ -171,7 +171,7 @@ class ClimateData:
 
         # Create a dictionary comprehension of PPM and dates of measurement
         co2_ppm_date_data = {
-            data['attributes']['Value']: data['attributes']['Date']
+            data['attributes']['Date']: data['attributes']['Value']
             for data in self.atmospheric_co2_data
             if data['attributes']['Unit'] == PPM_UNIT
         }
@@ -196,7 +196,7 @@ class ClimateData:
 
         # Create a dictionary comprehension of YoY % changes with dates
         co2_yoy_change_data = {
-            data['attributes']['Value']: data['attributes']['Date']
+            data['attributes']['Date']: data['attributes']['Value']
             for data in self.atmospheric_co2_data
             if data['attributes']['Unit'] == PPM_YOY_UNIT
         }
