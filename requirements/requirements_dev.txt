@@ -2,6 +2,8 @@
 # pyyaml
 
 # Data visualization
+kaleido
+pandas
 plotly
 
 # .env file support
