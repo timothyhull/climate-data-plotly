@@ -9,6 +9,7 @@ from typing import Dict, List, Tuple, Union
 from plotly.offline import init_notebook_mode
 from requests import get
 from requests.exceptions import HTTPError
+import plotly.express as px
 
 # Imports - Local
 
@@ -233,21 +234,39 @@ class ClimateData:
 
     def plot_atmospheric_co2_data(
         self,
-        atmospheric_co2_data: Dict
+        data: List[Tuple]
     ) -> None:
-        """ Display atmospheric Co2 Data.
+        """ Display atmospheric Co2 Data using Plotly Express.
 
             Renders the self.atmospheric_co2_data in a graph.
 
             Args:
-                atmospheric_co2_data (Dict):
-                    Formatted Dict of atmospheric Co2 data.
-
+                data (List[Tuple]):
+                    List of tuples, each tuple containing a data set
+                    for the X and Y axises.
 
             Returns:
-                None.
+                TODO.
         """
 
-        # TODO
+        # Create a line graph
+        figure = px.line(
+            data_frame=dict(
+                date=data.keys(),
+                co2_ppm=data.values()
+            ),
+            labels=dict(
+                date='Date',
+                co2_ppm='Atmospheric Co2 PPM'
+            ),
+            markers=True,
+            title='Atmospheric Co2 Levels',
+            x='date',
+            y='co2_ppm'
+        )
 
-        return None
+        # Create a PNG-formatted figure object
+        figure_png = figure.to_image(format='png')
+        figure_html = figure.to_html()
+
+        return (figure_png, figure_html)
