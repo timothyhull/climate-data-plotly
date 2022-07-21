@@ -3,6 +3,8 @@
 
 # Imports - Python Standard Library
 from datetime import datetime
+from os import path
+from pathlib import Path
 from typing import Dict, List, Tuple, Union
 
 # Imports - Third-Party
@@ -23,6 +25,22 @@ ATMOSPHERIC_CO2_URL = (
     'where=1%3D1&outFields=Indicator,Code,Unit,Date,Value&'
     'outSR=4326&f=json'
 )
+PLOT_FILE_EXTENSION = 'html'
+PLOT_FILE_DEFAULT_NAME = 'test_plot'
+PLOT_FILE_DEFAULT_HTML = (
+    '''
+    <html>
+        <head>
+            <title>No Plot Content</title>
+        </head>
+        <body>
+            <h1>This plot file contains no content.</h1>
+            <h2>The 'file_content' parameter accepts HTML content</h2>
+        </body>
+    </html>
+    '''
+).strip()
+PLOT_FILE_PATH = 'plot_files'
 SRTPTIME_FORMAT = '%YM%m'
 PPM_UNIT = 'Parts Per Million'
 PPM_YOY_UNIT = 'Percent'
@@ -235,7 +253,7 @@ class ClimateData:
     def plot_atmospheric_co2_data(
         self,
         data: List[Tuple]
-    ) -> None:
+    ) -> str:
         """ Display atmospheric Co2 Data using Plotly Express.
 
             Renders the self.atmospheric_co2_data in a graph.
@@ -246,11 +264,12 @@ class ClimateData:
                     for the X and Y axises.
 
             Returns:
-                TODO.
+                line_graph_html (str):
+                    HTML content for a line graph file.
         """
 
         # Create a line graph
-        figure = px.line(
+        line_graph = px.line(
             data_frame=dict(
                 date=data.keys(),
                 co2_ppm=data.values()
@@ -265,8 +284,51 @@ class ClimateData:
             y='co2_ppm'
         )
 
-        # Create a PNG-formatted figure object
-        figure_png = figure.to_image(format='png')
-        figure_html = figure.to_html()
+        # Create HTML content for a plot file
+        line_graph_html = line_graph.to_html()
 
-        return (figure_png, figure_html)
+        return line_graph_html
+
+    def write_plot_html_file(
+        self,
+        file_name: str = PLOT_FILE_DEFAULT_NAME,
+        file_content: str = PLOT_FILE_DEFAULT_HTML
+    ) -> None:
+        """ Write a plot file to HTML on local storage.
+
+            Args:
+                file_name (str, optional):
+                    Name of the plot file to write.  The '.html' file
+                    extension will append the file_name value.  Default
+                    value is PLOT_FILE_DEFAULT_NAME.
+
+                file_content (str, optional):
+                    File contents to write to the HTML file. Default
+                    value is PLOT_FILE_DEFAULT_HTML.
+
+            Returns:
+                None
+        """
+
+        # Determine the local path to the plot file directory
+        current_file = path.abspath(__file__)
+        current_dir = Path(current_file).parent
+        plot_dir = path.join(current_dir, PLOT_FILE_PATH)
+        plot_file = path.join(plot_dir, f'{file_name}.{PLOT_FILE_EXTENSION}',)
+
+        # Create a file storage directory with a context manager
+        with Path(plot_dir) as pd:
+            pd.mkdir(
+                exist_ok=True
+            )
+
+        # Write a file with a context manager
+        with open(
+            file=plot_file,
+            mode='w',
+            encoding='utf=8'
+        ) as file:
+
+            file.write(file_content)
+
+        return None
