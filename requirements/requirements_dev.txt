@@ -22,6 +22,7 @@ ipython
 # Python testing
 pytest
 pytest-cov
+requests_mock
 
 # Static code analysis
 bandit

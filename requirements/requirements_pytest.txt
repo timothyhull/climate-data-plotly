@@ -14,3 +14,4 @@ Flask
 # Python testing
 pytest
 pytest-cov
+requests_mock
