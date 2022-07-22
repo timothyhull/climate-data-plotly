@@ -6,9 +6,14 @@ from datetime import datetime
 
 # Imports - Third-Party
 from pytest import mark
+# from requests import HTTPError
+import requests_mock.mocker
+import requests_mock
 
 # Imports - Local
-from app.ClimateData import ClimateData
+from app.ClimateData import (
+    ATMOSPHERIC_CO2_URL, ClimateData
+)
 
 # Constants
 DATE_STR_INPUTS = [
@@ -27,6 +32,8 @@ DATE_STR_PARAMS = zip(
     DATE_STR_INPUTS,
     DATE_STR_OUTPUTS
 )
+DEFAULT_MOCK_METHOD = 'GET'
+MOCK_CO2_DATA_JSON = {}  # TODO
 
 
 @mark.parametrize(
@@ -59,7 +66,9 @@ def test_convert_date_string(
     return None
 
 
-def test_get_atmospheric_co2_data() -> None:
+def test_get_atmospheric_co2_data(
+    requests_mock: requests_mock.mocker
+) -> None:
     """ Test the ClimateData._get_atmospheric_co2_data method.
 
             Args:
@@ -69,7 +78,24 @@ def test_get_atmospheric_co2_data() -> None:
                 None.
         """
 
-    # TODO
+    # Setup mock request arguments
+    method = DEFAULT_MOCK_METHOD
+    url = ATMOSPHERIC_CO2_URL
+    json = MOCK_CO2_DATA_JSON
+
+    # Create the mock request
+    requests_mock.request(
+        method=method,
+        url=url,
+        json=json
+    )
+
+    # Call the _get_atmospheric_co2_data method
+    mock_response = ClimateData._get_atmospheric_co2_data(
+        self=ClimateData
+    )
+
+    assert mock_response.json() == MOCK_CO2_DATA_JSON
 
     return None
 
