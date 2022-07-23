@@ -3,6 +3,7 @@
 
 # Imports - Python Standard Library
 from datetime import datetime
+from json import loads
 
 # Imports - Third-Party
 from pytest import mark
@@ -33,7 +34,67 @@ DATE_STR_PARAMS = zip(
     DATE_STR_OUTPUTS
 )
 DEFAULT_MOCK_METHOD = 'GET'
-MOCK_CO2_DATA_JSON = {}  # TODO
+MOCK_RAW_CO2_JSON = '''
+{
+    "features": [{
+        "attributes": {
+            "Indicator": "Monthly Atmospheric Co2 Concentrations",
+            "Code": "ECNCIC_PPM",
+            "Unit": "Parts Per Million",
+            "Date": "1958M03",
+            "Value": 315.7
+        }
+    },
+        {
+        "attributes": {
+            "Indicator": "Monthly Atmospheric Co2 Concentrations",
+            "Code": "ECNCIC_PPM",
+            "Unit": "Parts Per Million",
+            "Date": "1958M04",
+            "Value": 317.45
+        }
+    },
+        {
+        "attributes": {
+            "Indicator": "Monthly Atmospheric Co2 Concentrations",
+            "Code": "ECNCIC_PPM",
+            "Unit": "Parts Per Million",
+            "Date": "1958M05",
+            "Value": 317.51
+        }
+    }]
+}'''
+MOCK_RAW_CO2_DICT = {
+    'features': [
+        {
+            'attributes': {
+                'Indicator': 'Monthly Atmospheric Co2 Concentrations',
+                'Code': 'ECNCIC_PPM',
+                'Unit': 'Parts Per Million',
+                'Date': '1958M03',
+                'Value': 315.7
+            }
+        },
+        {
+            'attributes': {
+                'Indicator': 'Monthly Atmospheric Co2 Concentrations',
+                'Code': 'ECNCIC_PPM',
+                'Unit': 'Parts Per Million',
+                'Date': '1958M04',
+                'Value': 317.45
+            }
+        },
+        {
+            'attributes': {
+                'Indicator': 'Monthly Atmospheric Co2 Concentrations',
+                'Code': 'ECNCIC_PPM',
+                'Unit': 'Parts Per Million',
+                'Date': '1958M05',
+                'Value': 317.51
+            }
+        }
+    ]
+}
 
 
 @mark.parametrize(
@@ -81,7 +142,7 @@ def test_get_atmospheric_co2_data(
     # Setup mock request arguments
     method = DEFAULT_MOCK_METHOD
     url = ATMOSPHERIC_CO2_URL
-    json = MOCK_CO2_DATA_JSON
+    json = loads(MOCK_RAW_CO2_JSON)
 
     # Create the mock request
     requests_mock.request(
@@ -95,7 +156,10 @@ def test_get_atmospheric_co2_data(
         self=ClimateData
     )
 
-    assert mock_response.json() == MOCK_CO2_DATA_JSON
+    # Extract data from the 'features' key
+    mock_response = mock_response.json().get('features', None)
+
+    assert mock_response == MOCK_RAW_CO2_DICT
 
     return None
 
