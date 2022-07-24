@@ -118,11 +118,19 @@ class ClimateData:
                     converted date_str value.
         """
 
-        # Convert date_str to a datetime.datetime object
-        date_obj = datetime.strptime(
-            date_str,
-            strptime_format
-        )
+        try:
+            # Attempt to convert date_str to a datetime.datetime object
+            date_obj = datetime.strptime(
+                date_str,
+                strptime_format
+            )
+
+        except ValueError as e:
+            # Handle ValueError exceptions
+            print(f'\n{e!r}\n')
+
+            # Raise the exception
+            raise
 
         return date_obj
 
@@ -161,8 +169,7 @@ class ClimateData:
                     )
 
             else:
-                # TODO
-                pass
+                raw_data.raise_for_status()
 
         except HTTPError as e:
             # Handle HTTPError exceptions
