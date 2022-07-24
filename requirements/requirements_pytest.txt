@@ -11,6 +11,9 @@ requests
 # Web services
 Flask
 
+# Python interpreter to initialize plotly in offline mode
+ipython
+
 # Python testing
 pytest
 pytest-cov
