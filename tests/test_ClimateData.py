@@ -4,11 +4,12 @@
 # Imports - Python Standard Library
 from datetime import datetime
 from json import loads
-from typing import List
+from pathlib import PosixPath
+from typing import Callable, List
 
 # Imports - Third-Party
 from pytest import fixture, mark, raises
-# from requests import HTTPError
+from requests.exceptions import HTTPError
 import requests_mock.mocker
 import requests_mock
 
@@ -100,32 +101,54 @@ MOCK_RAW_CO2_LIST = [
 # pytest fixtures
 @fixture
 def mock_api_request(
-    requests_mock: requests_mock.mocker
-):
+    tmp_path: PosixPath
+) -> Callable:
     """ Mock of the HTTP request to the climate data source API.
 
         Args:
-            requests_mock (requests_mock.mocker):
-                pytest fixture to mock requests HTTP objects.
+            tmp_path (pathlib.PosixPath):
+                pytest fixture to create a temporary directory.
 
         Returns:
-            mock_request (requests_mock.mocker):
-                Mock requests HTTP request and response objects.
+            _mock_api_request (Callable):
+                Call to the _mock_api_request function with arguments.
     """
 
-    # Setup mock request arguments
-    method = DEFAULT_MOCK_METHOD
-    url = ATMOSPHERIC_CO2_URL
-    json = loads(MOCK_RAW_CO2_JSON)
+    def _mock_api_request(
+        requests_mock: requests_mock.mocker,
+        status_code: int = 200
+    ) -> requests_mock.mocker:
+        """ Mock of the HTTP request to the climate data source API.
 
-    # Create the mock request
-    mock_request = requests_mock.request(
-        method=method,
-        url=url,
-        json=json
-    )
+            Args:
+                requests_mock (requests_mock.mocker):
+                    pytest fixture to mock requests HTTP objects.
 
-    return mock_request
+                status_code (int, optional:
+                    Optional HTTP status code, default value is 200.
+                    Set to a value between 400-599 to raise an exception.
+
+            Returns:
+                mock_request (requests_mock.mocker):
+                    Mock requests HTTP request and response objects.
+        """
+
+        # Setup mock request arguments
+        method = DEFAULT_MOCK_METHOD
+        url = ATMOSPHERIC_CO2_URL
+        json = loads(MOCK_RAW_CO2_JSON)
+
+        # Create the mock request
+        mock_request = requests_mock.request(
+            method=method,
+            url=url,
+            json=json,
+            status_code=status_code
+        )
+
+        return mock_request
+
+    return _mock_api_request
 
 
 @fixture
@@ -242,20 +265,32 @@ def test_convert_date_string_error(
 
 
 def test_get_atmospheric_co2_data(
-    mock_api_request: requests_mock.mocker
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    tmp_path: PosixPath,
 ) -> None:
     """ Test the ClimateData._get_atmospheric_co2_data method.
 
             Args:
-                mock_api_request (requests_mock.mocker):
-                    Mock HTTP request and response fixture.
+                mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
+
+                 tmp_path (pathlib.PosixPath):
+                    pytest fixture to create a temporary directory.
 
             Returns:
                 None.
         """
 
     # Call the mock_api_request fixture
-    mock_api_request
+    mock_api_request(
+        requests_mock=requests_mock
+    )
 
     # Create an instance of the ClimateData.ClimateData class
     cd = ClimateData()
@@ -264,6 +299,48 @@ def test_get_atmospheric_co2_data(
     mock_response = cd._get_atmospheric_co2_data()
 
     assert mock_response == MOCK_RAW_CO2_LIST
+
+    return None
+
+
+def test_get_atmospheric_co2_data_http_error(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    tmp_path: PosixPath,
+) -> None:
+    """ Test the ClimateData._get_atmospheric_co2_data method.
+
+        Determine if the method properly raises an HTTPError with a
+        mock bad HTTP status code.
+
+            Args:
+                mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
+
+                 tmp_path (pathlib.PosixPath):
+                    pytest fixture to create a temporary directory.
+
+            Returns:
+                None.
+        """
+
+    with raises(HTTPError):
+        # Call the mock_api_request fixture
+        mock_api_request(
+            requests_mock=requests_mock,
+            status_code=400
+        )
+
+        # Create an instance of the ClimateData.ClimateData class
+        cd = ClimateData()
+
+        # Call the _get_atmospheric_co2_data method
+        cd._get_atmospheric_co2_data()
 
     return None
 
