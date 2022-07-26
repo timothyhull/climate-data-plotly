@@ -10,6 +10,10 @@
 
 ## Application Framework
 
+<!-- Application diagram -->
+```mermaid
+```
+
 ```text
 |->| app  # Application folder
 |->|->| climate_data.py  # Runtime file with `main` function
