@@ -116,6 +116,7 @@ def mock_api_request(
 
     def _mock_api_request(
         requests_mock: requests_mock.mocker,
+        date_error: bool = False,
         status_code: int = 200
     ) -> requests_mock.mocker:
         """ Mock of the HTTP request to the climate data source API.
@@ -124,9 +125,14 @@ def mock_api_request(
                 requests_mock (requests_mock.mocker):
                     pytest fixture to mock requests HTTP objects.
 
+                date_error (bool, optional):
+                    Optional date error boolean, default is False.
+                    Set to True to raise a ValueError exception.
+
                 status_code (int, optional:
                     Optional HTTP status code, default value is 200.
-                    Set to a value between 400-599 to raise an exception.
+                    Set to a value between 400-599 to raise an
+                    HTTPError exception.
 
             Returns:
                 mock_request (requests_mock.mocker):
@@ -137,6 +143,13 @@ def mock_api_request(
         method = DEFAULT_MOCK_METHOD
         url = ATMOSPHERIC_CO2_URL
         json = loads(MOCK_RAW_CO2_JSON)
+
+        # Check for argument to insert an invalid date string into 'json'
+        if date_error is True:
+            # Update date value in 'json' with an invalid date string
+            json['features'][0]['attributes'].update(
+                {'Date': DATE_STR_VALUE_ERROR}
+            )
 
         # Create the mock request
         mock_request = requests_mock.request(
@@ -149,44 +162,6 @@ def mock_api_request(
         return mock_request
 
     return _mock_api_request
-
-
-@fixture
-def mock_api_request_date_error(
-    requests_mock: requests_mock.mocker,
-):
-    """ Mock of the HTTP request to the climate data source API.
-
-        Includes an invalid date string, to test the ValueError
-        exception handling.
-
-        Args:
-            requests_mock (requests_mock.mocker):
-                pytest fixture to mock requests HTTP objects.
-
-        Returns:
-            mock_request (requests_mock.mocker):
-                Mock requests HTTP request and response objects.
-    """
-
-    # Setup mock request arguments
-    method = DEFAULT_MOCK_METHOD
-    url = ATMOSPHERIC_CO2_URL
-    json = loads(MOCK_RAW_CO2_JSON)
-
-    # Insert an invalid date string in the json variable
-    json['features'][0]['attributes'].update(
-        {'Date': DATE_STR_VALUE_ERROR}
-    )
-
-    # Create the mock request
-    mock_request = requests_mock.request(
-        method=method,
-        url=url,
-        json=json
-    )
-
-    return mock_request
 
 
 # Test functions
@@ -202,7 +177,7 @@ def mock_api_request_date_error(
 def test_convert_date_string(
     date_input: List,
     date_output: List,
-    mock_api_request: requests_mock.mocker
+    mock_api_request: requests_mock.mocker,
 ) -> None:
     """ Test the ClimateData.convert_date_string method.
 
@@ -235,7 +210,9 @@ def test_convert_date_string(
 
 
 def test_convert_date_string_error(
-    mock_api_request_date_error: requests_mock.mocker
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    tmp_path: PosixPath
 ) -> None:
     """ Test the ClimateData.convert_date_string method.
 
@@ -243,9 +220,15 @@ def test_convert_date_string_error(
         exception handling.
 
             Args:
-                mock_api_request_date_error (requests_mock.mocker):
-                    Mock HTTP request and response fixture that
-                    includes an invalid date string.
+                mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                tmp_path (pathlib.PosixPath):
+                    pytest fixture to create a temporary directory.
+                    Used to pass arguments to the mock_api_request
+                    pytest fixture.
 
             Returns:
                 None.
@@ -255,10 +238,13 @@ def test_convert_date_string_error(
     with raises(
         expected_exception=ValueError
     ):
-        # Call the mock_api_request_date_error fixture
-        mock_api_request_date_error
+        # Call the mock_api_request fixture
+        mock_api_request(
+            requests_mock=requests_mock,
+            date_error=True
+        )
 
-        # Create an instance of the ClimateData.ClimateData class
+        # Instantiate the ClimateData.ClimateData class
         ClimateData()
 
     return None
@@ -282,6 +268,8 @@ def test_get_atmospheric_co2_data(
 
                  tmp_path (pathlib.PosixPath):
                     pytest fixture to create a temporary directory.
+                    Used to pass arguments to the mock_api_request
+                    pytest fixture.
 
             Returns:
                 None.
@@ -329,7 +317,9 @@ def test_get_atmospheric_co2_data_http_error(
                 None.
         """
 
-    with raises(HTTPError):
+    with raises(
+        expected_exception=HTTPError
+    ):
         # Call the mock_api_request fixture
         mock_api_request(
             requests_mock=requests_mock,
