@@ -180,7 +180,10 @@ class ClimateData:
 
         return atmospheric_co2_data
 
-    def _get_co2_ppm_date_data(self) -> Dict:
+    def _get_co2_ppm_date_data(
+        self,
+        atmospheric_co2_data: List[Dict] = []
+    ) -> Dict:
         """ Extract atmospheric Co2 ppm levels with dates.
 
             Create a dictionary from data self.atmospheric_co2_data
@@ -188,17 +191,24 @@ class ClimateData:
             dates of measurement.
 
             Args:
-                None.
+                co2_ppm_date_data (List[Dict], optional):
+                    List of dictionaries with Python-formatted
+                    atmospheric Co2 data.  Default is an empty List.
+                    Used for pytest testing.
 
             Returns:
                 co2_ppm_date_data (Dict):
                     Dictionary of atmospheric Co2 PPM and data data.
         """
 
+        # Determine if the data source is an argument or from the self object.
+        if not atmospheric_co2_data:
+            atmospheric_co2_data = self.atmospheric_co2_data
+
         # Create a dictionary comprehension of PPM and dates of measurement
         co2_ppm_date_data = {
             data['attributes']['Date']: data['attributes']['Value']
-            for data in self.atmospheric_co2_data
+            for data in atmospheric_co2_data
             if data['attributes']['Unit'] == PPM_UNIT
         }
 
@@ -238,14 +248,23 @@ class ClimateData:
             Transpose data set values to X and Y-axis coordinates.
 
                 Args:
-                    data (dict or List[Tuple]):
+                    data (Dict or List[Tuple]):
                         Data to be transposed.  Can be a dictionary or
                         one or more lists of tuples.
 
                 Returns:
                     transposed_data (List[Tuple, Tuple]):
+        """
 
-            """
+        # Determine if the object class for 'data' is list
+        if isinstance(
+            data,
+            list
+        ):
+            # Convert the list of dictionaries to a dictionary comprehension
+            data = self._get_co2_ppm_date_data(
+                atmospheric_co2_data=data
+            )
 
         # Create a list of tuples from the data argument value
         transposed_data = list(
