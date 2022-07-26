@@ -96,6 +96,16 @@ MOCK_RAW_CO2_LIST = [
         }
     }
 ]
+MOCK_TRANSPOSED_GRAPHING_DATA = [
+    (
+        datetime(1958, 3, 1, 0, 0),
+        datetime(1958, 4, 1, 0, 0),
+        datetime(1958, 5, 1, 0, 0)
+    ),
+    (
+        315.7, 317.45, 317.51
+    )
+]
 
 
 # pytest fixtures
@@ -177,7 +187,7 @@ def mock_api_request(
 def test_convert_date_string(
     date_input: List,
     date_output: List,
-    mock_api_request: requests_mock.mocker,
+    mock_api_request: Callable,
 ) -> None:
     """ Test the ClimateData.convert_date_string method.
 
@@ -188,7 +198,7 @@ def test_convert_date_string(
                 date_output (List):
                     Mock expected datetime.datetime return values.
 
-                mock_api_request (requests_mock.mocker):
+                mock_api_request (Callable):
                     Mock HTTP request and response fixture.
 
             Returns:
@@ -253,7 +263,6 @@ def test_convert_date_string_error(
 def test_get_atmospheric_co2_data(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker,
-    tmp_path: PosixPath,
 ) -> None:
     """ Test the ClimateData._get_atmospheric_co2_data method.
 
@@ -335,17 +344,39 @@ def test_get_atmospheric_co2_data_http_error(
     return None
 
 
-def test_transpose_data_for_graphing() -> None:
+def test_transpose_data_for_graphing(
+    mock_api_request: Callable,
+) -> None:
     """ Test the ClimateData.transpose_data_for_graphing method.
 
             Args:
-                None.
+                mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
 
             Returns:
                 None.
         """
 
-    # TODO
+    # Call the mock_api_request fixture
+    mock_api_request
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # Create a dictionary comprehension of the data in MOCK_RAW_CO2_LIST
+    cd._get_co2_ppm_date_data()
+
+    # Call the transpose_data_for_graphing method
+    mock_response = cd.transpose_data_for_graphing(
+        data=MOCK_RAW_CO2_LIST
+    )
+
+    assert mock_response == MOCK_TRANSPOSED_GRAPHING_DATA
 
     return None
 
