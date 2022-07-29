@@ -2,6 +2,7 @@
 """ ClimateData class and methods. """
 
 # Imports - Python Standard Library
+from collections import namedtuple
 from datetime import datetime
 from os import path
 from pathlib import Path
@@ -14,6 +15,15 @@ from requests.exceptions import HTTPError
 import plotly.express as px
 
 # Imports - Local
+
+# namedtuple objects:
+TransposedData = namedtuple(
+    typename='TransposedData',
+    field_names=[
+        'date',
+        'co2_ppm'
+    ]
+)
 
 # Constants
 ATMOSPHERIC_CO2_URL = (
@@ -180,10 +190,7 @@ class ClimateData:
 
         return atmospheric_co2_data
 
-    def _get_co2_ppm_date_data(
-        self,
-        atmospheric_co2_data: List[Dict] = []
-    ) -> Dict:
+    def _get_co2_ppm_date_data(self) -> Dict:
         """ Extract atmospheric Co2 ppm levels with dates.
 
             Create a dictionary from data self.atmospheric_co2_data
@@ -191,24 +198,17 @@ class ClimateData:
             dates of measurement.
 
             Args:
-                co2_ppm_date_data (List[Dict], optional):
-                    List of dictionaries with Python-formatted
-                    atmospheric Co2 data.  Default is an empty List.
-                    Used for pytest testing.
+                None.
 
             Returns:
                 co2_ppm_date_data (Dict):
                     Dictionary of atmospheric Co2 PPM and data data.
         """
 
-        # Determine if the data source is an argument or from the self object.
-        if not atmospheric_co2_data:
-            atmospheric_co2_data = self.atmospheric_co2_data
-
         # Create a dictionary comprehension of PPM and dates of measurement
         co2_ppm_date_data = {
             data['attributes']['Date']: data['attributes']['Value']
-            for data in atmospheric_co2_data
+            for data in self.atmospheric_co2_data
             if data['attributes']['Unit'] == PPM_UNIT
         }
 
@@ -242,7 +242,7 @@ class ClimateData:
     def transpose_data_for_graphing(
         self,
         data: Union[Dict, List[Tuple]]
-    ) -> List[Tuple]:
+    ) -> TransposedData[Tuple[datetime], Tuple[float]]:
         """ Transpose data for graphing.
 
             Transpose data set values to X and Y-axis coordinates.
@@ -253,26 +253,29 @@ class ClimateData:
                         one or more lists of tuples.
 
                 Returns:
-                    transposed_data (List[Tuple, Tuple]):
+                    transposed_data (Tuple[datetime], Tuple[float]):
+                        - transposed_data.dates = Tuple of
+                          datetime.datetime objects.
+
+                        - transposed_data.co2_ppm: Tuple of float
+                          objects.
+
         """
 
-        # Determine if the object class for 'data' is list
-        if isinstance(
-            data,
-            list
-        ):
-            # Convert the list of dictionaries to a dictionary comprehension
-            data = self._get_co2_ppm_date_data(
-                atmospheric_co2_data=data
-            )
+        # Determine if the object class for 'data' is list or dictionary
+        if isinstance(data, list):
+            # Convert a list of two dictionaries to a TransposedData object
+            data = {
+                data[0]: data[1]
+            }
 
-        # Create a list of tuples from the data argument value
-        transposed_data = list(
-            zip(
-                # Unpack data.items into two iterables for the zip function
-                *data.items()
+        elif isinstance(data, dict):
+            # Convert a list of two dictionaries to a TransposedData object
+            # Create a TransposedData namedtuple object
+            transposed_data = TransposedData(
+                tuple(data.keys()),
+                tuple(data.values())
             )
-        )
 
         return transposed_data
 
@@ -297,8 +300,8 @@ class ClimateData:
         # Create a line graph
         line_graph = px.line(
             data_frame=dict(
-                date=data.keys(),
-                co2_ppm=data.values()
+                date=data[0],
+                co2_ppm=data[1]
             ),
             labels=dict(
                 date='Date',
