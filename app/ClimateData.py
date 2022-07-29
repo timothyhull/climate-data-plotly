@@ -241,7 +241,7 @@ class ClimateData:
 
     def transpose_data_for_graphing(
         self,
-        data: Union[Dict, List[Tuple]]
+        data: Union[Dict, Union[List[Tuple], Tuple[Tuple]]]
     ) -> TransposedData[Tuple[datetime], Tuple[float]]:
         """ Transpose data for graphing.
 
@@ -253,7 +253,9 @@ class ClimateData:
                         one or more lists of tuples.
 
                 Returns:
-                    transposed_data (Tuple[datetime], Tuple[float]):
+                    transposed_data (
+                        Union[Dict, Union[List[Tuple], Tuple[Tuple]]]
+                    ):
                         - transposed_data.dates = Tuple of
                           datetime.datetime objects.
 
