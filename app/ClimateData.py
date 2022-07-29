@@ -266,18 +266,19 @@ class ClimateData:
 
         # Determine if the object class for 'data' is list or dictionary
         if isinstance(data, list):
-            # Convert a list of two dictionaries to a TransposedData object
-            data = {
-                data[0]: data[1]
-            }
-
-        elif isinstance(data, dict):
-            # Convert a list of two dictionaries to a TransposedData object
-            # Create a TransposedData namedtuple object
-            transposed_data = TransposedData(
-                tuple(data.keys()),
-                tuple(data.values())
+            # Convert a list of two dictionaries to a dict using a zip function
+            d = zip(
+                data[0],
+                data[1]
             )
+            data = dict(d)
+
+        # Convert a list of two dictionaries to a TransposedData object
+        # Create a TransposedData namedtuple object
+        transposed_data = TransposedData(
+            tuple(data.keys()),
+            tuple(data.values())
+        )
 
         return transposed_data
 
