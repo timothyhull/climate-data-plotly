@@ -15,7 +15,7 @@ import requests_mock
 
 # Imports - Local
 from app.ClimateData import (
-    ATMOSPHERIC_CO2_URL, ClimateData
+    ATMOSPHERIC_CO2_URL, ClimateData, TransposedData
 )
 
 # Constants
@@ -96,7 +96,12 @@ MOCK_RAW_CO2_LIST = [
         }
     }
 ]
-MOCK_TRANSPOSED_GRAPHING_DATA = [
+MOCK_CO2_DATE_DATA_1 = {
+    datetime(1958, 3, 1, 0, 0): 315.7,
+    datetime(1958, 4, 1, 0, 0): 317.45,
+    datetime(1958, 5, 1, 0, 0): 317.51
+}
+MOCK_CO2_DATE_DATA_2 = [
     (
         datetime(1958, 3, 1, 0, 0),
         datetime(1958, 4, 1, 0, 0),
@@ -106,6 +111,31 @@ MOCK_TRANSPOSED_GRAPHING_DATA = [
         315.7, 317.45, 317.51
     )
 ]
+MOCK_CO2_DATE_DATA = [
+    MOCK_CO2_DATE_DATA_1,
+    MOCK_CO2_DATE_DATA_2
+]
+MOCK_TRANSPOSED_GRAPHING_DATA = TransposedData(
+    date=(
+        datetime(1958, 3, 1, 0, 0),
+        datetime(1958, 4, 1, 0, 0),
+        datetime(1958, 5, 1, 0, 0)
+    ),
+    co2_ppm=(
+        315.7, 317.45, 317.51
+    )
+)
+MOCK_HTML_PLOT_SNIPPETS = {
+    '<html>': True,
+    'window.PlotlyConfig = {MathJaxConfig: \'local\'};</script>': True,
+    '* plotly.js v': True,
+    '"Date=%{x}<br>Atmospheric Co2 PPM=%{y}<extra></extra>"': True,
+    '</body': True,
+    '</html>': True,
+    '<title>No Plot Content</title>': False,
+    '<h1>This plot file contains no content.</h1>': False,
+    '<h2>The \'file_content\' parameter accepts HTML content</h2>': False,
+}
 
 
 # pytest fixtures
@@ -188,6 +218,7 @@ def test_convert_date_string(
     date_input: List,
     date_output: List,
     mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
 ) -> None:
     """ Test the ClimateData.convert_date_string method.
 
@@ -201,12 +232,17 @@ def test_convert_date_string(
                 mock_api_request (Callable):
                     Mock HTTP request and response fixture.
 
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
+
             Returns:
                 None.
         """
 
     # Call the mock_api_request fixture
-    mock_api_request
+    mock_api_request(
+        requests_mock=requests_mock
+    )
 
     # Create an instance of the ClimateData.ClimateData class
     cd = ClimateData()
@@ -234,6 +270,9 @@ def test_convert_date_string_error(
                     Callable pytest fixture factory function that
                     allows passing arguments to the _mock_api_request
                     function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
 
                 tmp_path (pathlib.PosixPath):
                     pytest fixture to create a temporary directory.
@@ -274,11 +313,6 @@ def test_get_atmospheric_co2_data(
 
                 requests_mock (requests_mock.mocker):
                     Mock HTTP request and response pytest fixture.
-
-                 tmp_path (pathlib.PosixPath):
-                    pytest fixture to create a temporary directory.
-                    Used to pass arguments to the mock_api_request
-                    pytest fixture.
 
             Returns:
                 None.
@@ -344,8 +378,14 @@ def test_get_atmospheric_co2_data_http_error(
     return None
 
 
+@mark.parametrize(
+    argnames='co2_date_data',
+    argvalues=MOCK_CO2_DATE_DATA
+)
 def test_transpose_data_for_graphing(
+    co2_date_data: List[List],
     mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
 ) -> None:
     """ Test the ClimateData.transpose_data_for_graphing method.
 
@@ -363,35 +403,71 @@ def test_transpose_data_for_graphing(
         """
 
     # Call the mock_api_request fixture
-    mock_api_request
+    mock_api_request(
+        requests_mock=requests_mock
+    )
 
     # Create an instance of the ClimateData.ClimateData class
     cd = ClimateData()
 
-    # Create a dictionary comprehension of the data in MOCK_RAW_CO2_LIST
-    cd._get_co2_ppm_date_data()
-
     # Call the transpose_data_for_graphing method
     mock_response = cd.transpose_data_for_graphing(
-        data=MOCK_RAW_CO2_LIST
+        data=co2_date_data
     )
 
-    assert mock_response == MOCK_TRANSPOSED_GRAPHING_DATA
+    assert mock_response.co2_ppm == MOCK_TRANSPOSED_GRAPHING_DATA.co2_ppm
 
     return None
 
 
-def test_plot_atmospheric_co2_data() -> None:
+@mark.parametrize(
+    argnames=[
+        'html_search_string',
+        'expected_value'
+    ],
+    argvalues=list(MOCK_HTML_PLOT_SNIPPETS.items()),
+)
+def test_plot_atmospheric_co2_data(
+    html_search_string: List[str],
+    expected_value: List[bool],
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
+) -> None:
     """ Test the ClimateData.plot_atmospheric_co2_data method.
 
             Args:
-                None.
+                html_search_string (List[str]):
+                    Mock Plotly HTML file snippets to search for.
+
+                expected_value (List[bool]):
+                    Mock expected boolean return values.
+
+                mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
 
             Returns:
                 None.
         """
 
-    # TODO
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # Call the plot_atmospheric_co2_data method
+    response = cd.plot_atmospheric_co2_data(
+        data=MOCK_TRANSPOSED_GRAPHING_DATA
+    )
+
+    assert (html_search_string in response) is expected_value
 
     return None
 
