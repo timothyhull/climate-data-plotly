@@ -226,11 +226,18 @@ MOCK_CO2_GRAPH_DATA = zip(
     MOCK_CO2_GRAPH_INPUT,
     MOCK_CO2_GRAPH_OUTPUT
 )
+MOCK_HTML_PLOT_INPUTS = {
+    'transposed_data': MOCK_CO2_PPM_GRAPH_DATA,
+    'date_label': 'Dates',
+    'value_label': 'Atmospheric Co2 PPM',
+    'title': 'Atmospheric Co2 Levels',
+}
 MOCK_HTML_PLOT_SNIPPETS = {
     '<html>': True,
     'window.PlotlyConfig = {MathJaxConfig: \'local\'};</script>': True,
     '* plotly.js v': True,
-    '"Date=%{x}<br>Atmospheric Co2 PPM=%{y}<extra></extra>"': True,
+    '"Dates=%{x}<br>Atmospheric Co2 PPM=%{y}<extra></extra>"': True,
+    '"title":{"text":"Atmospheric Co2 Levels"}': True,
     '</body': True,
     '</html>': True,
     '<title>No Plot Content</title>': False,
@@ -575,7 +582,7 @@ def test_plot_atmospheric_co2_data(
 
     # Call the plot_atmospheric_co2_data method
     mock_response = cd.plot_atmospheric_co2_data(
-        transposed_data=MOCK_CO2_PPM_GRAPH_DATA
+        **MOCK_HTML_PLOT_INPUTS
     )
 
     assert (html_search_string in mock_response) is expected_value
