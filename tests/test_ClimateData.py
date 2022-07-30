@@ -222,11 +222,10 @@ MOCK_CO2_GRAPH_OUTPUT = [
     MOCK_CO2_YOY_GRAPH_DATA,
     MOCK_CO2_YOY_GRAPH_DATA
 ]
-MOCK_CO2_GRAPH_DATA = list(
-    zip(
-        MOCK_CO2_GRAPH_INPUT,
-        MOCK_CO2_GRAPH_OUTPUT
-    ))
+MOCK_CO2_GRAPH_DATA = zip(
+    MOCK_CO2_GRAPH_INPUT,
+    MOCK_CO2_GRAPH_OUTPUT
+)
 MOCK_HTML_PLOT_SNIPPETS = {
     '<html>': True,
     'window.PlotlyConfig = {MathJaxConfig: \'local\'};</script>': True,
@@ -485,7 +484,7 @@ def test_get_atmospheric_co2_data_http_error(
         'co2_data',
         'co2_graphing_data'
     ],
-    argvalues=MOCK_CO2_GRAPH_DATA
+    argvalues=list(MOCK_CO2_GRAPH_DATA)
 )
 def test_transpose_data_for_graphing(
     co2_data: List[List],
@@ -576,7 +575,7 @@ def test_plot_atmospheric_co2_data(
 
     # Call the plot_atmospheric_co2_data method
     mock_response = cd.plot_atmospheric_co2_data(
-        data=MOCK_CO2_PPM_GRAPH_DATA
+        transposed_data=MOCK_CO2_PPM_GRAPH_DATA
     )
 
     assert (html_search_string in mock_response) is expected_value
