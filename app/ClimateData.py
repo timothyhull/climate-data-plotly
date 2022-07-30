@@ -318,16 +318,19 @@ class ClimateData:
 
     def plot_atmospheric_co2_data(
         self,
-        data: List[Tuple]
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
     ) -> str:
         """ Display atmospheric Co2 Data using Plotly Express.
 
             Renders the self.atmospheric_co2_data in a graph.
 
             Args:
-                data (List[Tuple]):
-                    List of tuples, each tuple containing a data set
-                    for the X and Y axises.
+                transposed_data(
+                    TransposedData[Tuple[datetime], Tuple[float]]
+                ):
+                    TransposedData object with 'dates' and 'values
+                    properties with values for the X and Y axises
+                    respectively.
 
             Returns:
                 line_graph_html (str):
@@ -337,8 +340,8 @@ class ClimateData:
         # Create a line graph
         line_graph = px.line(
             data_frame=dict(
-                dates=data[0],
-                values=data[1]
+                dates=transposed_data.dates,
+                values=transposed_data.values
             ),
             labels=dict(
                 dates='Date',
