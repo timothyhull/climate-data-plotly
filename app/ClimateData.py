@@ -20,8 +20,8 @@ import plotly.express as px
 TransposedData = namedtuple(
     typename='TransposedData',
     field_names=[
-        'date',
-        'co2_ppm'
+        'dates',
+        'values'
     ]
 )
 
@@ -190,39 +190,69 @@ class ClimateData:
 
         return atmospheric_co2_data
 
-    def _get_co2_ppm_date_data(self) -> Dict:
+    def _get_co2_ppm_date_data(
+        self,
+        atmospheric_co2_data: List[Dict] = None
+    ) -> Dict:
         """ Extract atmospheric Co2 ppm levels with dates.
 
-            Create a dictionary from data self.atmospheric_co2_data
+            Create a dictionary from data in self.atmospheric_co2_data
             that only contains parts per million (PPM) and
             dates of measurement.
 
             Args:
-                None.
+                atmospheric_co2_data (List[Dict]):
+                    List of dictionaries in the format:
+
+                        'attributes': {
+                            'Indicator': 'Monthly Atmospheric...s',
+                            'Code': 'ECNCIC_PPM',
+                            'Unit': 'Parts Per Million',
+                            'Date': datetime(1958, 4, 1, 0, 0),
+                            'Value': 317.45
+
+                    Default is None.
 
             Returns:
                 co2_ppm_date_data (Dict):
                     Dictionary of atmospheric Co2 PPM and data data.
         """
 
+        # Uses self.atmospheric_co2_data as a data source by default
+        if not isinstance(atmospheric_co2_data, list):
+            atmospheric_co2_data = self.atmospheric_co2_data
+
         # Create a dictionary comprehension of PPM and dates of measurement
         co2_ppm_date_data = {
             data['attributes']['Date']: data['attributes']['Value']
-            for data in self.atmospheric_co2_data
+            for data in atmospheric_co2_data
             if data['attributes']['Unit'] == PPM_UNIT
         }
 
         return co2_ppm_date_data
 
-    def _get_co2_yoy_change_data(self) -> Dict:
+    def _get_co2_yoy_change_data(
+        self,
+        atmospheric_co2_data: List[Dict] = None
+    ) -> Dict:
         """ Extract atmospheric Co2 ppm YoY changes with dates.
 
-            Create a dictionary from data self.atmospheric_co2_data
+            Create a dictionary from data in self.atmospheric_co2_data
             that only contains year over year (YoY) percentage changes
             and dates of measurement.
 
             Args:
-                None.
+                atmospheric_co2_data (List[Dict]):
+                    List of dictionaries in the format:
+
+                        'attributes': {
+                            'Indicator': 'Monthly Atmospheric...s',
+                            'Code': 'ECNCIC_PPM',
+                            'Unit': 'Parts Per Million',
+                            'Date': datetime(1958, 4, 1, 0, 0),
+                            'Value': 317.45
+
+                    Default is None.
 
             Returns:
                 co2_yoy_change_data (Dict):
@@ -230,10 +260,14 @@ class ClimateData:
                     data data.
         """
 
+        # Uses self.atmospheric_co2_data as a data source by default
+        if not isinstance(atmospheric_co2_data, list):
+            atmospheric_co2_data = self.atmospheric_co2_data
+
         # Create a dictionary comprehension of YoY % changes with dates
         co2_yoy_change_data = {
             data['attributes']['Date']: data['attributes']['Value']
-            for data in self.atmospheric_co2_data
+            for data in atmospheric_co2_data
             if data['attributes']['Unit'] == PPM_YOY_UNIT
         }
 
@@ -259,7 +293,7 @@ class ClimateData:
                         - transposed_data.dates = Tuple of
                           datetime.datetime objects.
 
-                        - transposed_data.co2_ppm: Tuple of float
+                        - transposed_data.values: Tuple of float
                           objects.
 
         """
@@ -276,8 +310,8 @@ class ClimateData:
         # Convert a list of two dictionaries to a TransposedData object
         # Create a TransposedData namedtuple object
         transposed_data = TransposedData(
-            tuple(data.keys()),
-            tuple(data.values())
+            dates=tuple(data.keys()),
+            values=tuple(data.values())
         )
 
         return transposed_data
@@ -303,17 +337,17 @@ class ClimateData:
         # Create a line graph
         line_graph = px.line(
             data_frame=dict(
-                date=data[0],
-                co2_ppm=data[1]
+                dates=data[0],
+                values=data[1]
             ),
             labels=dict(
-                date='Date',
-                co2_ppm='Atmospheric Co2 PPM'
+                dates='Date',
+                values='Atmospheric Co2 PPM'
             ),
             markers=True,
             title='Atmospheric Co2 Levels',
-            x='date',
-            y='co2_ppm'
+            x='dates',
+            y='values'
         )
 
         # Create HTML content for a plot file
