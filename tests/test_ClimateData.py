@@ -65,9 +65,36 @@ MOCK_RAW_CO2_JSON = '''
             "Date": "1958M05",
             "Value": 317.51
         }
+    },
+    {
+        "attributes": {
+            "Indicator": "Year on Year Percentage Change",
+            "Code": "ECNCIC_YOY",
+            "Unit": "Percent",
+            "Date": "1959M03",
+            "Value": 0.3
+        }
+    },
+    {
+        "attributes": {
+            "Indicator": "Year on Year Percentage Change",
+            "Code": "ECNCIC_YOY",
+            "Unit": "Percent",
+            "Date": "1959M04",
+            "Value": 0.09
+        }
+    },
+    {
+        "attributes": {
+            "Indicator": "Year on Year Percentage Change",
+            "Code": "ECNCIC_YOY",
+            "Unit": "Percent",
+            "Date": "1959M05",
+            "Value": 0.25
+        }
     }]
 }'''
-MOCK_RAW_CO2_LIST = [
+MOCK_RAW_CO2_PPM_LIST = [
     {
         'attributes': {
             'Indicator': 'Monthly Atmospheric Co2 Concentrations',
@@ -96,35 +123,110 @@ MOCK_RAW_CO2_LIST = [
         }
     }
 ]
-MOCK_CO2_DATE_DATA_1 = {
+MOCK_CO2_PPM_DATE_DATA_1 = {
     datetime(1958, 3, 1, 0, 0): 315.7,
     datetime(1958, 4, 1, 0, 0): 317.45,
     datetime(1958, 5, 1, 0, 0): 317.51
 }
-MOCK_CO2_DATE_DATA_2 = [
+MOCK_CO2_PPM_DATE_DATA_2 = [
     (
         datetime(1958, 3, 1, 0, 0),
         datetime(1958, 4, 1, 0, 0),
         datetime(1958, 5, 1, 0, 0)
     ),
     (
-        315.7, 317.45, 317.51
+        315.7,
+        317.45,
+        317.51
     )
 ]
-MOCK_CO2_DATE_DATA = [
-    MOCK_CO2_DATE_DATA_1,
-    MOCK_CO2_DATE_DATA_2
-]
-MOCK_TRANSPOSED_GRAPHING_DATA = TransposedData(
-    date=(
+MOCK_CO2_PPM_GRAPH_DATA = TransposedData(
+    dates=(
         datetime(1958, 3, 1, 0, 0),
         datetime(1958, 4, 1, 0, 0),
         datetime(1958, 5, 1, 0, 0)
     ),
-    co2_ppm=(
-        315.7, 317.45, 317.51
+    values=(
+        315.7,
+        317.45,
+        317.51
     )
 )
+MOCK_RAW_CO2_YOY_LIST = [
+    {
+        'attributes': {
+            'Indicator': 'Year on Year Percentage Change',
+            'Code': 'ECNCIC_YOY',
+            'Unit': 'Percent',
+            'Date': datetime(1959, 3, 1, 0, 0),
+            'Value': 0.3
+        }
+    },
+    {
+        'attributes': {
+            'Indicator': 'Year on Year Percentage Change',
+            'Code': 'ECNCIC_YOY',
+            'Unit': 'Percent',
+            'Date': datetime(1959, 4, 1, 0, 0),
+            'Value': 0.09
+        }
+    },
+    {
+        'attributes': {
+            'Indicator': 'Year on Year Percentage Change',
+            'Code': 'ECNCIC_YOY',
+            'Unit': 'Percent',
+            'Date': datetime(1959, 5, 1, 0, 0),
+            'Value': 0.25
+        }
+    }
+]
+MOCK_CO2_YOY_DATE_DATA_1 = {
+    datetime(1959, 3, 1, 0, 0): 0.3,
+    datetime(1959, 4, 1, 0, 0): 0.09,
+    datetime(1959, 5, 1, 0, 0): 0.25
+}
+MOCK_CO2_YOY_DATE_DATA_2 = [
+    (
+        datetime(1959, 3, 1, 0, 0),
+        datetime(1959, 4, 1, 0, 0),
+        datetime(1959, 5, 1, 0, 0),
+    ),
+    (
+        0.3,
+        0.09,
+        0.25
+    )
+]
+MOCK_CO2_YOY_GRAPH_DATA = TransposedData(
+    dates=(
+        datetime(1959, 3, 1, 0, 0),
+        datetime(1959, 4, 1, 0, 0),
+        datetime(1959, 5, 1, 0, 0),
+    ),
+    values=(
+        0.3,
+        0.09,
+        0.25
+    )
+)
+MOCK_CO2_GRAPH_INPUT = [
+    MOCK_CO2_PPM_DATE_DATA_1,
+    MOCK_CO2_PPM_DATE_DATA_2,
+    MOCK_CO2_YOY_DATE_DATA_1,
+    MOCK_CO2_YOY_DATE_DATA_2,
+]
+MOCK_CO2_GRAPH_OUTPUT = [
+    MOCK_CO2_PPM_GRAPH_DATA,
+    MOCK_CO2_PPM_GRAPH_DATA,
+    MOCK_CO2_YOY_GRAPH_DATA,
+    MOCK_CO2_YOY_GRAPH_DATA
+]
+MOCK_CO2_GRAPH_DATA = list(
+    zip(
+        MOCK_CO2_GRAPH_INPUT,
+        MOCK_CO2_GRAPH_OUTPUT
+    ))
 MOCK_HTML_PLOT_SNIPPETS = {
     '<html>': True,
     'window.PlotlyConfig = {MathJaxConfig: \'local\'};</script>': True,
@@ -227,7 +329,7 @@ def test_convert_date_string(
                     Mock date string input values.
 
                 date_output (List):
-                    Mock expected datetime.datetime return values.
+                    Mock expected datetime return values.
 
                 mock_api_request (Callable):
                     Mock HTTP request and response fixture.
@@ -329,7 +431,7 @@ def test_get_atmospheric_co2_data(
     # Call the _get_atmospheric_co2_data method
     mock_response = cd._get_atmospheric_co2_data()
 
-    assert mock_response == MOCK_RAW_CO2_LIST
+    assert mock_response == MOCK_RAW_CO2_PPM_LIST + MOCK_RAW_CO2_YOY_LIST
 
     return None
 
@@ -379,17 +481,25 @@ def test_get_atmospheric_co2_data_http_error(
 
 
 @mark.parametrize(
-    argnames='co2_date_data',
-    argvalues=MOCK_CO2_DATE_DATA
+    argnames=[
+        'co2_data',
+        'co2_graphing_data'
+    ],
+    argvalues=MOCK_CO2_GRAPH_DATA
 )
 def test_transpose_data_for_graphing(
-    co2_date_data: List[List],
+    co2_data: List[List],
+    co2_graphing_data: TransposedData,
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
     """ Test the ClimateData.transpose_data_for_graphing method.
 
             Args:
+                co2_data: (List[List]):
+
+                co2_graphing_data (TransposedData):
+
                 mock_api_request (Callable):
                     Callable pytest fixture factory function that
                     allows passing arguments to the _mock_api_request
@@ -412,10 +522,12 @@ def test_transpose_data_for_graphing(
 
     # Call the transpose_data_for_graphing method
     mock_response = cd.transpose_data_for_graphing(
-        data=co2_date_data
+        data=co2_data
     )
 
-    assert mock_response.co2_ppm == MOCK_TRANSPOSED_GRAPHING_DATA.co2_ppm
+    assert (
+        mock_response == co2_graphing_data
+    )
 
     return None
 
@@ -463,40 +575,104 @@ def test_plot_atmospheric_co2_data(
     cd = ClimateData()
 
     # Call the plot_atmospheric_co2_data method
-    response = cd.plot_atmospheric_co2_data(
-        data=MOCK_TRANSPOSED_GRAPHING_DATA
+    mock_response = cd.plot_atmospheric_co2_data(
+        data=MOCK_CO2_PPM_GRAPH_DATA
     )
 
-    assert (html_search_string in response) is expected_value
+    assert (html_search_string in mock_response) is expected_value
 
     return None
 
 
-def test_get_co2_ppm_date_data() -> None:
+def test_get_co2_ppm_date_data(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    tmp_path: PosixPath
+) -> None:
     """ Test the ClimateData._get_co2_ppm_date_data method.
 
             Args:
-                None.
+                mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
+
+                 tmp_path (pathlib.PosixPath):
+                    pytest fixture to create a temporary directory.
 
             Returns:
                 None.
         """
 
-    # TODO
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # Call the _get_co2_ppm_date_data method
+    mock_response = cd._get_co2_ppm_date_data(
+        atmospheric_co2_data=MOCK_RAW_CO2_PPM_LIST
+    )
+
+    assert mock_response == MOCK_CO2_PPM_DATE_DATA_1
 
     return None
 
 
-def test_get_co2_yoy_change_data() -> None:
+def test_get_co2_yoy_change_data(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    tmp_path: PosixPath
+) -> None:
     """ Test the ClimateData._get_co2_yoy_change_data method.
 
             Args:
-                None.
+                mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
 
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
+
+                 tmp_path (pathlib.PosixPath):
+                    pytest fixture to create a temporary directory.
             Returns:
                 None.
         """
 
-    # TODO
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # Call the _get_co2_yoy_change_data method
+    mock_response = cd._get_co2_yoy_change_data(
+        atmospheric_co2_data=MOCK_RAW_CO2_YOY_LIST
+    )
+
+    assert mock_response == MOCK_CO2_YOY_DATE_DATA_1
+
+    return None
+
+
+def test_write_plot_html_file() -> None:
+    """ Test the ClimateData.write_plot_html_file method.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+    """
 
     return None
