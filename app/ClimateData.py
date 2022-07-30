@@ -35,6 +35,9 @@ ATMOSPHERIC_CO2_URL = (
     'where=1%3D1&outFields=Indicator,Code,Unit,Date,Value&'
     'outSR=4326&f=json'
 )
+PLOT_DATE_LABEL = 'Dates'
+PLOT_VALUE_LABEL = 'Values'
+PLOT_TITLE = 'Atmospheric Co2 Data'
 PLOT_FILE_EXTENSION = 'html'
 PLOT_FILE_DEFAULT_NAME = 'test_plot'
 PLOT_FILE_DEFAULT_HTML = (
@@ -51,9 +54,9 @@ PLOT_FILE_DEFAULT_HTML = (
     '''
 ).strip()
 PLOT_FILE_PATH = 'plot_files'
-SRTPTIME_FORMAT = '%YM%m'
 PPM_UNIT = 'Parts Per Million'
 PPM_YOY_UNIT = 'Percent'
+SRTPTIME_FORMAT = '%YM%m'
 
 
 class ClimateData:
@@ -318,7 +321,10 @@ class ClimateData:
 
     def plot_atmospheric_co2_data(
         self,
-        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]],
+        date_label: str = PLOT_DATE_LABEL,
+        value_label: str = PLOT_VALUE_LABEL,
+        title: str = PLOT_TITLE
     ) -> str:
         """ Display atmospheric Co2 Data using Plotly Express.
 
@@ -332,6 +338,15 @@ class ClimateData:
                     properties with values for the X and Y axises
                     respectively.
 
+                date_label (str, optional):
+                    Label of plot y-axis.  Default is PLOT_DATE_LABEL.
+
+                value_label (str, optional):
+                    Label of plot y-axis.  Default is PLOT_VALUE_LABEL.
+
+                title (str, optional):
+                    Title of plot. Default is PLOT_TITLE.
+
             Returns:
                 line_graph_html (str):
                     HTML content for a line graph file.
@@ -344,11 +359,11 @@ class ClimateData:
                 values=transposed_data.values
             ),
             labels=dict(
-                dates='Date',
-                values='Atmospheric Co2 PPM'
+                dates=date_label,
+                values=value_label
             ),
             markers=True,
-            title='Atmospheric Co2 Levels',
+            title=title,
             x='dates',
             y='values'
         )
