@@ -35,6 +35,8 @@ ATMOSPHERIC_CO2_URL = (
     'where=1%3D1&outFields=Indicator,Code,Unit,Date,Value&'
     'outSR=4326&f=json'
 )
+DIR_CREATE_ERROR_MSG = '** Unable to create a directory for file storage **'
+FILE_WRITE_ERROR_MSG = '** Unable to write file to disk **'
 PLOT_DATE_LABEL = 'Dates'
 PLOT_VALUE_LABEL = 'Values'
 PLOT_TITLE = 'Atmospheric Co2 Data'
@@ -401,18 +403,40 @@ class ClimateData:
         plot_file = path.join(plot_dir, f'{file_name}.{PLOT_FILE_EXTENSION}',)
 
         # Create a file storage directory with a context manager
-        with Path(plot_dir) as pd:
-            pd.mkdir(
-                exist_ok=True
+        try:
+            with Path(plot_dir) as pd:
+                pd.mkdir(
+                    exist_ok=True
+                )
+
+        except OSError as e:
+            # Display an error message
+            print(
+                f'\n{DIR_CREATE_ERROR_MSG}\n'
+                f'\n{e!r}\n'
             )
 
-        # Write a file with a context manager
-        with open(
-            file=plot_file,
-            mode='w',
-            encoding='utf=8'
-        ) as file:
+            # Re-raise the exception
+            raise
 
-            file.write(file_content)
+        # Write the file using a context manager
+        try:
+            with open(
+                file=plot_file,
+                mode='w',
+                encoding='utf=8'
+            ) as file:
+
+                file.write(file_content)
+
+        except OSError as e:
+            # Display an error message
+            print(
+                f'\n{FILE_WRITE_ERROR_MSG}\n'
+                f'\n{e!r}\n'
+            )
+
+            # Re-raise the exception
+            raise
 
         return None
