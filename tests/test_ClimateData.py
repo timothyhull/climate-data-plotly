@@ -2,10 +2,12 @@
 """ Unit tests for ClimateData.py. """
 
 # Imports - Python Standard Library
+import builtins
 from datetime import datetime
 from json import loads
 from pathlib import PosixPath
 from typing import Callable, List
+from unittest.mock import patch
 
 # Imports - Third-Party
 from pytest import fixture, mark, raises
@@ -671,14 +673,47 @@ def test_plot_atmospheric_co2_data(
     return None
 
 
-def test_write_plot_html_file() -> None:
+@patch.object(
+    target=builtins,
+    attribute='open',
+    return_value='',
+)
+def test_write_plot_html_file(
+    file_open,
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
+) -> None:
     """ Test the ClimateData.write_plot_html_file method.
 
         Args:
-            None.
+            mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
 
         Returns:
             None.
     """
+
+    mock_api_request(
+        requests_mock
+    )
+
+    cd = ClimateData()
+
+    file_open
+
+    cd.write_plot_html_file(
+        'test_1',
+        'test_2'
+    )
+
+    # with raises(OSError):
+    #     cd.write_plot_html_file(
+
+    #     )
 
     return None
