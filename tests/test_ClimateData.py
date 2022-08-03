@@ -7,7 +7,7 @@ from datetime import datetime
 from json import loads
 from pathlib import PosixPath
 from typing import Callable, List
-from unittest.mock import patch
+from unittest.mock import mock_open, patch
 
 # Imports - Third-Party
 from pytest import fixture, mark, raises
@@ -673,13 +673,7 @@ def test_plot_atmospheric_co2_data(
     return None
 
 
-@patch.object(
-    target=builtins,
-    attribute='open',
-    return_value='',
-)
 def test_write_plot_html_file(
-    file_open,
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
@@ -698,18 +692,44 @@ def test_write_plot_html_file(
             None.
     """
 
+    # Call the mock_api_request fixture
     mock_api_request(
-        requests_mock
+        requests_mock=requests_mock
     )
 
+    # Create an instance of the ClimateData.ClimateData class
     cd = ClimateData()
 
-    file_open
+    # Define HTML for a mock_open object
+    html_data = '''
+        <html>
+            <head>
+                <title>Mock Open HTML Data</title>
+            </head>
+            <body>
+                <h1>Mock Open HTML Data</h1>
+            </body>
+        </html>
+    '''.strip()
 
-    cd.write_plot_html_file(
-        'test_1',
-        'test_2'
+    # Define a mock_open object with html_data
+    write_html_mock = mock_open(
+        mock=html_data
     )
+
+    # TODO
+    with patch(
+        target=builtins.open,
+        new=write_html_mock
+    ):
+        write_file_result = cd.write_plot_html_file(
+            file_name='test_file',
+            file_content=html_data
+        )
+
+    print(write_file_result)
+
+    assert write_file_result
 
     # with raises(OSError):
     #     cd.write_plot_html_file(
