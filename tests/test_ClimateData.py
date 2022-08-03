@@ -701,7 +701,7 @@ def test_write_plot_html_file(
     cd = ClimateData()
 
     # Define HTML for a mock_open object
-    html_data = '''
+    mock_html_data = '''
         <html>
             <head>
                 <title>Mock Open HTML Data</title>
@@ -712,24 +712,25 @@ def test_write_plot_html_file(
         </html>
     '''.strip()
 
-    # Define a mock_open object with html_data
+    # Define a mock_open object with mock_html_data
     write_html_mock = mock_open(
-        mock=html_data
+        read_data=mock_html_data
     )
 
-    # TODO
-    with patch(
-        target=builtins.open,
+    # Mock the builtins.open function
+    with patch.object(
+        target=builtins,
+        attribute='open',
         new=write_html_mock
     ):
+
+        # Call the cd.write_plot_html_file function
         write_file_result = cd.write_plot_html_file(
             file_name='test_file',
-            file_content=html_data
+            file_content=mock_html_data
         )
 
-    print(write_file_result)
-
-    assert write_file_result
+    # assert write_file_result
 
     # with raises(OSError):
     #     cd.write_plot_html_file(
