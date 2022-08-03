@@ -246,6 +246,7 @@ MOCK_HTML_PLOT_SNIPPETS = {
     '<h1>This plot file contains no content.</h1>': False,
     '<h2>The \'file_content\' parameter accepts HTML content</h2>': False,
 }
+MOCK_HTML_FILE_NAME = 'test_file.html'
 
 
 # pytest fixtures
@@ -725,12 +726,13 @@ def test_write_plot_html_file(
     ):
 
         # Call the cd.write_plot_html_file function
-        write_file_result = cd.write_plot_html_file(
-            file_name='test_file',
+        cd.write_plot_html_file(
+            file_name=MOCK_HTML_FILE_NAME.split(sep='.')[0],
             file_content=mock_html_data
         )
 
-    # assert write_file_result
+    assert write_html_mock.assert_called_once
+    assert MOCK_HTML_FILE_NAME in str(write_html_mock.call_args_list)
 
     # with raises(OSError):
     #     cd.write_plot_html_file(
