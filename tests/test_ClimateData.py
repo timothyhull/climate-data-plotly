@@ -246,6 +246,16 @@ MOCK_HTML_PLOT_SNIPPETS = {
     '<h1>This plot file contains no content.</h1>': False,
     '<h2>The \'file_content\' parameter accepts HTML content</h2>': False,
 }
+MOCK_HTML_FILE_CONTENT = '''
+    <html>
+        <head>
+            <title>Mock Open HTML Data</title>
+        </head>
+        <body>
+            <h1>Mock Open HTML Data</h1>
+        </body>
+    </html>
+'''.strip()
 MOCK_HTML_FILE_NAME = 'test_file.html'
 
 
@@ -701,21 +711,9 @@ def test_write_plot_html_file(
     # Create an instance of the ClimateData.ClimateData class
     cd = ClimateData()
 
-    # Define HTML for a mock_open object
-    mock_html_data = '''
-        <html>
-            <head>
-                <title>Mock Open HTML Data</title>
-            </head>
-            <body>
-                <h1>Mock Open HTML Data</h1>
-            </body>
-        </html>
-    '''.strip()
-
     # Define a mock_open object with mock_html_data
     write_html_mock = mock_open(
-        read_data=mock_html_data
+        read_data=MOCK_HTML_FILE_CONTENT
     )
 
     # Mock the builtins.open function
@@ -728,15 +726,51 @@ def test_write_plot_html_file(
         # Call the cd.write_plot_html_file function
         cd.write_plot_html_file(
             file_name=MOCK_HTML_FILE_NAME.split(sep='.')[0],
-            file_content=mock_html_data
+            file_content=MOCK_HTML_FILE_CONTENT
         )
 
     assert write_html_mock.assert_called_once
     assert MOCK_HTML_FILE_NAME in str(write_html_mock.call_args_list)
 
-    # with raises(OSError):
-    #     cd.write_plot_html_file(
+    return None
 
-    #     )
+
+def test_write_plot_html_file_error(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
+) -> None:
+    """ Test the ClimateData.write_plot_html_file method exceptions.
+
+        Check for proper exception handling.
+
+        Args:
+            mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
+
+        Returns:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # TODO
+    with raises(
+        expected_exception=FileNotFoundError
+    ):
+        cd.write_plot_html_file(
+            file_name=None,
+            file_content=None
+        )
 
     return None
