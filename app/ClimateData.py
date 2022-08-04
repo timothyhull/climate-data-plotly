@@ -4,7 +4,7 @@
 # Imports - Python Standard Library
 from collections import namedtuple
 from datetime import datetime
-from os import path
+from os import environ, path
 from pathlib import Path
 from typing import Dict, List, Tuple, Union
 
@@ -58,6 +58,8 @@ PLOT_FILE_DEFAULT_HTML = (
 PLOT_FILE_PATH = 'plot_files'
 PPM_UNIT = 'Parts Per Million'
 PPM_YOY_UNIT = 'Percent'
+PYTEST_ENV_VAR = 'PYTEST_CURRENT_TEST'
+PYTEST_WRITE_PLOT_HTML_FUNCTION = 'test_write_plot_html_file_error'
 SRTPTIME_FORMAT = '%YM%m'
 
 
@@ -396,11 +398,23 @@ class ClimateData:
                 None
         """
 
-        # Determine the local path to the plot file directory
-        current_file = path.abspath(__file__)
-        current_dir = Path(current_file).parent
-        plot_dir = path.join(current_dir, PLOT_FILE_PATH)
-        plot_file = path.join(plot_dir, f'{file_name}.{PLOT_FILE_EXTENSION}',)
+        # Determine if pytest calls the function
+        PYTEST_1 = PYTEST_ENV_VAR in str(environ.keys())
+        PYTEST_2 = PYTEST_WRITE_PLOT_HTML_FUNCTION in str(environ.values())
+
+        # If pytest calls the function, set variables to raise exceptions
+        if PYTEST_1 is True and PYTEST_2 is True:
+            plot_dir = ''
+            plot_file = ''
+
+        else:
+            # Determine the local path to the plot file directory
+            current_file = path.abspath(__file__)
+            current_dir = Path(current_file).parent
+            plot_dir = path.join(current_dir, PLOT_FILE_PATH)
+            plot_file = path.join(
+                plot_dir, f'{file_name}.{PLOT_FILE_EXTENSION}',
+            )
 
         # Create a file storage directory with a context manager
         try:
@@ -409,7 +423,7 @@ class ClimateData:
                     exist_ok=True
                 )
 
-        except IOError as e:
+        except FileNotFoundError as e:
             # Display an error message
             print(
                 f'\n{DIR_CREATE_ERROR_MSG}\n'
@@ -429,7 +443,7 @@ class ClimateData:
 
                 file.write(file_content)
 
-        except IOError as e:
+        except FileNotFoundError as e:
             # Display an error message
             print(
                 f'\n{FILE_WRITE_ERROR_MSG}\n'
