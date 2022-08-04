@@ -409,7 +409,7 @@ class ClimateData:
                     exist_ok=True
                 )
 
-        except OSError as e:
+        except IOError as e:
             # Display an error message
             print(
                 f'\n{DIR_CREATE_ERROR_MSG}\n'
@@ -429,7 +429,7 @@ class ClimateData:
 
                 file.write(file_content)
 
-        except OSError as e:
+        except IOError as e:
             # Display an error message
             print(
                 f'\n{FILE_WRITE_ERROR_MSG}\n'
