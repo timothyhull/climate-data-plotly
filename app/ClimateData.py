@@ -413,7 +413,8 @@ class ClimateData:
             current_dir = Path(current_file).parent
             plot_dir = path.join(current_dir, PLOT_FILE_PATH)
             plot_file = path.join(
-                plot_dir, f'{file_name}.{PLOT_FILE_EXTENSION}',
+                plot_dir,
+                f'{file_name}.{PLOT_FILE_EXTENSION}'
             )
 
         # Create a file storage directory with a context manager
