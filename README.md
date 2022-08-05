@@ -12,19 +12,56 @@
 
 <!-- Application diagram -->
 ```mermaid
-```
-
-```text
-|->| app  # Application folder
-|->|->| climate_data.py  # Runtime file with `main` function
-|->|->| ClimateData.py  # ClimateData class
-|->| tests  # Pytest folder
-|->|->| test_files.py  # Pytest files
-|->|->|->| test_ClimateData.py
-|->| web  # Flask application folder
-|->|->| flask_app.py  # Flask app file
-|->|->| templates  # Flask templates folder
-|->|->|->| index.html  # Jinja template for `index.html`
+classDiagram
+    repo_root <|-- app
+    repo_root <|-- tests
+    repo_root <|-- web
+    app <|-- plot_files
+    web <|-- templates
+    class repo_root{
+        # Repository root folder
+        - repo_root/
+    }
+    class app{
+        # Application folder
+        - repo_root/app/
+        ---
+        # Runtime file with `main` function
+        -climate_data.py
+        ---
+        # ClimateData class
+        -ClimateData.py
+    }
+    class plot_files{
+        # HTML plot file folder
+        - repo_root/app/plot_files/
+        ---
+        # HTML plot files
+        - climate_data_1.html
+        - climate_data_2.html
+        - climate_data_3.html
+    }
+    class tests{
+         # Pytest folder
+         - repo_root/tests/
+         ---
+         # Tests for ../app/ClimateData.py
+         - file test_ClimateData.py
+    }
+    class web{
+        # Flask application folder
+        - repo_root/web/
+        ---
+        # Main Flask app file
+        - flask_app.py
+    }
+    class templates{
+        # Flask templates folder
+        - repo_root/web/templates/
+        ---
+        # Main Flask app file
+        - index.html
+    }
 ```
 
 ## Sources
