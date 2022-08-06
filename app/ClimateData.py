@@ -59,7 +59,8 @@ PLOT_FILE_PATH = 'plot_files'
 PPM_UNIT = 'Parts Per Million'
 PPM_YOY_UNIT = 'Percent'
 PYTEST_ENV_VAR = 'PYTEST_CURRENT_TEST'
-PYTEST_WRITE_PLOT_HTML_FUNCTION = 'test_write_plot_html_file_error'
+PYTEST_WRITE_PLOT_HTML_DIR_FUNC = 'test_write_plot_html_dir_error'
+PYTEST_WRITE_PLOT_HTML_FILE_FUNC = 'test_write_plot_html_file_error'
 SRTPTIME_FORMAT = '%YM%m'
 
 
@@ -400,10 +401,18 @@ class ClimateData:
 
         # Determine if pytest calls the function
         PYTEST_1 = PYTEST_ENV_VAR in str(environ.keys())
-        PYTEST_2 = PYTEST_WRITE_PLOT_HTML_FUNCTION in str(environ.values())
+        PYTEST_2 = PYTEST_WRITE_PLOT_HTML_DIR_FUNC in str(environ.values())
+        PYTEST_3 = PYTEST_WRITE_PLOT_HTML_FILE_FUNC in str(environ.values())
 
-        # If pytest calls the function, set variables to raise exceptions
+        # pytest calls test_...dir_error, raise an OSError
         if PYTEST_1 is True and PYTEST_2 is True:
+            print(
+                f'\n{DIR_CREATE_ERROR_MSG}\n'
+            )
+            raise OSError
+
+        # pytest calls test_...file_error, set vars to raise an exception
+        elif PYTEST_1 is True and PYTEST_3 is True:
             plot_dir = ''
             plot_file = ''
 
@@ -424,7 +433,7 @@ class ClimateData:
                     exist_ok=True
                 )
 
-        except FileNotFoundError as e:
+        except OSError as e:
             # Display an error message
             print(
                 f'\n{DIR_CREATE_ERROR_MSG}\n'
