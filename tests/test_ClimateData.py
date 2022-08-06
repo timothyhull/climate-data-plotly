@@ -735,13 +735,53 @@ def test_write_plot_html_file(
     return None
 
 
+def test_write_plot_html_dir_error(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
+) -> None:
+    """ Test the ClimateData.write_plot_html_file method exceptions.
+
+        Check for proper handling of an OSError exception when
+        Python is unable to create a directory in storage.
+
+        Args:
+            mock_api_request (Callable):
+                    Callable pytest fixture factory function that
+                    allows passing arguments to the _mock_api_request
+                    function.
+
+                requests_mock (requests_mock.mocker):
+                    Mock HTTP request and response pytest fixture.
+
+        Returns:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # TODO
+    with raises(
+        expected_exception=OSError
+    ):
+        cd.write_plot_html_file()
+
+    return None
+
+
 def test_write_plot_html_file_error(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
     """ Test the ClimateData.write_plot_html_file method exceptions.
 
-        Check for proper exception handling.
+        Check for proper handling of a FileNotFound exception when
+        Python is unable to write a file to storage.
 
         Args:
             mock_api_request (Callable):
@@ -768,9 +808,6 @@ def test_write_plot_html_file_error(
     with raises(
         expected_exception=FileNotFoundError
     ):
-        cd.write_plot_html_file(
-            file_name=None,
-            file_content=None
-        )
+        cd.write_plot_html_file()
 
     return None
