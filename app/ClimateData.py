@@ -399,21 +399,33 @@ class ClimateData:
                 None
         """
 
+        # Set a default value for use in the exist_os parameter of os.mkdir
+        exist_ok = True
+
         # Determine if pytest calls the function
         PYTEST_1 = PYTEST_ENV_VAR in str(environ.keys())
         PYTEST_2 = PYTEST_WRITE_PLOT_HTML_DIR_FUNC in str(environ.values())
         PYTEST_3 = PYTEST_WRITE_PLOT_HTML_FILE_FUNC in str(environ.values())
 
-        # pytest calls test_...dir_error, raise an OSError
+        # pytest calls test_...dir_error, set vars to raise an exception
         if PYTEST_1 is True and PYTEST_2 is True:
-            print(
-                f'\n{DIR_CREATE_ERROR_MSG}\n'
-            )
-            raise OSError
+
+            # Set plot_dir to a directory that already exists
+            plot_dir = '../'
+
+            # Set plot file to an invalid name
+            plot_file = ''
+
+            # Set a variable for use in the exist_os parameter of os.mkdir
+            exist_ok = False
 
         # pytest calls test_...file_error, set vars to raise an exception
         elif PYTEST_1 is True and PYTEST_3 is True:
+
+            # Set plot_dir to the current directory
             plot_dir = ''
+
+            # Set plot file to an invalid name
             plot_file = ''
 
         else:
@@ -430,10 +442,10 @@ class ClimateData:
         try:
             with Path(plot_dir) as pd:
                 pd.mkdir(
-                    exist_ok=True
+                    exist_ok=exist_ok
                 )
 
-        except OSError as e:
+        except FileExistsError as e:
             # Display an error message
             print(
                 f'\n{DIR_CREATE_ERROR_MSG}\n'
