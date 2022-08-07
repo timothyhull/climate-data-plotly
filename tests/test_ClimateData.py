@@ -2,12 +2,12 @@
 """ Unit tests for ClimateData.py. """
 
 # Imports - Python Standard Library
-import builtins
 from datetime import datetime
 from json import loads
-from pathlib import PosixPath
+from pathlib import Path, PosixPath
 from typing import Callable, List
-from unittest.mock import mock_open, patch
+from unittest.mock import MagicMock, mock_open, patch
+import builtins
 
 # Imports - Third-Party
 from pytest import fixture, mark, raises
@@ -343,22 +343,22 @@ def test_convert_date_string(
 ) -> None:
     """ Test the ClimateData.convert_date_string method.
 
-            Args:
-                date_input (List):
-                    Mock date string input values.
+        Args:
+            date_input (List):
+                Mock date string input values.
 
-                date_output (List):
-                    Mock expected datetime return values.
+            date_output (List):
+                Mock expected datetime return values.
 
-                mock_api_request (Callable):
-                    Mock HTTP request and response fixture.
+            mock_api_request (Callable):
+                Mock HTTP request and response fixture.
 
-                requests_mock (requests_mock.mocker):
-                    Mock HTTP request and response pytest fixture.
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
 
-            Returns:
-                None.
-        """
+        Returns:
+            None.
+    """
 
     # Call the mock_api_request fixture
     mock_api_request(
@@ -386,23 +386,23 @@ def test_convert_date_string_error(
         Includes an invalid date string, to test the ValueError
         exception handling.
 
-            Args:
-                mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
-                requests_mock (requests_mock.mocker):
-                    Mock HTTP request and response pytest fixture.
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
 
-                tmp_path (pathlib.PosixPath):
-                    pytest fixture to create a temporary directory.
-                    Used to pass arguments to the mock_api_request
-                    pytest fixture.
+            tmp_path (pathlib.PosixPath):
+                pytest fixture to create a temporary directory.
+                Used to pass arguments to the mock_api_request
+                pytest fixture.
 
-            Returns:
-                None.
-        """
+        Returns:
+            None.
+    """
 
     # Use pytest.raises to define the expected exception
     with raises(
@@ -426,18 +426,18 @@ def test_get_atmospheric_co2_data(
 ) -> None:
     """ Test the ClimateData._get_atmospheric_co2_data method.
 
-            Args:
-                mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
-                requests_mock (requests_mock.mocker):
-                    Mock HTTP request and response pytest fixture.
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
 
-            Returns:
-                None.
-        """
+        Returns:
+            None.
+    """
 
     # Call the mock_api_request fixture
     mock_api_request(
@@ -465,21 +465,21 @@ def test_get_atmospheric_co2_data_http_error(
         Determine if the method properly raises an HTTPError with a
         mock bad HTTP status code.
 
-            Args:
-                mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
-                requests_mock (requests_mock.mocker):
-                    Mock HTTP request and response pytest fixture.
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
 
-                 tmp_path (pathlib.PosixPath):
-                    pytest fixture to create a temporary directory.
+                tmp_path (pathlib.PosixPath):
+                pytest fixture to create a temporary directory.
 
-            Returns:
-                None.
-        """
+        Returns:
+            None.
+    """
 
     with raises(
         expected_exception=HTTPError
@@ -506,21 +506,21 @@ def test_get_co2_ppm_date_data(
 ) -> None:
     """ Test the ClimateData._get_co2_ppm_date_data method.
 
-            Args:
-                mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
-                requests_mock (requests_mock.mocker):
-                    Mock HTTP request and response pytest fixture.
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
 
-                 tmp_path (pathlib.PosixPath):
-                    pytest fixture to create a temporary directory.
+                tmp_path (pathlib.PosixPath):
+                pytest fixture to create a temporary directory.
 
-            Returns:
-                None.
-        """
+        Returns:
+            None.
+    """
 
     # Call the mock_api_request fixture
     mock_api_request(
@@ -547,20 +547,20 @@ def test_get_co2_yoy_change_data(
 ) -> None:
     """ Test the ClimateData._get_co2_yoy_change_data method.
 
-            Args:
-                mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
-                requests_mock (requests_mock.mocker):
-                    Mock HTTP request and response pytest fixture.
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
 
-                 tmp_path (pathlib.PosixPath):
-                    pytest fixture to create a temporary directory.
-            Returns:
-                None.
-        """
+                tmp_path (pathlib.PosixPath):
+                pytest fixture to create a temporary directory.
+        Returns:
+            None.
+    """
 
     # Call the mock_api_request fixture
     mock_api_request(
@@ -595,22 +595,25 @@ def test_transpose_data_for_graphing(
 ) -> None:
     """ Test the ClimateData.transpose_data_for_graphing method.
 
-            Args:
-                co2_data: (List[List]):
+        Args:
+            co2_data: (List[List]):
+                List of lists with mock Co2 data.
 
-                co2_graphing_data (TransposedData):
+            co2_graphing_data (TransposedData):
+                TransposedData object with mock Co2 data in a graph-
+                compatible format.
 
-                mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
-                requests_mock (requests_mock.mocker):
-                    Mock HTTP request and response pytest fixture.
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
 
-            Returns:
-                None.
-        """
+        Returns:
+            None.
+    """
 
     # Call the mock_api_request fixture
     mock_api_request(
@@ -647,23 +650,23 @@ def test_plot_atmospheric_co2_data(
 ) -> None:
     """ Test the ClimateData.plot_atmospheric_co2_data method.
 
-            Args:
-                html_search_string (List[str]):
-                    Mock Plotly HTML file snippets to search for.
+        Args:
+            html_search_string (List[str]):
+                Mock Plotly HTML file snippets to search for.
 
-                expected_value (List[bool]):
-                    Mock expected boolean return values.
+            expected_value (List[bool]):
+                Mock expected boolean return values.
 
-                mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
-                requests_mock (requests_mock.mocker):
-                    Mock HTTP request and response pytest fixture.
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
 
-            Returns:
-                None.
+        Returns:
+            None.
         """
 
     # Call the mock_api_request fixture
@@ -684,17 +687,27 @@ def test_plot_atmospheric_co2_data(
     return None
 
 
+@patch.object(
+    target=Path,
+    attribute='mkdir'
+)
 def test_write_plot_html_file(
+    mock_mkdir: MagicMock,
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
     """ Test the ClimateData.write_plot_html_file method.
 
         Args:
+            mock_mkdir (unittest.mock.MagicMock):
+                Mock pathlib.Path.mkdir function to prevent creating a
+                new directory with the test_write_plot_html_file
+                function.
+
             mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
                 requests_mock (requests_mock.mocker):
                     Mock HTTP request and response pytest fixture.
@@ -757,18 +770,19 @@ def test_write_plot_html_dir_error(
             None.
     """
 
-    # Call the mock_api_request fixture
-    mock_api_request(
-        requests_mock=requests_mock
-    )
-
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
-
-    # TODO
     with raises(
-        expected_exception=OSError
+        expected_exception=FileExistsError
     ):
+
+        # Call the mock_api_request fixture
+        mock_api_request(
+            requests_mock=requests_mock
+        )
+
+        # Create an instance of the ClimateData.ClimateData class
+        cd = ClimateData()
+
+        # Call the write_plot_html_file method
         cd.write_plot_html_file()
 
     return None
@@ -785,9 +799,9 @@ def test_write_plot_html_file_error(
 
         Args:
             mock_api_request (Callable):
-                    Callable pytest fixture factory function that
-                    allows passing arguments to the _mock_api_request
-                    function.
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
 
                 requests_mock (requests_mock.mocker):
                     Mock HTTP request and response pytest fixture.
@@ -796,18 +810,18 @@ def test_write_plot_html_file_error(
             None.
     """
 
-    # Call the mock_api_request fixture
-    mock_api_request(
-        requests_mock=requests_mock
-    )
-
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
-
-    # TODO
     with raises(
         expected_exception=FileNotFoundError
     ):
+        # Call the mock_api_request fixture
+        mock_api_request(
+            requests_mock=requests_mock
+        )
+
+        # Create an instance of the ClimateData.ClimateData class
+        cd = ClimateData()
+
+        # Call the write_plot_html_file method
         cd.write_plot_html_file()
 
     return None
