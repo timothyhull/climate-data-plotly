@@ -3,6 +3,7 @@
 
 # Data visualization
 kaleido
+nbformat
 pandas
 plotly
 
