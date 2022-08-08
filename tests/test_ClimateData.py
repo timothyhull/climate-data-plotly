@@ -240,7 +240,7 @@ MOCK_HTML_PLOT_SNIPPETS = {
     '* plotly.js v': True,
     f'"{MOCK_HTML_PLOT_INPUTS.get("date_label")}=%{{x}}<br>': True,
     f'{MOCK_HTML_PLOT_INPUTS.get("value_label")}=%{{y}}<extra></extra>"': True,
-    '"title":{"text":"Atmospheric Co2 Levels"}': True,
+    f'"title":{{"text":"{MOCK_HTML_PLOT_INPUTS.get("title")}"}}': True,
     '</body': True,
     '</html>': True,
     '<title>No Plot Content</title>': False,
