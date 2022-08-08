@@ -56,6 +56,18 @@ PLOT_FILE_DEFAULT_HTML = (
     '''
 ).strip()
 PLOT_FILE_PATH = 'plot_files'
+PLOT_RANGE_SELECTOR = {
+    'buttons': [
+        dict(count=1, label='1m', step='month', stepmode='backward'),
+        dict(count=6, label='6m', step='month', stepmode='backward'),
+        dict(count=1, label='YTD', step='year', stepmode='todate'),
+        dict(count=1, label='1y', step='year', stepmode='backward'),
+        dict(count=5, label='5y', step='year', stepmode='backward'),
+        dict(count=10, label='10y', step='year', stepmode='backward'),
+        dict(count=25, label='25y', step='year', stepmode='backward'),
+        dict(step='all')
+    ]
+}
 PPM_UNIT = 'Parts Per Million'
 PPM_YOY_UNIT = 'Percent'
 PYTEST_ENV_VAR = 'PYTEST_CURRENT_TEST'
@@ -80,11 +92,21 @@ class ClimateData:
         # Retrieve atmospheric Co2 levels data
         self.atmospheric_co2_data = self._get_atmospheric_co2_data()
 
-        # Extract atmospheric Co2 PPM and matching data data
+        # Extract atmospheric Co2 PPM per month and matching date data
         self.co2_ppm_date_data = self._get_co2_ppm_date_data()
+
+        # Transpose self.co2_ppm_date_data to graph input data
+        self.transposed_co2_ppm_date_data = self.transpose_data_for_graphing(
+            data=self.co2_ppm_date_data
+        )
 
         # Extract atmospheric Co2 YoY % change and matching data data
         self.co2_yoy_change_data = self._get_co2_yoy_change_data()
+
+        # Transpose self.co2_yoy_change_data to graph input data
+        self.transposed_co2_yoy_change_data = self.transpose_data_for_graphing(
+            data=self.co2_yoy_change_data
+        )
 
         # Initialize Plotly in offline mode
         # Reference: https://plot.ly/python/getting-started
@@ -303,7 +325,6 @@ class ClimateData:
 
                         - transposed_data.values: Tuple of float
                           objects.
-
         """
 
         # Determine if the object class for 'data' is list or dictionary
@@ -364,13 +385,23 @@ class ClimateData:
                 values=transposed_data.values
             ),
             labels=dict(
-                dates=date_label,
-                values=value_label
+                x=date_label,
+                y=value_label
             ),
             markers=True,
             title=title,
-            x='dates',
-            y='values'
+            x=transposed_data.dates,
+            y=transposed_data.values,
+            range_x=[
+                transposed_data.dates[0],
+                transposed_data.dates[-1],
+            ]
+        )
+
+        # Add a slider to pan and zoom the x-axis
+        line_graph.update_xaxes(
+            rangeslider_visible=True,
+            rangeselector=PLOT_RANGE_SELECTOR
         )
 
         # Create HTML content for a plot file
