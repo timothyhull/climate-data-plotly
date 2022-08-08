@@ -3,6 +3,11 @@
         "arcgis",
         "ECNCIC",
         "nosborn",
-        "Qsnb"
+        "Qsnb",
+        "rangeselector",
+        "rangeslider",
+        "stepmode",
+        "todate",
+        "xaxes"
     ]
 }
