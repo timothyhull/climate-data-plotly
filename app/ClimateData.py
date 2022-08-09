@@ -348,6 +348,7 @@ class ClimateData:
     def plot_atmospheric_co2_data(
         self,
         transposed_data: TransposedData[Tuple[datetime], Tuple[float]],
+        line_graph: bool = True,
         date_label: str = PLOT_DATE_LABEL,
         value_label: str = PLOT_VALUE_LABEL,
         title: str = PLOT_TITLE
@@ -364,6 +365,12 @@ class ClimateData:
                     properties with values for the X and Y axises
                     respectively.
 
+                line_graph (bool, optional):
+                    Specifies whether the plot will be a line graph
+                    or not.  When True, the plot will be a line graph.
+                    When False, the plot will be a bar graph.  Default
+                    is True.
+
                 date_label (str, optional):
                     Label of plot y-axis.  Default is PLOT_DATE_LABEL.
 
@@ -378,36 +385,51 @@ class ClimateData:
                     HTML content for a line graph file.
         """
 
-        # Create a line graph
-        line_graph = px.line(
+        # Make sure the line_graph variable is a boolean value
+        if not isinstance(line_graph, bool):
+            line_graph = True
+
+        # Create a dictionary of arguments for the graph object
+        graph_args = dict(
             data_frame=dict(
                 dates=transposed_data.dates,
                 values=transposed_data.values
-            ),
+            ).index,
             labels=dict(
                 x=date_label,
                 y=value_label
             ),
-            markers=True,
-            title=title,
-            x=transposed_data.dates,
-            y=transposed_data.values,
             range_x=[
                 transposed_data.dates[0],
                 transposed_data.dates[-1],
-            ]
+            ],
+            title=title,
+            x=transposed_data.dates,
+            y=transposed_data.values
         )
 
+        # Create a line or bar graph
+        if line_graph is True:
+            graph = px.line(
+                **graph_args,
+                markers=True
+            )
+
+        else:
+            graph = px.bar(
+                **graph_args
+            )
+
         # Add a slider to pan and zoom the x-axis
-        line_graph.update_xaxes(
+        graph.update_xaxes(
             rangeslider_visible=True,
             rangeselector=PLOT_RANGE_SELECTOR
         )
 
         # Create HTML content for a plot file
-        line_graph_html = line_graph.to_html()
+        graph_html = graph.to_html()
 
-        return line_graph_html
+        return graph_html
 
     def write_plot_html_file(
         self,
