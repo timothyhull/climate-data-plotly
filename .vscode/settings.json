@@ -4,10 +4,16 @@
         "ECNCIC",
         "nosborn",
         "Qsnb",
+        "rangemode",
         "rangeselector",
         "rangeslider",
         "stepmode",
         "todate",
-        "xaxes"
+        "tozero",
+        "xaxes",
+        "yaxes",
+        "zeroline",
+        "zerolinecolor",
+        "zerolinewidth"
     ]
 }
