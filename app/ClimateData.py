@@ -351,7 +351,8 @@ class ClimateData:
         line_graph: bool = True,
         date_label: str = PLOT_DATE_LABEL,
         value_label: str = PLOT_VALUE_LABEL,
-        title: str = PLOT_TITLE
+        title: str = PLOT_TITLE,
+        compress_y_axis: bool = False
     ) -> str:
         """ Display atmospheric Co2 Data using Plotly Express.
 
@@ -380,6 +381,14 @@ class ClimateData:
                 title (str, optional):
                     Title of plot. Default is PLOT_TITLE.
 
+                compress_y_axis (str, optional):
+                    Determine whether the y-axis starts at 0, which
+                    displays well with PPM data although poorly with
+                    YOY data.  When True, compresses the y-axis range
+                    to 95% of the first value of the y-axis data,
+                    and 100.5% of the last value in the y-axis data.
+                    Default is False.
+
             Returns:
                 line_graph_html (str):
                     HTML content for a line graph file.
@@ -389,20 +398,24 @@ class ClimateData:
         if not isinstance(line_graph, bool):
             line_graph = True
 
+        # Set default range values for the x and y-axises
+        range_x = [
+            transposed_data.dates[0],
+            transposed_data.dates[-1]
+        ]
+
         # Create a dictionary of arguments for the graph object
         graph_args = dict(
             data_frame=dict(
                 dates=transposed_data.dates,
                 values=transposed_data.values
-            ).index,
+            ),
             labels=dict(
                 x=date_label,
                 y=value_label
             ),
-            range_x=[
-                transposed_data.dates[0],
-                transposed_data.dates[-1],
-            ],
+            range_x=range_x,
+            # range_y=range_y,
             title=title,
             x=transposed_data.dates,
             y=transposed_data.values
@@ -420,10 +433,34 @@ class ClimateData:
                 **graph_args
             )
 
-        # Add a slider to pan and zoom the x-axis
+        # x-axis modifiers
         graph.update_xaxes(
+            # Add a slider to pan and zoom the x-axis
             rangeslider_visible=True,
-            rangeselector=PLOT_RANGE_SELECTOR
+            rangeselector=PLOT_RANGE_SELECTOR,
+            rangeslider_range=range_x
+        )
+
+        # Adjust y-axis range values based on the value of compress_y_axis
+        if compress_y_axis is True:
+            range = dict(
+                range=[
+                    transposed_data.values[0] * .95,
+                    transposed_data.values[-1] * 1.05,
+                ]
+            )
+        else:
+            range = dict()
+
+        # y-axis modifiers
+        graph.update_yaxes(
+            # Set a dynamic axis numeric range
+            **range,
+
+            # Format the zero line
+            zeroline=True,
+            zerolinecolor='#F00',
+            zerolinewidth=2
         )
 
         # Create HTML content for a plot file
