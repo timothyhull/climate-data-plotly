@@ -13,6 +13,7 @@ from plotly.offline import init_notebook_mode
 from requests import get
 from requests.exceptions import HTTPError
 import plotly.express as px
+import plotly.graph_objects as go
 
 # Imports - Local
 
@@ -345,7 +346,7 @@ class ClimateData:
 
         return transposed_data
 
-    def plot_atmospheric_co2_data(
+    def plot_atmospheric_co2_data_px(
         self,
         transposed_data: TransposedData[Tuple[datetime], Tuple[float]],
         line_graph: bool = True,
@@ -430,6 +431,129 @@ class ClimateData:
 
         else:
             graph = px.bar(
+                **graph_args
+            )
+
+        # x-axis modifiers
+        graph.update_xaxes(
+            # Add a slider to pan and zoom the x-axis
+            rangeslider_visible=True,
+            rangeselector=PLOT_RANGE_SELECTOR,
+            rangeslider_range=range_x
+        )
+
+        # Adjust y-axis range values based on the value of compress_y_axis
+        if compress_y_axis is True:
+            range = dict(
+                range=[
+                    transposed_data.values[0] * .95,
+                    transposed_data.values[-1] * 1.05,
+                ]
+            )
+        else:
+            range = dict()
+
+        # y-axis modifiers
+        graph.update_yaxes(
+            # Set a dynamic axis numeric range
+            **range,
+
+            # Format the zero line
+            zeroline=True,
+            zerolinecolor='#F00',
+            zerolinewidth=2
+        )
+
+        # Create HTML content for a plot file
+        graph_html = graph.to_html()
+
+        return graph_html
+
+    def plot_atmospheric_co2_data_go(
+        self,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]],
+        line_graph: bool = True,
+        date_label: str = PLOT_DATE_LABEL,
+        value_label: str = PLOT_VALUE_LABEL,
+        title: str = PLOT_TITLE,
+        compress_y_axis: bool = False
+    ) -> str:
+        """ Display atmospheric Co2 Data using Plotly Graph Objects.
+
+            Renders the self.atmospheric_co2_data in a graph.
+
+            Args:
+                transposed_data(
+                    TransposedData[Tuple[datetime], Tuple[float]]
+                ):
+                    TransposedData object with 'dates' and 'values
+                    properties with values for the X and Y axises
+                    respectively.
+
+                line_graph (bool, optional):
+                    Specifies whether the plot will be a line graph
+                    or not.  When True, the plot will be a line graph.
+                    When False, the plot will be a bar graph.  Default
+                    is True.
+
+                date_label (str, optional):
+                    Label of plot y-axis.  Default is PLOT_DATE_LABEL.
+
+                value_label (str, optional):
+                    Label of plot y-axis.  Default is PLOT_VALUE_LABEL.
+
+                title (str, optional):
+                    Title of plot. Default is PLOT_TITLE.
+
+                compress_y_axis (str, optional):
+                    Determine whether the y-axis starts at 0, which
+                    displays well with PPM data although poorly with
+                    YOY data.  When True, compresses the y-axis range
+                    to 95% of the first value of the y-axis data,
+                    and 100.5% of the last value in the y-axis data.
+                    Default is False.
+
+            Returns:
+                line_graph_html (str):
+                    HTML content for a line graph file.
+        """
+
+        # Make sure the line_graph variable is a boolean value
+        if not isinstance(line_graph, bool):
+            line_graph = True
+
+        # Set default range values for the x and y-axises
+        range_x = [
+            transposed_data.dates[0],
+            transposed_data.dates[-1]
+        ]
+
+        # Create a dictionary of arguments for the graph object
+        graph_args = dict(
+            data_frame=dict(
+                dates=transposed_data.dates,
+                values=transposed_data.values
+            ),
+            labels=dict(
+                x=date_label,
+                y=value_label
+            ),
+            range_x=range_x,
+            # range_y=range_y,
+            title=title,
+            x=transposed_data.dates,
+            y=transposed_data.values
+        )
+
+        # Create a line or bar graph
+        if line_graph is True:
+            graph = go.Line(
+                **graph_args,
+                markers=True
+            )
+
+        else:
+            graph = go.Bar(
                 **graph_args
             )
 
