@@ -272,7 +272,7 @@ def go_yoy_line(
     return None
 
 
-def graph_all_px() -> None:
+def px_graph_all() -> None:
     """ Run all Plotly Express (px) graph-generating functions.
 
         Args:
@@ -317,7 +317,7 @@ def graph_all_px() -> None:
     return None
 
 
-def graph_all_go() -> None:
+def go_graph_all() -> None:
     """ Run all Plotly Graph Object (go) graph-generating functions.
 
         Args:
