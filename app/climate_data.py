@@ -10,10 +10,16 @@ from ClimateData import ClimateData
 
 # Constants
 FILE_SUFFIX = '.html'
-PPM_BAR_FILE_NAME = 'ppm_bar_plot_1a'
-PPM_LINE_FILE_NAME = 'ppm_line_plot_1a'
-YOY_BAR_FILE_NAME = 'yoy_bar_plot_1a'
-YOY_LINE_FILE_NAME = 'yoy_line_plot_1a'
+# Plotly Express (px) file names
+PX_PPM_BAR_FILE_NAME = 'px_ppm_bar_plot_1a'
+PX_PPM_LINE_FILE_NAME = 'px_ppm_line_plot_1a'
+PX_YOY_BAR_FILE_NAME = 'px_yoy_bar_plot_1a'
+PX_YOY_LINE_FILE_NAME = 'px_yoy_line_plot_1a'
+# Plotly Graph Objects (go) file names
+GO_PPM_BAR_FILE_NAME = 'go_ppm_bar_plot_1a'
+GO_PPM_LINE_FILE_NAME = 'go_ppm_line_plot_1a'
+GO_YOY_BAR_FILE_NAME = 'go_yoy_bar_plot_1a'
+GO_YOY_LINE_FILE_NAME = 'go_yoy_line_plot_1a'
 PPM_PLOT_LABELS = dict(
     date_label='Dates',
     compress_y_axis=True,
@@ -28,12 +34,13 @@ YOY_PLOT_LABELS = dict(
 )
 
 
-def ppm_bar(
+# Plotly Express (px) functions
+def px_ppm_bar(
     climate_data: ClimateData
 ) -> None:
     """ Generate a bar graph HTML file of atmospheric Co2 data.
 
-        Monthly Co2 level in PPM.
+        Monthly Co2 level in PPM using Plotly Express (px).
 
         Args:
             climate_data (ClimateData):
@@ -43,7 +50,7 @@ def ppm_bar(
             None.
     """
 
-    plot_data = climate_data.plot_atmospheric_co2_data(
+    px_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
         line_graph=False,
         **PPM_PLOT_LABELS
@@ -51,17 +58,19 @@ def ppm_bar(
 
     # Write climate data to a file
     climate_data.write_plot_html_file(
-        PPM_BAR_FILE_NAME, plot_data)
+        file_name=PX_PPM_BAR_FILE_NAME,
+        file_content=px_plot_data
+    )
 
     return None
 
 
-def ppm_line(
+def px_ppm_line(
     climate_data: ClimateData
 ) -> None:
     """ Generate a line graph HTML file of atmospheric Co2 data.
 
-        Monthly Co2 level in PPM.
+        Monthly Co2 level in PPM using Plotly Express (px).
 
         Args:
             climate_data (ClimateData):
@@ -71,7 +80,7 @@ def ppm_line(
             None.
     """
 
-    plot_data = climate_data.plot_atmospheric_co2_data(
+    px_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
         line_graph=True,
         **PPM_PLOT_LABELS
@@ -79,17 +88,17 @@ def ppm_line(
 
     # Write climate data to a file
     climate_data.write_plot_html_file(
-        PPM_LINE_FILE_NAME, plot_data)
+        PX_PPM_LINE_FILE_NAME, px_plot_data)
 
     return None
 
 
-def yoy_bar(
+def px_yoy_bar(
     climate_data: ClimateData
 ) -> None:
     """ Generate a bar graph HTML file of atmospheric Co2 data.
 
-        Monthly Co2 level year over year change.
+        Monthly Co2 level year over year change using Plotly Express (px).
 
         Args:
             climate_data (ClimateData):
@@ -99,7 +108,7 @@ def yoy_bar(
             None.
     """
 
-    plot_data = climate_data.plot_atmospheric_co2_data(
+    px_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
         line_graph=False,
         **YOY_PLOT_LABELS
@@ -107,17 +116,19 @@ def yoy_bar(
 
     # Write climate data to a file
     climate_data.write_plot_html_file(
-        YOY_BAR_FILE_NAME, plot_data)
+        file_name=PX_YOY_BAR_FILE_NAME,
+        file_content=px_plot_data
+    )
 
     return None
 
 
-def yoy_line(
+def px_yoy_line(
     climate_data: ClimateData
 ) -> None:
     """ Generate a line graph HTML file of atmospheric Co2 data.
 
-        Monthly Co2 level year over year change.
+        Monthly Co2 level year over year change using Plotly Express (px).
 
         Args:
             climate_data (ClimateData):
@@ -127,7 +138,7 @@ def yoy_line(
             None.
     """
 
-    plot_data = climate_data.plot_atmospheric_co2_data(
+    px_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
         line_graph=True,
         **YOY_PLOT_LABELS
@@ -135,13 +146,134 @@ def yoy_line(
 
     # Write climate data to a file
     climate_data.write_plot_html_file(
-        YOY_LINE_FILE_NAME, plot_data)
+        file_name=PX_YOY_LINE_FILE_NAME,
+        file_content=px_plot_data
+    )
 
     return None
 
 
-def graph_all() -> None:
-    """ Run all graph-generating functions.
+# Plotly Express (px) functions
+def go_ppm_bar(
+    climate_data: ClimateData
+) -> None:
+    """ Generate a bar graph HTML file of atmospheric Co2 data.
+
+        Monthly Co2 level in PPM using Plotly Graph Objects.
+
+        Args:
+            climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
+
+        Returns:
+            None.
+    """
+
+    px_plot_data = climate_data.plot_atmospheric_co2_data_px(
+        transposed_data=climate_data.transposed_co2_ppm_date_data,
+        line_graph=False,
+        **PPM_PLOT_LABELS
+    )
+
+    # Write climate data to a file
+    climate_data.write_plot_html_file(
+        file_name=PX_PPM_BAR_FILE_NAME,
+        file_content=px_plot_data
+    )
+
+    return None
+
+
+def go_ppm_line(
+    climate_data: ClimateData
+) -> None:
+    """ Generate a line graph HTML file of atmospheric Co2 data.
+
+        Monthly Co2 level in PPM  using Plotly Graph Objects.
+
+        Args:
+            climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
+
+        Returns:
+            None.
+    """
+
+    go_plot_data = climate_data.plot_atmospheric_co2_data_go(
+        transposed_data=climate_data.transposed_co2_ppm_date_data,
+        line_graph=True,
+        **PPM_PLOT_LABELS
+    )
+
+    # Write climate data to a file
+    climate_data.write_plot_html_file(
+        GO_PPM_LINE_FILE_NAME, go_plot_data)
+
+    return None
+
+
+def go_yoy_bar(
+    climate_data: ClimateData
+) -> None:
+    """ Generate a bar graph HTML file of atmospheric Co2 data.
+
+        Monthly Co2 level year over year change using Plotly Graph Objects.
+
+        Args:
+            climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
+
+        Returns:
+            None.
+    """
+
+    go_plot_data = climate_data.plot_atmospheric_co2_data_go(
+        transposed_data=climate_data.transposed_co2_yoy_change_data,
+        line_graph=False,
+        **YOY_PLOT_LABELS
+    )
+
+    # Write climate data to a file
+    climate_data.write_plot_html_file(
+        file_name=GO_YOY_BAR_FILE_NAME,
+        file_content=go_plot_data
+    )
+
+    return None
+
+
+def go_yoy_line(
+    climate_data: ClimateData
+) -> None:
+    """ Generate a line graph HTML file of atmospheric Co2 data.
+
+        Monthly Co2 level year over year change  using Plotly Graph Objects.
+
+        Args:
+            climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
+
+        Returns:
+            None.
+    """
+
+    go_plot_data = climate_data.plot_atmospheric_co2_data_go(
+        transposed_data=climate_data.transposed_co2_yoy_change_data,
+        line_graph=True,
+        **YOY_PLOT_LABELS
+    )
+
+    # Write climate data to a file
+    climate_data.write_plot_html_file(
+        file_name=GO_YOY_LINE_FILE_NAME,
+        file_content=go_plot_data
+    )
+
+    return None
+
+
+def graph_all_px() -> None:
+    """ Run all Plotly Express (px) graph-generating functions.
 
         Args:
             None.
@@ -151,36 +283,83 @@ def graph_all() -> None:
     """
 
     # Generate a PPM bar graph
-    ppm_bar(
+    px_ppm_bar(
         climate_data=climate_data
     )
     print(
-        f'\nGenerated the file {PPM_BAR_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_PPM_BAR_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
     # Generate a PPM line graph
-    ppm_line(
+    px_ppm_line(
         climate_data=climate_data
     )
     print(
-        f'\nGenerated the file {PPM_LINE_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_PPM_LINE_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
     # Generate a YOY bar graph
-    yoy_bar(
+    px_yoy_bar(
         climate_data=climate_data
     )
     print(
-        f'\nGenerated the file {YOY_BAR_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_YOY_BAR_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
     # Generate a YOY line graph
-    yoy_line(
+    px_yoy_line(
         climate_data=climate_data
     )
     print(
-        f'\nGenerated the file {YOY_LINE_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_YOY_LINE_FILE_NAME}{FILE_SUFFIX}\n'
     )
+
+    return None
+
+
+def graph_all_go() -> None:
+    """ Run all Plotly Graph Object (go) graph-generating functions.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+    """
+
+    # Generate a PPM bar graph
+    go_ppm_bar(
+        climate_data=climate_data
+    )
+    print(
+        f'\nGenerated the file {GO_PPM_BAR_FILE_NAME}{FILE_SUFFIX}\n'
+    )
+
+    # Generate a PPM line graph
+    go_ppm_line(
+        climate_data=climate_data
+    )
+    print(
+        f'\nGenerated the file {GO_PPM_LINE_FILE_NAME}{FILE_SUFFIX}\n'
+    )
+
+    # Generate a YOY bar graph
+    go_yoy_bar(
+        climate_data=climate_data
+    )
+    print(
+        f'\nGenerated the file {GO_YOY_BAR_FILE_NAME}{FILE_SUFFIX}\n'
+    )
+
+    # Generate a YOY line graph
+    go_yoy_line(
+        climate_data=climate_data
+    )
+    print(
+        f'\nGenerated the file {GO_YOY_LINE_FILE_NAME}{FILE_SUFFIX}\n'
+    )
+
+    return None
 
 
 def main() -> ClimateData:
