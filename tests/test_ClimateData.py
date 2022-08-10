@@ -643,7 +643,7 @@ def test_transpose_data_for_graphing(
     ],
     argvalues=list(MOCK_HTML_PLOT_SNIPPETS.items()),
 )
-def test_plot_atmospheric_co2_data(
+def test_plot_atmospheric_co2_data_px(
     html_search_string: List[str],
     expected_value: List[bool],
     mock_api_request: Callable,
@@ -679,7 +679,7 @@ def test_plot_atmospheric_co2_data(
     cd = ClimateData()
 
     # Call the plot_atmospheric_co2_data method
-    mock_response = cd.plot_atmospheric_co2_data(
+    mock_response = cd.plot_atmospheric_co2_data_px(
         **MOCK_HTML_PLOT_INPUTS
     )
 
