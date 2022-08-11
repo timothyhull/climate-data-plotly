@@ -169,7 +169,7 @@ def go_ppm_bar(
             None.
     """
 
-    px_plot_data = climate_data.plot_atmospheric_co2_data_px(
+    go_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
         line_graph=False,
         **PPM_PLOT_LABELS
@@ -177,8 +177,8 @@ def go_ppm_bar(
 
     # Write climate data to a file
     climate_data.write_plot_html_file(
-        file_name=PX_PPM_BAR_FILE_NAME,
-        file_content=px_plot_data
+        file_name=GO_PPM_BAR_FILE_NAME,
+        file_content=go_plot_data
     )
 
     return None
