@@ -422,14 +422,16 @@ class ClimateData:
             y=transposed_data.values
         )
 
-        # Create a line or bar graph
+        # Create a line graph
         if line_graph is True:
             graph = px.line(
                 **graph_args,
                 markers=True
             )
 
+        # Create a bar graph
         else:
+            # Create a bar graph
             graph = px.bar(
                 **graph_args
             )
@@ -530,32 +532,49 @@ class ClimateData:
 
         # Create a dictionary of arguments for the graph object
         graph_args = dict(
-            data_frame=dict(
-                dates=transposed_data.dates,
-                values=transposed_data.values
-            ),
-            labels=dict(
-                x=date_label,
-                y=value_label
-            ),
-            range_x=range_x,
-            # range_y=range_y,
-            title=title,
+            mode='lines',
+            name='Co2 (PPM)',
             x=transposed_data.dates,
             y=transposed_data.values
         )
 
-        # Create a line or bar graph
+        # Create a dictionary of arguments for graph layout options
+        layout_args = dict(
+            showlegend=True,
+            title=title,
+            xaxis_title=date_label,
+            yaxis_title=value_label
+        )
+
+        # Create a go.Figure object
+        graph = go.Figure()
+
+        # Create a line graph
         if line_graph is True:
-            graph = go.Line(
-                **graph_args,
-                markers=True
+
+            # Add a line trace to the figure object
+            graph.add_trace(
+                go.Scatter(
+                    **graph_args
+                )
             )
 
+        # Create a bar graph
         else:
-            graph = go.Bar(
-                **graph_args
+            # Remove the mode key from graph_args
+            del graph_args['mode']
+
+            # Create a bar graph
+            graph.add_trace(
+                go.Bar(
+                    **graph_args
+                )
             )
+
+        # Update the graph layout
+        graph.update_layout(
+            **layout_args
+        )
 
         # x-axis modifiers
         graph.update_xaxes(
