@@ -38,6 +38,7 @@ ATMOSPHERIC_CO2_URL = (
 )
 DIR_CREATE_ERROR_MSG = '** Unable to create a directory for file storage **'
 FILE_WRITE_ERROR_MSG = '** Unable to write file to disk **'
+GO_LINE_GRAPH_MODE = 'lines+markers'
 PLOT_DATE_LABEL = 'Dates'
 PLOT_VALUE_LABEL = 'Values'
 PLOT_TITLE = 'Atmospheric Co2 Data'
@@ -532,8 +533,8 @@ class ClimateData:
 
         # Create a dictionary of arguments for the graph object
         graph_args = dict(
-            mode='lines',
-            name='Co2 (PPM)',
+            mode=GO_LINE_GRAPH_MODE,
+            name=value_label,
             x=transposed_data.dates,
             y=transposed_data.values
         )
