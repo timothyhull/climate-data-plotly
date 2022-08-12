@@ -23,14 +23,14 @@ GO_YOY_LINE_FILE_NAME = 'go_yoy_line_plot_1a'
 PPM_PLOT_LABELS = dict(
     date_label='Dates',
     compress_y_axis=True,
-    title='Monthly Atmospheric Co2 PPM Levels Over Time',
+    title='Monthly Atmospheric Co2 PPM Levels History',
     value_label='Atmospheric Co2 PPM'
 )
 YOY_PLOT_LABELS = dict(
     date_label='Dates',
     compress_y_axis=False,
-    title='Monthly Atmospheric Co2 PPM Levels Over Time',
-    value_label='Atmospheric Co2 PPM'
+    title='YoY Monthly Atmospheric Co2 Delta % History',
+    value_label='YoY PPM Delta %'
 )
 
 
