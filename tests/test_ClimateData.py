@@ -17,7 +17,7 @@ import requests_mock
 
 # Imports - Local
 from app.ClimateData import (
-    ATMOSPHERIC_CO2_URL, ClimateData, TransposedData
+    ATMOSPHERIC_CO2_URL, ClimateData, TransposedData, PlotProperties
 )
 
 # Constants
@@ -228,19 +228,36 @@ MOCK_CO2_GRAPH_DATA = zip(
     MOCK_CO2_GRAPH_INPUT,
     MOCK_CO2_GRAPH_OUTPUT
 )
-MOCK_HTML_PLOT_INPUTS = {
-    'transposed_data': MOCK_CO2_PPM_GRAPH_DATA,
-    'date_label': 'Dates',
-    'value_label': 'Atmospheric Co2 PPM',
-    'title': 'Atmospheric Co2 Levels',
-}
-MOCK_HTML_PLOT_SNIPPETS = {
+MOCK_HTML_PLOT_PROPERTIES_PX = dict(
+    date_label='Dates',
+    value_label='Atmospheric Co2 PPM',
+    title='Atmospheric Co2 Levels'
+)
+MOCK_HTML_PLOT_SNIPPETS_PX = {
     '<html>': True,
     'window.PlotlyConfig = {MathJaxConfig: \'local\'};</script>': True,
     '* plotly.js v': True,
-    f'"{MOCK_HTML_PLOT_INPUTS.get("date_label")}=%{{x}}<br>': True,
-    f'{MOCK_HTML_PLOT_INPUTS.get("value_label")}=%{{y}}<extra></extra>"': True,
-    f'"title":{{"text":"{MOCK_HTML_PLOT_INPUTS.get("title")}"}}': True,
+    f'"{MOCK_HTML_PLOT_PROPERTIES_PX.get("date_label")}=%{{x}}<br>': True,
+    f'{MOCK_HTML_PLOT_PROPERTIES_PX.get("value_label")}=%{{y}}<extra>': True,
+    f'"title":{{"text":"{MOCK_HTML_PLOT_PROPERTIES_PX.get("title")}"}}': True,
+    '</body': True,
+    '</html>': True,
+    '<title>No Plot Content</title>': False,
+    '<h1>This plot file contains no content.</h1>': False,
+    '<h2>The \'file_content\' parameter accepts HTML content</h2>': False,
+}
+MOCK_HTML_PLOT_PROPERTIES_GO = dict(
+    date_label='Dates',
+    value_label='Atmospheric YOY % Change',
+    title='Atmospheric YOY % Change Levels'
+)
+MOCK_HTML_PLOT_SNIPPETS_GO = {
+    '<html>': True,
+    'window.PlotlyConfig = {MathJaxConfig: \'local\'};</script>': True,
+    '* plotly.js v': True,
+    f'{{"text":"{MOCK_HTML_PLOT_PROPERTIES_GO.get("date_label")}"}},"ra': True,
+    f'"name":"{MOCK_HTML_PLOT_PROPERTIES_GO.get("value_label")}","x":[': True,
+    f'":{{"text":"{MOCK_HTML_PLOT_PROPERTIES_GO.get("title")}"}},"xaxis': True,
     '</body': True,
     '</html>': True,
     '<title>No Plot Content</title>': False,
@@ -641,7 +658,7 @@ def test_transpose_data_for_graphing(
         'html_search_string',
         'expected_value'
     ],
-    argvalues=list(MOCK_HTML_PLOT_SNIPPETS.items()),
+    argvalues=list(MOCK_HTML_PLOT_SNIPPETS_PX.items()),
 )
 def test_plot_atmospheric_co2_data_px(
     html_search_string: List[str],
@@ -678,9 +695,67 @@ def test_plot_atmospheric_co2_data_px(
     # Create an instance of the ClimateData.ClimateData class
     cd = ClimateData()
 
-    # Call the plot_atmospheric_co2_data method
+    # Call the plot_atmospheric_co2_data_px method
     mock_response = cd.plot_atmospheric_co2_data_px(
-        **MOCK_HTML_PLOT_INPUTS
+        transposed_data=MOCK_CO2_PPM_GRAPH_DATA,
+        plot_properties=PlotProperties(
+            **MOCK_HTML_PLOT_PROPERTIES_PX
+        )
+    )
+
+    assert (html_search_string in mock_response) is expected_value
+
+    return None
+
+
+@mark.parametrize(
+    argnames=[
+        'html_search_string',
+        'expected_value'
+    ],
+    argvalues=list(MOCK_HTML_PLOT_SNIPPETS_GO.items()),
+)
+def test_plot_atmospheric_co2_data_go(
+    html_search_string: List[str],
+    expected_value: List[bool],
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
+) -> None:
+    """ Test the ClimateData.plot_atmospheric_co2_data method.
+
+        Args:
+            html_search_string (List[str]):
+                Mock Plotly HTML file snippets to search for.
+
+            expected_value (List[bool]):
+                Mock expected boolean return values.
+
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+        Returns:
+            None.
+        """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # Call the plot_atmospheric_co2_data_go method
+    mock_response = cd.plot_atmospheric_co2_data_go(
+        transposed_data=MOCK_CO2_PPM_GRAPH_DATA,
+        plot_properties=PlotProperties(
+            **MOCK_HTML_PLOT_PROPERTIES_GO
+        )
     )
 
     assert (html_search_string in mock_response) is expected_value
