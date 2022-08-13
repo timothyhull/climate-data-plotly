@@ -6,7 +6,7 @@
 # Imports - Third-Party
 
 # Imports - Local
-from ClimateData import ClimateData
+from ClimateData import ClimateData, PlotProperties
 
 # Constants
 FILE_SUFFIX = '.html'
@@ -20,17 +20,17 @@ GO_PPM_BAR_FILE_NAME = 'go_ppm_bar_plot_1a'
 GO_PPM_LINE_FILE_NAME = 'go_ppm_line_plot_1a'
 GO_YOY_BAR_FILE_NAME = 'go_yoy_bar_plot_1a'
 GO_YOY_LINE_FILE_NAME = 'go_yoy_line_plot_1a'
-PPM_PLOT_LABELS = dict(
+PPM_PLOT_PROPERTIES = dict(
     date_label='Dates',
-    compress_y_axis=True,
+    value_label='Atmospheric Co2 PPM',
     title='Monthly Atmospheric Co2 PPM Levels History',
-    value_label='Atmospheric Co2 PPM'
+    compress_y_axis=True
 )
-YOY_PLOT_LABELS = dict(
+YOY_PLOT_PROPERTIES = dict(
     date_label='Dates',
-    compress_y_axis=False,
+    value_label='YoY PPM Delta %',
     title='YoY Monthly Atmospheric Co2 Delta % History',
-    value_label='YoY PPM Delta %'
+    compress_y_axis=False
 )
 
 
@@ -50,10 +50,16 @@ def px_ppm_bar(
             None.
     """
 
+    # Create a PlotProperties object with a graph type
+    plot_properties = PlotProperties(
+        line_graph=False,
+        **PPM_PLOT_PROPERTIES
+    )
+
+    # Call the climate_data.plot_atmospheric_co2_data_px method
     px_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
-        line_graph=False,
-        **PPM_PLOT_LABELS
+        plot_properties=plot_properties
     )
 
     # Write climate data to a file
@@ -80,10 +86,16 @@ def px_ppm_line(
             None.
     """
 
+    # Create a PlotProperties object with a graph type
+    plot_properties = PlotProperties(
+        line_graph=False,
+        **PPM_PLOT_PROPERTIES
+    )
+
+    # Call the climate_data.plot_atmospheric_co2_data_px method
     px_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
-        line_graph=True,
-        **PPM_PLOT_LABELS
+        plot_properties=plot_properties
     )
 
     # Write climate data to a file
@@ -108,10 +120,16 @@ def px_yoy_bar(
             None.
     """
 
+    # Create a PlotProperties object with a graph type
+    plot_properties = PlotProperties(
+        line_graph=False,
+        **PPM_PLOT_PROPERTIES
+    )
+
+    # Call the climate_data.plot_atmospheric_co2_data_px method
     px_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
-        line_graph=False,
-        **YOY_PLOT_LABELS
+        plot_properties=plot_properties
     )
 
     # Write climate data to a file
@@ -138,10 +156,16 @@ def px_yoy_line(
             None.
     """
 
+    # Create a PlotProperties object with a graph type
+    plot_properties = PlotProperties(
+        line_graph=False,
+        **PPM_PLOT_PROPERTIES
+    )
+
+    # Call the climate_data.plot_atmospheric_co2_data_px method
     px_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
-        line_graph=True,
-        **YOY_PLOT_LABELS
+        plot_properties=plot_properties
     )
 
     # Write climate data to a file
@@ -169,10 +193,16 @@ def go_ppm_bar(
             None.
     """
 
+    # Create a PlotProperties object with a graph type
+    plot_properties = PlotProperties(
+        line_graph=False,
+        **YOY_PLOT_PROPERTIES
+    )
+
+    # Call the climate_data.plot_atmospheric_co2_data_px method
     go_plot_data = climate_data.plot_atmospheric_co2_data_px(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
-        line_graph=False,
-        **PPM_PLOT_LABELS
+        plot_properties=plot_properties
     )
 
     # Write climate data to a file
@@ -199,10 +229,16 @@ def go_ppm_line(
             None.
     """
 
+    # Create a PlotProperties object with a graph type
+    plot_properties = PlotProperties(
+        line_graph=False,
+        **YOY_PLOT_PROPERTIES
+    )
+
+    # Call the climate_data.plot_atmospheric_co2_data_px method
     go_plot_data = climate_data.plot_atmospheric_co2_data_go(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
-        line_graph=True,
-        **PPM_PLOT_LABELS
+        plot_properties=plot_properties
     )
 
     # Write climate data to a file
@@ -227,10 +263,17 @@ def go_yoy_bar(
             None.
     """
 
+    # Create a PlotProperties object with a graph type
+    plot_properties = PlotProperties(
+        line_graph=False,
+        **YOY_PLOT_PROPERTIES
+    )
+
+    # Call the climate_data.plot_atmospheric_co2_data_px method
     go_plot_data = climate_data.plot_atmospheric_co2_data_go(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
         line_graph=False,
-        **YOY_PLOT_LABELS
+        plot_properties=plot_properties
     )
 
     # Write climate data to a file
@@ -257,10 +300,17 @@ def go_yoy_line(
             None.
     """
 
+    # Create a PlotProperties object with a graph type
+    plot_properties = PlotProperties(
+        line_graph=False,
+        **YOY_PLOT_PROPERTIES
+    )
+
+    # Call the climate_data.plot_atmospheric_co2_data_px method
     go_plot_data = climate_data.plot_atmospheric_co2_data_go(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
         line_graph=True,
-        **YOY_PLOT_LABELS
+        plot_properties=plot_properties
     )
 
     # Write climate data to a file
