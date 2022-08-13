@@ -6,7 +6,7 @@ from collections import namedtuple
 from datetime import datetime
 from os import environ, path
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, NamedTuple, Tuple, Union
 
 # Imports - Third-Party
 from plotly.offline import init_notebook_mode
@@ -76,6 +76,47 @@ PYTEST_ENV_VAR = 'PYTEST_CURRENT_TEST'
 PYTEST_WRITE_PLOT_HTML_DIR_FUNC = 'test_write_plot_html_dir_error'
 PYTEST_WRITE_PLOT_HTML_FILE_FUNC = 'test_write_plot_html_file_error'
 SRTPTIME_FORMAT = '%YM%m'
+
+
+# NamedTuple objects
+class PlotProperties(NamedTuple):
+    """ Properties for formatting a graphed plot.
+
+        Typed version of the collections.namedtuple object with
+        field names and default values.
+
+        Field Names and Default Values:
+
+            line_graph (bool, optional):
+                Specifies whether the plot will be a line graph
+                or not.  When True, the plot will be a line graph.
+                When False, the plot will be a bar graph.  Default
+                is True.
+
+            date_label (str, optional):
+                Label of plot y-axis.  Default is PLOT_DATE_LABEL.
+
+            value_label (str, optional):
+                Label of plot y-axis.  Default is PLOT_VALUE_LABEL.
+
+            title (str, optional):
+                Title of plot. Default is PLOT_TITLE.
+
+            compress_y_axis (str, optional):
+                Determine whether the y-axis starts at 0, which
+                displays well with PPM data although poorly with
+                YOY data.  When True, compresses the y-axis range
+                to 95% of the first value of the y-axis data,
+                and 100.5% of the last value in the y-axis data.
+                Default is False.
+    """
+
+    # Field names and default values
+    line_graph: bool = True,
+    date_label: str = PLOT_DATE_LABEL,
+    value_label: str = PLOT_VALUE_LABEL,
+    title: str = PLOT_TITLE,
+    compress_y_axis: bool = False
 
 
 class ClimateData:
@@ -349,18 +390,45 @@ class ClimateData:
 
     def plot_atmospheric_co2_data_px(
         self,
-        transposed_data: TransposedData[Tuple[datetime], Tuple[float]],
-        line_graph: bool = True,
-        date_label: str = PLOT_DATE_LABEL,
-        value_label: str = PLOT_VALUE_LABEL,
-        title: str = PLOT_TITLE,
-        compress_y_axis: bool = False
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
     ) -> str:
         """ Display atmospheric Co2 Data using Plotly Express.
 
             Renders the self.atmospheric_co2_data in a graph.
 
             Args:
+                plot_properties (PlotProperties):
+                    Instance of the PlotProperties class object,
+                    which is an instance of the NamedTuple class,
+                    that contains the following properties and
+                    default values:
+
+                    line_graph (bool, optional):
+                        Specifies whether the plot will be a line
+                        graph or not.  When True, the plot will be a
+                        line graph. When False, the plot will be a
+                        bar graph.  Default is True.
+
+                    date_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_DATE_LABEL.
+
+                    value_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_VALUE_LABEL.
+
+                    title (str, optional):
+                        Title of plot. Default is PLOT_TITLE.
+
+                    compress_y_axis (str, optional):
+                        Determine whether the y-axis starts at 0, which
+                        displays well with PPM data although poorly
+                        with YOY data.  When True, compresses the
+                        y-axis range to 95% of the first value of the
+                        y-axis data, and 100.5% of the last value in
+                        the y-axis data. Default is False.
+
                 transposed_data(
                     TransposedData[Tuple[datetime], Tuple[float]]
                 ):
@@ -368,36 +436,13 @@ class ClimateData:
                     properties with values for the X and Y axises
                     respectively.
 
-                line_graph (bool, optional):
-                    Specifies whether the plot will be a line graph
-                    or not.  When True, the plot will be a line graph.
-                    When False, the plot will be a bar graph.  Default
-                    is True.
-
-                date_label (str, optional):
-                    Label of plot y-axis.  Default is PLOT_DATE_LABEL.
-
-                value_label (str, optional):
-                    Label of plot y-axis.  Default is PLOT_VALUE_LABEL.
-
-                title (str, optional):
-                    Title of plot. Default is PLOT_TITLE.
-
-                compress_y_axis (str, optional):
-                    Determine whether the y-axis starts at 0, which
-                    displays well with PPM data although poorly with
-                    YOY data.  When True, compresses the y-axis range
-                    to 95% of the first value of the y-axis data,
-                    and 100.5% of the last value in the y-axis data.
-                    Default is False.
-
             Returns:
                 line_graph_html (str):
-                    HTML content for a line graph file.
+                    HTML content for a plotly.express graph file.
         """
 
         # Make sure the line_graph variable is a boolean value
-        if not isinstance(line_graph, bool):
+        if not isinstance(plot_properties.line_graph, bool):
             line_graph = True
 
         # Set default range values for the x and y-axises
@@ -413,12 +458,12 @@ class ClimateData:
                 values=transposed_data.values
             ),
             labels=dict(
-                x=date_label,
-                y=value_label
+                x=plot_properties.date_label,
+                y=plot_properties.value_label
             ),
             range_x=range_x,
             # range_y=range_y,
-            title=title,
+            title=plot_properties.title,
             x=transposed_data.dates,
             y=transposed_data.values
         )
@@ -446,7 +491,7 @@ class ClimateData:
         )
 
         # Adjust y-axis range values based on the value of compress_y_axis
-        if compress_y_axis is True:
+        if plot_properties.compress_y_axis is True:
             range = dict(
                 range=[
                     transposed_data.values[0] * .95,
@@ -474,18 +519,45 @@ class ClimateData:
 
     def plot_atmospheric_co2_data_go(
         self,
-        transposed_data: TransposedData[Tuple[datetime], Tuple[float]],
-        line_graph: bool = True,
-        date_label: str = PLOT_DATE_LABEL,
-        value_label: str = PLOT_VALUE_LABEL,
-        title: str = PLOT_TITLE,
-        compress_y_axis: bool = False
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
     ) -> str:
         """ Display atmospheric Co2 Data using Plotly Graph Objects.
 
             Renders the self.atmospheric_co2_data in a graph.
 
             Args:
+                plot_properties (PlotProperties):
+                    Instance of the PlotProperties class object,
+                    which is an instance of the NamedTuple class,
+                    that contains the following properties and
+                    default values:
+
+                    line_graph (bool, optional):
+                        Specifies whether the plot will be a line
+                        graph or not.  When True, the plot will be a
+                        line graph. When False, the plot will be a
+                        bar graph.  Default is True.
+
+                    date_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_DATE_LABEL.
+
+                    value_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_VALUE_LABEL.
+
+                    title (str, optional):
+                        Title of plot. Default is PLOT_TITLE.
+
+                    compress_y_axis (str, optional):
+                        Determine whether the y-axis starts at 0, which
+                        displays well with PPM data although poorly
+                        with YOY data.  When True, compresses the
+                        y-axis range to 95% of the first value of the
+                        y-axis data, and 100.5% of the last value in
+                        the y-axis data. Default is False.
+
                 transposed_data(
                     TransposedData[Tuple[datetime], Tuple[float]]
                 ):
@@ -493,36 +565,13 @@ class ClimateData:
                     properties with values for the X and Y axises
                     respectively.
 
-                line_graph (bool, optional):
-                    Specifies whether the plot will be a line graph
-                    or not.  When True, the plot will be a line graph.
-                    When False, the plot will be a bar graph.  Default
-                    is True.
-
-                date_label (str, optional):
-                    Label of plot y-axis.  Default is PLOT_DATE_LABEL.
-
-                value_label (str, optional):
-                    Label of plot y-axis.  Default is PLOT_VALUE_LABEL.
-
-                title (str, optional):
-                    Title of plot. Default is PLOT_TITLE.
-
-                compress_y_axis (str, optional):
-                    Determine whether the y-axis starts at 0, which
-                    displays well with PPM data although poorly with
-                    YOY data.  When True, compresses the y-axis range
-                    to 95% of the first value of the y-axis data,
-                    and 100.5% of the last value in the y-axis data.
-                    Default is False.
-
             Returns:
                 line_graph_html (str):
-                    HTML content for a line graph file.
+                    HTML content for a plotly.graph_object graph file.
         """
 
         # Make sure the line_graph variable is a boolean value
-        if not isinstance(line_graph, bool):
+        if not isinstance(plot_properties.line_graph, bool):
             line_graph = True
 
         # Set default range values for the x and y-axises
@@ -534,7 +583,7 @@ class ClimateData:
         # Create a dictionary of arguments for the graph object
         graph_args = dict(
             mode=GO_LINE_GRAPH_MODE,
-            name=value_label,
+            name=plot_properties.value_label,
             x=transposed_data.dates,
             y=transposed_data.values
         )
@@ -542,9 +591,9 @@ class ClimateData:
         # Create a dictionary of arguments for graph layout options
         layout_args = dict(
             showlegend=True,
-            title=title,
-            xaxis_title=date_label,
-            yaxis_title=value_label
+            title=plot_properties.title,
+            xaxis_title=plot_properties.date_label,
+            yaxis_title=plot_properties.value_label
         )
 
         # Create a go.Figure object
@@ -586,7 +635,7 @@ class ClimateData:
         )
 
         # Adjust y-axis range values based on the value of compress_y_axis
-        if compress_y_axis is True:
+        if plot_properties.compress_y_axis is True:
             range = dict(
                 range=[
                     transposed_data.values[0] * .95,
