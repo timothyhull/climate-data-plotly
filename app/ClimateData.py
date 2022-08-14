@@ -12,19 +12,11 @@ from typing import Dict, List, NamedTuple, Tuple, Union
 from plotly.offline import init_notebook_mode
 from requests import get
 from requests.exceptions import HTTPError
+from plotly.graph_objs._figure import Figure
 import plotly.express as px
 import plotly.graph_objects as go
 
 # Imports - Local
-
-# namedtuple objects:
-TransposedData = namedtuple(
-    typename='TransposedData',
-    field_names=[
-        'dates',
-        'values'
-    ]
-)
 
 # Constants
 ATMOSPHERIC_CO2_URL = (
@@ -117,6 +109,16 @@ class PlotProperties(NamedTuple):
     value_label: str = PLOT_VALUE_LABEL,
     title: str = PLOT_TITLE,
     compress_y_axis: bool = False
+
+
+# namedtuple objects
+TransposedData = namedtuple(
+    typename='TransposedData',
+    field_names=[
+        'dates',
+        'values'
+    ]
+)
 
 
 class ClimateData:
@@ -433,7 +435,7 @@ class ClimateData:
                     TransposedData[Tuple[datetime], Tuple[float]]
                 ):
                     TransposedData object with 'dates' and 'values
-                    properties with values for the X and Y axises
+                    properties with values for the X and Y axes
                     respectively.
 
             Returns:
@@ -442,10 +444,109 @@ class ClimateData:
         """
 
         # Make sure the line_graph variable is a boolean value
-        if not isinstance(plot_properties.line_graph, bool):
+        if isinstance(plot_properties.line_graph, bool):
+            line_graph = plot_properties.line_graph
+
+        else:
             line_graph = True
 
-        # Set default range values for the x and y-axises
+        # Setup arguments to use in a graph/plot function
+        graph_args = self.setup_graph_args(
+            plot_properties=plot_properties,
+            transposed_data=transposed_data
+        )
+
+        # Create a line graph
+        if line_graph is True:
+            graph = px.line(
+                **graph_args,
+                markers=True
+            )
+
+        # Create a bar graph
+        else:
+            # Create a bar graph
+            graph = px.bar(**graph_args)
+
+        # Update x-axis properties
+        graph = self.update_graph_x_axis(
+            graph=graph,
+            range_x=graph_args.get('range_x', None)
+        )
+
+        # Adjust y-axis range values based on the value of compress_y_axis
+        if plot_properties.compress_y_axis is True:
+            range = self.compress_y_axis(
+                transposed_data_values=transposed_data.values
+            )
+        else:
+            range = dict()
+
+        # Update y-axis properties
+        graph = self.update_graph_y_axis(
+            graph=graph,
+            range=range
+        )
+
+        # Create HTML content for a plot file
+        graph_html = graph.to_html()
+
+        return graph_html
+
+    def setup_graph_args(
+        self,
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
+    ) -> dict:
+
+        """ Prepare a dictionary of graph arguments.
+
+            Args:
+                plot_properties (PlotProperties):
+                    Instance of the PlotProperties class object,
+                    which is an instance of the NamedTuple class,
+                    that contains the following properties and
+                    default values:
+
+                    line_graph (bool, optional):
+                        Specifies whether the plot will be a line
+                        graph or not.  When True, the plot will be a
+                        line graph. When False, the plot will be a
+                        bar graph.  Default is True.
+
+                    date_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_DATE_LABEL.
+
+                    value_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_VALUE_LABEL.
+
+                    title (str, optional):
+                        Title of plot. Default is PLOT_TITLE.
+
+                    compress_y_axis (str, optional):
+                        Determine whether the y-axis starts at 0, which
+                        displays well with PPM data although poorly
+                        with YOY data.  When True, compresses the
+                        y-axis range to 95% of the first value of the
+                        y-axis data, and 100.5% of the last value in
+                        the y-axis data. Default is False.
+
+                transposed_data(
+                    TransposedData[Tuple[datetime], Tuple[float]]
+                ):
+                    TransposedData object with 'dates' and 'values
+                    properties with values for the X and Y axes
+                    respectively.
+
+            Returns:
+                graph_args (dict):
+                    Dictionary of arguments to pass to a plotting
+                    function.
+        """
+
+        # Set default range values for the x and y-axes
         range_x = [
             transposed_data.dates[0],
             transposed_data.dates[-1]
@@ -468,19 +569,27 @@ class ClimateData:
             y=transposed_data.values
         )
 
-        # Create a line graph
-        if line_graph is True:
-            graph = px.line(
-                **graph_args,
-                markers=True
-            )
+        return graph_args
 
-        # Create a bar graph
-        else:
-            # Create a bar graph
-            graph = px.bar(
-                **graph_args
-            )
+    def update_graph_x_axis(
+        self,
+        graph: Figure,
+        range_x: List
+    ) -> Figure:
+
+        """ Modify default properties of the x-axis.
+
+            Args:
+                graph (plotly.graph_objs._figure.Figure):
+                    Plotly graph Figure object.
+
+                range_x (List):
+                    List of starting and end values for the x-axis.
+
+            Returns:
+                graph (plotly.graph_objs._figure.Figure):
+                    Modified Plotly graph Figure object.
+        """
 
         # x-axis modifiers
         graph.update_xaxes(
@@ -490,16 +599,55 @@ class ClimateData:
             rangeslider_range=range_x
         )
 
-        # Adjust y-axis range values based on the value of compress_y_axis
-        if plot_properties.compress_y_axis is True:
-            range = dict(
+        return graph
+
+    def compress_y_axis(
+        self,
+        transposed_data_values: Tuple[float],
+    ) -> dict:
+
+        """ Compress the range of the y_axis to simplify plot view.
+
+            Args:
+                transposed_data_values (Tuple[float]):
+                    Y-axis data to compress.
+
+            Returns:
+                range (dict):
+                    dict with a single List value of compressed range
+                    values. Based on the first and last indices in
+                    transposed_data_values.
+        """
+
+        # Set a new, compressed y_axis range
+        range = dict(
                 range=[
-                    transposed_data.values[0] * .95,
-                    transposed_data.values[-1] * 1.05,
+                    transposed_data_values[0] * .95,
+                    transposed_data_values[-1] * 1.05,
                 ]
             )
-        else:
-            range = dict()
+
+        return range
+
+    def update_graph_y_axis(
+        self,
+        graph: Figure,
+        range: List
+    ) -> Figure:
+
+        """ Modify default properties of the y-axis.
+
+            Args:
+                graph (plotly.graph_objs._figure.Figure):
+                    Plotly graph Figure object.
+
+                range (List):
+                    List of starting and end values for the y-axis.
+
+            Returns:
+                graph (plotly.graph_objs._figure.Figure):
+                    Modified Plotly graph Figure object.
+        """
 
         # y-axis modifiers
         graph.update_yaxes(
@@ -512,10 +660,7 @@ class ClimateData:
             zerolinewidth=2
         )
 
-        # Create HTML content for a plot file
-        graph_html = graph.to_html()
-
-        return graph_html
+        return graph
 
     def plot_atmospheric_co2_data_go(
         self,
@@ -562,7 +707,7 @@ class ClimateData:
                     TransposedData[Tuple[datetime], Tuple[float]]
                 ):
                     TransposedData object with 'dates' and 'values
-                    properties with values for the X and Y axises
+                    properties with values for the X and Y axes
                     respectively.
 
             Returns:
@@ -571,10 +716,13 @@ class ClimateData:
         """
 
         # Make sure the line_graph variable is a boolean value
-        if not isinstance(plot_properties.line_graph, bool):
+        if isinstance(plot_properties.line_graph, bool):
+            line_graph = plot_properties.line_graph
+
+        else:
             line_graph = True
 
-        # Set default range values for the x and y-axises
+        # Set default range values for the x and y-axes
         range_x = [
             transposed_data.dates[0],
             transposed_data.dates[-1]
