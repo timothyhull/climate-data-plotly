@@ -23,14 +23,12 @@ GO_YOY_LINE_FILE_NAME = 'go_yoy_line_plot_1a'
 PPM_PLOT_PROPERTIES = dict(
     date_label='Dates',
     value_label='Atmospheric Co2 PPM',
-    title='Monthly Atmospheric Co2 PPM Levels History',
-    compress_y_axis=True
+    title='Monthly Atmospheric Co2 PPM Levels History'
 )
 YOY_PLOT_PROPERTIES = dict(
     date_label='Dates',
     value_label='YoY PPM Delta %',
-    title='YoY Monthly Atmospheric Co2 Delta % History',
-    compress_y_axis=False
+    title='YoY Monthly Atmospheric Co2 Delta % History'
 )
 
 
@@ -50,8 +48,9 @@ def px_ppm_bar(
             None.
     """
 
-    # Create a PlotProperties object with a graph type
+    # Create a PlotProperties object with a compression value and a graph type
     plot_properties = PlotProperties(
+        compress_y_axis=True,
         line_graph=False,
         **PPM_PLOT_PROPERTIES
     )
@@ -86,9 +85,10 @@ def px_ppm_line(
             None.
     """
 
-    # Create a PlotProperties object with a graph type
+    # Create a PlotProperties object with a compression value and a graph type
     plot_properties = PlotProperties(
-        line_graph=False,
+        compress_y_axis=False,
+        line_graph=True,
         **PPM_PLOT_PROPERTIES
     )
 
@@ -120,8 +120,9 @@ def px_yoy_bar(
             None.
     """
 
-    # Create a PlotProperties object with a graph type
+    # Create a PlotProperties object with a compression value and a graph type
     plot_properties = PlotProperties(
+        compress_y_axis=False,
         line_graph=False,
         **PPM_PLOT_PROPERTIES
     )
@@ -156,9 +157,10 @@ def px_yoy_line(
             None.
     """
 
-    # Create a PlotProperties object with a graph type
+    # Create a PlotProperties object with a compression value and a graph type
     plot_properties = PlotProperties(
-        line_graph=False,
+        compress_y_axis=False,
+        line_graph=True,
         **PPM_PLOT_PROPERTIES
     )
 
@@ -193,8 +195,9 @@ def go_ppm_bar(
             None.
     """
 
-    # Create a PlotProperties object with a graph type
+    # Create a PlotProperties object with a compression value and a graph type
     plot_properties = PlotProperties(
+        compress_y_axis=True,
         line_graph=False,
         **YOY_PLOT_PROPERTIES
     )
@@ -229,9 +232,10 @@ def go_ppm_line(
             None.
     """
 
-    # Create a PlotProperties object with a graph type
+    # Create a PlotProperties object with a compression value and a graph type
     plot_properties = PlotProperties(
-        line_graph=False,
+        compress_y_axis=False,
+        line_graph=True,
         **YOY_PLOT_PROPERTIES
     )
 
@@ -263,8 +267,9 @@ def go_yoy_bar(
             None.
     """
 
-    # Create a PlotProperties object with a graph type
+    # Create a PlotProperties object with a compression value and a graph type
     plot_properties = PlotProperties(
+        compress_y_axis=False,
         line_graph=False,
         **YOY_PLOT_PROPERTIES
     )
@@ -272,7 +277,6 @@ def go_yoy_bar(
     # Call the climate_data.plot_atmospheric_co2_data_px method
     go_plot_data = climate_data.plot_atmospheric_co2_data_go(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
-        line_graph=False,
         plot_properties=plot_properties
     )
 
@@ -300,16 +304,16 @@ def go_yoy_line(
             None.
     """
 
-    # Create a PlotProperties object with a graph type
+    # Create a PlotProperties object with a compression value and a graph type
     plot_properties = PlotProperties(
-        line_graph=False,
+        compress_y_axis=False,
+        line_graph=True,
         **YOY_PLOT_PROPERTIES
     )
 
     # Call the climate_data.plot_atmospheric_co2_data_px method
     go_plot_data = climate_data.plot_atmospheric_co2_data_go(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
-        line_graph=True,
         plot_properties=plot_properties
     )
 
