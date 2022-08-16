@@ -264,7 +264,7 @@ def plot_px_yoy_line(
 
     # Display a success message
     print(
-        f'\nGenerated the file {PX_LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_LINE_YOY_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
