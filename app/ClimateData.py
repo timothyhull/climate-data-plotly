@@ -451,7 +451,7 @@ class ClimateData:
             line_graph = True
 
         # Setup arguments to use in a graph/plot function
-        graph_args = self.setup_graph_args(
+        graph_args = self.setup_graph_args_px(
             plot_properties=plot_properties,
             transposed_data=transposed_data
         )
@@ -465,7 +465,6 @@ class ClimateData:
 
         # Create a bar graph
         else:
-            # Create a bar graph
             graph = px.bar(**graph_args)
 
         # Update x-axis properties
@@ -493,13 +492,134 @@ class ClimateData:
 
         return graph_html
 
-    def setup_graph_args(
+    def plot_atmospheric_co2_data_go(
+        self,
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
+    ) -> str:
+        """ Display atmospheric Co2 Data using Plotly Graph Objects.
+
+            Renders the self.atmospheric_co2_data in a graph.
+
+            Args:
+                plot_properties (PlotProperties):
+                    Instance of the PlotProperties class object,
+                    which is an instance of the NamedTuple class,
+                    that contains the following properties and
+                    default values:
+
+                    line_graph (bool, optional):
+                        Specifies whether the plot will be a line
+                        graph or not.  When True, the plot will be a
+                        line graph. When False, the plot will be a
+                        bar graph.  Default is True.
+
+                    date_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_DATE_LABEL.
+
+                    value_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_VALUE_LABEL.
+
+                    title (str, optional):
+                        Title of plot. Default is PLOT_TITLE.
+
+                    compress_y_axis (str, optional):
+                        Determine whether the y-axis starts at 0, which
+                        displays well with PPM data although poorly
+                        with YOY data.  When True, compresses the
+                        y-axis range to 95% of the first value of the
+                        y-axis data, and 100.5% of the last value in
+                        the y-axis data. Default is False.
+
+                transposed_data(
+                    TransposedData[Tuple[datetime], Tuple[float]]
+                ):
+                    TransposedData object with 'dates' and 'values
+                    properties with values for the X and Y axes
+                    respectively.
+
+            Returns:
+                line_graph_html (str):
+                    HTML content for a plotly.graph_object graph file.
+        """
+
+        # Make sure the line_graph variable is a boolean value
+        if isinstance(plot_properties.line_graph, bool):
+            line_graph = plot_properties.line_graph
+
+        else:
+            line_graph = True
+
+        # Setup arguments to use in a graph/plot function
+        graph_args = self.setup_graph_args_go(
+            plot_properties=plot_properties,
+            transposed_data=transposed_data
+        )
+
+        # Setup layout arguments to use in a graph/plot function
+        layout_args = self.setup_layout_args(
+            plot_properties=plot_properties
+        )
+
+        # Create a go.Figure object
+        graph = go.Figure()
+
+        # Create a line graph
+        if line_graph is True:
+            # Add a line trace to the figure object
+            graph.add_trace(
+                go.Scatter(**graph_args)
+            )
+
+        # Create a bar graph
+        else:
+            # Remove the mode key from graph_args
+            del graph_args['mode']
+
+            # Create a bar graph
+            graph.add_trace(
+                go.Bar(**graph_args)
+            )
+
+        # Update the graph layout
+        graph.update_layout(**layout_args)
+
+        # Update x-axis properties
+        graph = self.update_graph_x_axis(
+            graph=graph,
+            range_x=graph_args.get('range_x', None)
+        )
+
+        # Adjust y-axis range values based on the value of compress_y_axis
+        if plot_properties.compress_y_axis is True:
+            range = self.compress_y_axis(
+                transposed_data_values=transposed_data.values
+            )
+        else:
+            range = dict()
+
+        # Update y-axis properties
+        graph = self.update_graph_y_axis(
+            graph=graph,
+            range=range
+        )
+
+        # Create HTML content for a plot file
+        graph_html = graph.to_html()
+
+        return graph_html
+
+    def setup_graph_args_px(
         self,
         plot_properties: PlotProperties,
         transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
     ) -> dict:
 
         """ Prepare a dictionary of graph arguments.
+
+            This method supports Plotly Express plots.
 
             Args:
                 plot_properties (PlotProperties):
@@ -563,13 +683,131 @@ class ClimateData:
                 y=plot_properties.value_label
             ),
             range_x=range_x,
-            # range_y=range_y,
             title=plot_properties.title,
             x=transposed_data.dates,
             y=transposed_data.values
         )
 
         return graph_args
+
+    def setup_graph_args_go(
+        self,
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
+    ) -> dict:
+
+        """ Prepare a dictionary of graph arguments.
+
+            This method supports Plotly Graph Objects plots.
+
+            Args:
+                plot_properties (PlotProperties):
+                    Instance of the PlotProperties class object,
+                    which is an instance of the NamedTuple class,
+                    that contains the following properties and
+                    default values:
+
+                    line_graph (bool, optional):
+                        Specifies whether the plot will be a line
+                        graph or not.  When True, the plot will be a
+                        line graph. When False, the plot will be a
+                        bar graph.  Default is True.
+
+                    date_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_DATE_LABEL.
+
+                    value_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_VALUE_LABEL.
+
+                    title (str, optional):
+                        Title of plot. Default is PLOT_TITLE.
+
+                    compress_y_axis (str, optional):
+                        Determine whether the y-axis starts at 0, which
+                        displays well with PPM data although poorly
+                        with YOY data.  When True, compresses the
+                        y-axis range to 95% of the first value of the
+                        y-axis data, and 100.5% of the last value in
+                        the y-axis data. Default is False.
+
+                transposed_data(
+                    TransposedData[Tuple[datetime], Tuple[float]]
+                ):
+                    TransposedData object with 'dates' and 'values
+                    properties with values for the X and Y axes
+                    respectively.
+
+            Returns:
+                graph_args (dict):
+                    Dictionary of arguments to pass to a plotting
+                    function.
+        """
+
+        # Create a dictionary of arguments for the graph object
+        graph_args = dict(
+            mode=GO_LINE_GRAPH_MODE,
+            name=plot_properties.value_label,
+            x=transposed_data.dates,
+            y=transposed_data.values
+        )
+
+        return graph_args
+
+    def setup_layout_args(
+        self,
+        plot_properties: PlotProperties,
+    ) -> dict:
+        """ Prepare a dictionary of graph layout arguments.
+
+            Args:
+                plot_properties (PlotProperties):
+                    Instance of the PlotProperties class object,
+                    which is an instance of the NamedTuple class,
+                    that contains the following properties and
+                    default values:
+
+                    line_graph (bool, optional):
+                        Specifies whether the plot will be a line
+                        graph or not.  When True, the plot will be a
+                        line graph. When False, the plot will be a
+                        bar graph.  Default is True.
+
+                    date_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_DATE_LABEL.
+
+                    value_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_VALUE_LABEL.
+
+                    title (str, optional):
+                        Title of plot. Default is PLOT_TITLE.
+
+                    compress_y_axis (str, optional):
+                        Determine whether the y-axis starts at 0, which
+                        displays well with PPM data although poorly
+                        with YOY data.  When True, compresses the
+                        y-axis range to 95% of the first value of the
+                        y-axis data, and 100.5% of the last value in
+                        the y-axis data. Default is False.
+
+            Returns:
+                layout_args (dict):
+                    Dictionary of arguments to pass to a plotting
+                    function.
+        """
+
+        # Create a dictionary of arguments for graph layout options
+        layout_args = dict(
+            showlegend=True,
+            title=plot_properties.title,
+            xaxis_title=plot_properties.date_label,
+            yaxis_title=plot_properties.value_label
+        )
+
+        return layout_args
 
     def update_graph_x_axis(
         self,
@@ -661,153 +899,6 @@ class ClimateData:
         )
 
         return graph
-
-    def plot_atmospheric_co2_data_go(
-        self,
-        plot_properties: PlotProperties,
-        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
-    ) -> str:
-        """ Display atmospheric Co2 Data using Plotly Graph Objects.
-
-            Renders the self.atmospheric_co2_data in a graph.
-
-            Args:
-                plot_properties (PlotProperties):
-                    Instance of the PlotProperties class object,
-                    which is an instance of the NamedTuple class,
-                    that contains the following properties and
-                    default values:
-
-                    line_graph (bool, optional):
-                        Specifies whether the plot will be a line
-                        graph or not.  When True, the plot will be a
-                        line graph. When False, the plot will be a
-                        bar graph.  Default is True.
-
-                    date_label (str, optional):
-                        Label of plot y-axis.  Default is
-                        PLOT_DATE_LABEL.
-
-                    value_label (str, optional):
-                        Label of plot y-axis.  Default is
-                        PLOT_VALUE_LABEL.
-
-                    title (str, optional):
-                        Title of plot. Default is PLOT_TITLE.
-
-                    compress_y_axis (str, optional):
-                        Determine whether the y-axis starts at 0, which
-                        displays well with PPM data although poorly
-                        with YOY data.  When True, compresses the
-                        y-axis range to 95% of the first value of the
-                        y-axis data, and 100.5% of the last value in
-                        the y-axis data. Default is False.
-
-                transposed_data(
-                    TransposedData[Tuple[datetime], Tuple[float]]
-                ):
-                    TransposedData object with 'dates' and 'values
-                    properties with values for the X and Y axes
-                    respectively.
-
-            Returns:
-                line_graph_html (str):
-                    HTML content for a plotly.graph_object graph file.
-        """
-
-        # Make sure the line_graph variable is a boolean value
-        if isinstance(plot_properties.line_graph, bool):
-            line_graph = plot_properties.line_graph
-
-        else:
-            line_graph = True
-
-        # Set default range values for the x and y-axes
-        range_x = [
-            transposed_data.dates[0],
-            transposed_data.dates[-1]
-        ]
-
-        # Create a dictionary of arguments for the graph object
-        graph_args = dict(
-            mode=GO_LINE_GRAPH_MODE,
-            name=plot_properties.value_label,
-            x=transposed_data.dates,
-            y=transposed_data.values
-        )
-
-        # Create a dictionary of arguments for graph layout options
-        layout_args = dict(
-            showlegend=True,
-            title=plot_properties.title,
-            xaxis_title=plot_properties.date_label,
-            yaxis_title=plot_properties.value_label
-        )
-
-        # Create a go.Figure object
-        graph = go.Figure()
-
-        # Create a line graph
-        if line_graph is True:
-
-            # Add a line trace to the figure object
-            graph.add_trace(
-                go.Scatter(
-                    **graph_args
-                )
-            )
-
-        # Create a bar graph
-        else:
-            # Remove the mode key from graph_args
-            del graph_args['mode']
-
-            # Create a bar graph
-            graph.add_trace(
-                go.Bar(
-                    **graph_args
-                )
-            )
-
-        # Update the graph layout
-        graph.update_layout(
-            **layout_args
-        )
-
-        # x-axis modifiers
-        graph.update_xaxes(
-            # Add a slider to pan and zoom the x-axis
-            rangeslider_visible=True,
-            rangeselector=PLOT_RANGE_SELECTOR,
-            rangeslider_range=range_x
-        )
-
-        # Adjust y-axis range values based on the value of compress_y_axis
-        if plot_properties.compress_y_axis is True:
-            range = dict(
-                range=[
-                    transposed_data.values[0] * .95,
-                    transposed_data.values[-1] * 1.05,
-                ]
-            )
-        else:
-            range = dict()
-
-        # y-axis modifiers
-        graph.update_yaxes(
-            # Set a dynamic axis numeric range
-            **range,
-
-            # Format the zero line
-            zeroline=True,
-            zerolinecolor='#F00',
-            zerolinewidth=2
-        )
-
-        # Create HTML content for a plot file
-        graph_html = graph.to_html()
-
-        return graph_html
 
     def write_plot_html_file(
         self,
