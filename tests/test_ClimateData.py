@@ -901,3 +901,6 @@ def test_write_plot_html_file_error(
         cd.write_plot_html_file()
 
     return None
+
+
+# Add pytest functions for new ClimateData methods
