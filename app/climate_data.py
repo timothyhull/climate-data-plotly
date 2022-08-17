@@ -10,43 +10,43 @@ from ClimateData import ClimateData, PlotProperties, TransposedData
 
 # Constants
 FILE_SUFFIX = '.html'
-# Plotly Express (px) file names
-PX_BAR_PPM_FILE_NAME = 'px_ppm_bar_plot_1a'
-PX_LINE_PPM_FILE_NAME = 'px_ppm_line_plot_1a'
-PX_BAR_YOY_FILE_NAME = 'px_yoy_bar_plot_1a'
-PX_LINE_YOY_FILE_NAME = 'px_yoy_line_plot_1a'
-# Plotly Graph Objects (go) file names
-GO_BAR_PPM_FILE_NAME = 'go_ppm_bar_plot_1a'
-GO_LINE_PPM_FILE_NAME = 'go_ppm_line_plot_1a'
-GO_BAR_YOY_FILE_NAME = 'go_yoy_bar_plot_1a'
-GO_LINE_YOY_FILE_NAME = 'go_yoy_line_plot_1a'
+GO_PREFIX = 'go_'
+PX_PREFIX = 'px_'
+# Plotly output file names
+BAR_PPM_FILE_NAME = 'ppm_bar_plot_1a'
+LINE_PPM_FILE_NAME = 'ppm_line_plot_1a'
+BAR_YOY_FILE_NAME = 'yoy_bar_plot_1a'
+LINE_YOY_FILE_NAME = 'yoy_line_plot_1a'
+# Plotly graph properties
+PPM_LABELS = dict(
+    date_label='Dates',
+    title='Monthly Atmospheric Co2 PPM Levels History',
+    value_label='Atmospheric Co2 PPM'
+)
+YOY_LABELS = dict(
+    date_label='Dates',
+    title='YoY Monthly Atmospheric Co2 Delta % History',
+    value_label='YoY PPM Delta %'
+)
 PPM_BAR_PLOT_PROPERTIES = dict(
     compress_y_axis=True,
-    date_label='Dates',
     line_graph=False,
-    title='Monthly Atmospheric Co2 PPM Levels History',
-    value_label='Atmospheric Co2 PPM',
+    **PPM_LABELS
 )
 PPM_LINE_PLOT_PROPERTIES = dict(
     compress_y_axis=False,
-    date_label='Dates',
     line_graph=True,
-    title='Monthly Atmospheric Co2 PPM Levels History',
-    value_label='Atmospheric Co2 PPM',
+    **PPM_LABELS
 )
 YOY_BAR_PLOT_PROPERTIES = dict(
     compress_y_axis=False,
-    date_label='Dates',
     line_graph=False,
-    title='YoY Monthly Atmospheric Co2 Delta % History',
-    value_label='YoY PPM Delta %',
+    **YOY_LABELS
 )
 YOY_LINE_PLOT_PROPERTIES = dict(
     compress_y_axis=False,
-    date_label='Dates',
     line_graph=True,
-    title='YoY Monthly Atmospheric Co2 Delta % History',
-    value_label='YoY PPM Delta %',
+    **YOY_LABELS
 )
 
 
@@ -161,7 +161,7 @@ def plot_px_ppm_bar(
 
     # Setup properties object with a plot-specific file name
     properties = PPM_BAR_PLOT_PROPERTIES
-    properties.update(dict(file_name=PX_BAR_PPM_FILE_NAME))
+    properties.update(dict(file_name=f'{PX_PREFIX}{BAR_PPM_FILE_NAME}'))
 
     # Generate a PPM bar graph
     px_plot(
@@ -171,7 +171,7 @@ def plot_px_ppm_bar(
 
     # Display a success message
     print(
-        f'\nGenerated the file {PX_BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_PREFIX}{BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
@@ -192,7 +192,7 @@ def plot_px_ppm_line(
 
     # Setup properties object with a plot-specific file name
     properties = PPM_LINE_PLOT_PROPERTIES
-    properties.update(dict(file_name=PX_LINE_PPM_FILE_NAME))
+    properties.update(dict(file_name=f'{PX_PREFIX}{LINE_PPM_FILE_NAME}'))
 
     # Generate a PPM bar graph
     px_plot(
@@ -202,7 +202,7 @@ def plot_px_ppm_line(
 
     # Display a success message
     print(
-        f'\nGenerated the file {PX_LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
@@ -223,7 +223,7 @@ def plot_px_yoy_bar(
 
     # Setup properties object with a plot-specific file name
     properties = YOY_BAR_PLOT_PROPERTIES
-    properties.update(dict(file_name=PX_BAR_YOY_FILE_NAME))
+    properties.update(dict(file_name=f'{PX_PREFIX}{BAR_YOY_FILE_NAME}'))
 
     # Generate a PPM bar graph
     px_plot(
@@ -233,7 +233,7 @@ def plot_px_yoy_bar(
 
     # Display a success message
     print(
-        f'\nGenerated the file {PX_BAR_YOY_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_PREFIX}{BAR_YOY_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
@@ -254,7 +254,7 @@ def plot_px_yoy_line(
 
     # Setup properties object with a plot-specific file name
     properties = YOY_LINE_PLOT_PROPERTIES
-    properties.update(dict(file_name=PX_LINE_YOY_FILE_NAME))
+    properties.update(dict(file_name=f'{PX_PREFIX}{LINE_YOY_FILE_NAME}'))
 
     # Generate a PPM bar graph
     px_plot(
@@ -264,7 +264,7 @@ def plot_px_yoy_line(
 
     # Display a success message
     print(
-        f'\nGenerated the file {PX_LINE_YOY_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {PX_PREFIX}{LINE_YOY_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
@@ -285,7 +285,7 @@ def plot_go_ppm_bar(
 
     # Setup properties object with a plot-specific file name
     properties = PPM_BAR_PLOT_PROPERTIES
-    properties.update(dict(file_name=GO_BAR_PPM_FILE_NAME))
+    properties.update(dict(file_name=f'{GO_PREFIX}{BAR_PPM_FILE_NAME}'))
 
     # Generate a PPM bar graph
     go_plot(
@@ -295,7 +295,7 @@ def plot_go_ppm_bar(
 
     # Display a success message
     print(
-        f'\nGenerated the file {GO_BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {GO_PREFIX}{BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
@@ -316,7 +316,7 @@ def plot_go_ppm_line(
 
     # Setup properties object with a plot-specific file name
     properties = PPM_LINE_PLOT_PROPERTIES
-    properties.update(file_name=GO_LINE_PPM_FILE_NAME)
+    properties.update(dict(file_name=f'{GO_PREFIX}{LINE_PPM_FILE_NAME}'))
 
     # Generate a PPM bar graph
     go_plot(
@@ -326,7 +326,7 @@ def plot_go_ppm_line(
 
     # Display a success message
     print(
-        f'\nGenerated the file {GO_LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {GO_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
@@ -347,7 +347,7 @@ def plot_go_yoy_bar(
 
     # Setup properties object with a plot-specific file name
     properties = YOY_BAR_PLOT_PROPERTIES
-    properties.update(file_name=GO_BAR_YOY_FILE_NAME)
+    properties.update(dict(file_name=f'{GO_PREFIX}{BAR_YOY_FILE_NAME}'))
 
     # Generate a PPM bar graph
     go_plot(
@@ -357,7 +357,7 @@ def plot_go_yoy_bar(
 
     # Display a success message
     print(
-        f'\nGenerated the file {GO_BAR_YOY_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {GO_PREFIX}{BAR_YOY_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
@@ -378,7 +378,7 @@ def plot_go_yoy_line(
 
     # Setup properties object with a plot-specific file name
     properties = YOY_LINE_PLOT_PROPERTIES
-    properties.update(file_name=GO_LINE_YOY_FILE_NAME)
+    properties.update(dict(file_name=f'{GO_PREFIX}{LINE_YOY_FILE_NAME}'))
 
     # Generate a PPM bar graph
     go_plot(
@@ -388,7 +388,7 @@ def plot_go_yoy_line(
 
     # Display a success message
     print(
-        f'\nGenerated the file {GO_LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
+        f'\nGenerated the file {GO_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
 
