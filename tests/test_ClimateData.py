@@ -230,8 +230,9 @@ MOCK_CO2_GRAPH_DATA = zip(
 )
 MOCK_HTML_PLOT_PROPERTIES_PX = dict(
     date_label='Dates',
-    value_label='Atmospheric Co2 PPM',
-    title='Atmospheric Co2 Levels'
+    px_plot=True,
+    title='Atmospheric Co2 Levels',
+    value_label='Atmospheric Co2 PPM'
 )
 MOCK_HTML_PLOT_SNIPPETS_PX = {
     '<html>': True,
@@ -248,8 +249,9 @@ MOCK_HTML_PLOT_SNIPPETS_PX = {
 }
 MOCK_HTML_PLOT_PROPERTIES_GO = dict(
     date_label='Dates',
-    value_label='Atmospheric YOY % Change',
-    title='Atmospheric YOY % Change Levels'
+    px_plot=False,
+    title='Atmospheric YOY % Change Levels',
+    value_label='Atmospheric YOY % Change'
 )
 MOCK_HTML_PLOT_SNIPPETS_GO = {
     '<html>': True,
@@ -668,6 +670,8 @@ def test_plot_atmospheric_co2_data_px(
 ) -> None:
     """ Test the ClimateData.plot_atmospheric_co2_data method.
 
+        Test with plotly.express.
+
         Args:
             html_search_string (List[str]):
                 Mock Plotly HTML file snippets to search for.
@@ -685,7 +689,7 @@ def test_plot_atmospheric_co2_data_px(
 
         Returns:
             None.
-        """
+    """
 
     # Call the mock_api_request fixture
     mock_api_request(
@@ -696,7 +700,7 @@ def test_plot_atmospheric_co2_data_px(
     cd = ClimateData()
 
     # Call the plot_atmospheric_co2_data_px method
-    mock_response = cd.plot_atmospheric_co2_data_px(
+    mock_response = cd.plot_atmospheric_co2_data(
         transposed_data=MOCK_CO2_PPM_GRAPH_DATA,
         plot_properties=PlotProperties(
             **MOCK_HTML_PLOT_PROPERTIES_PX
@@ -722,6 +726,8 @@ def test_plot_atmospheric_co2_data_go(
     requests_mock: requests_mock.mocker
 ) -> None:
     """ Test the ClimateData.plot_atmospheric_co2_data method.
+
+        Test with plotly.graph_objects.
 
         Args:
             html_search_string (List[str]):
@@ -751,7 +757,7 @@ def test_plot_atmospheric_co2_data_go(
     cd = ClimateData()
 
     # Call the plot_atmospheric_co2_data_go method
-    mock_response = cd.plot_atmospheric_co2_data_go(
+    mock_response = cd.plot_atmospheric_co2_data(
         transposed_data=MOCK_CO2_PPM_GRAPH_DATA,
         plot_properties=PlotProperties(
             **MOCK_HTML_PLOT_PROPERTIES_GO
