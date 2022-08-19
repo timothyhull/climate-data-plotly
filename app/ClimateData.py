@@ -619,6 +619,36 @@ class ClimateData:
 
         return graph
 
+    def _update_graph_y_axis(
+        self,
+        graph: Figure,
+        range: List
+    ) -> Figure:
+
+        """ Modify default properties of the y-axis.
+            Args:
+                graph (plotly.graph_objs._figure.Figure):
+                    Plotly graph Figure object.
+                range (List):
+                    List of starting and end values for the y-axis.
+            Returns:
+                graph (plotly.graph_objs._figure.Figure):
+                    Modified Plotly graph Figure object.
+        """
+
+        # y-axis modifiers
+        graph.update_yaxes(
+            # Set a dynamic axis numeric range
+            **range,
+
+            # Format the zero line
+            zeroline=True,
+            zerolinecolor='#F00',
+            zerolinewidth=2
+        )
+
+        return graph
+
     def _compress_y_axis(
         self,
         transposed_data_values: Tuple[float],
@@ -651,7 +681,7 @@ class ClimateData:
         self,
         plot_properties: PlotProperties,
         transposed_data: TransposedData
-    ) -> Figure:
+    ) -> Tuple[Figure, dict]:
 
         """ Plot a graph with plotly.express.
 
@@ -705,8 +735,14 @@ class ClimateData:
                     respectively.
 
             Returns:
-                graph (plotly.graph_objs._figure.Figure):
-                    Modified Plotly graph Figure object.
+                Tuple of two values for use with multiple variable
+                assignment by the calling function:
+
+                    graph (plotly.graph_objs._figure.Figure):
+                        Modified Plotly graph Figure object.
+
+                    graph_args (dict):
+                        Dictionary of graph arguments.
         """
 
         # Setup arguments to use in a graph/plot function
@@ -726,13 +762,13 @@ class ClimateData:
         else:
             graph = px.bar(**graph_args)
 
-        return graph
+        return graph, graph_args
 
     def _plot_graph_go(
         self,
         plot_properties: PlotProperties,
         transposed_data: TransposedData
-    ) -> Tuple(Figure, dict):
+    ) -> Tuple[Figure, dict]:
 
         """ Plot a graph with plotly.graph_objects.
 
@@ -941,7 +977,7 @@ class ClimateData:
 
         # Graph with plotly.express
         if plot_properties.px_plot is True:
-            graph = self._plot_graph_px(
+            graph, graph_args = self._plot_graph_px(
                 plot_properties=plot_properties,
                 transposed_data=transposed_data
             )
@@ -953,11 +989,6 @@ class ClimateData:
                 transposed_data=transposed_data
             )
 
-        # Update graph properties
-        graph = self._update_graph_properties(
-            graph=graph,
-            plot_properties=plot_properties
-        )
         # Update x-axis properties
         graph = self._update_graph_x_axis(
             graph=graph,
