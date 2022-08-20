@@ -8,7 +8,7 @@ from flask import Flask, render_template
 
 # Imports - Local
 # from app.ClimateData import ClimateData
-import app as APP
+import app as app_climate
 
 # Create Flask object
 app = Flask(__name__)
@@ -34,7 +34,7 @@ def index() -> str:
         """
 
     # Create an instance of ClimateData
-    cd = APP.ClimateData.ClimateData()
+    cd = app_climate.ClimateData.ClimateData()
 
     # Render HTML from the index template
     html_data = render_template(
