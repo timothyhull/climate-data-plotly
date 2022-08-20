@@ -869,6 +869,119 @@ class ClimateData:
 
         return graph, graph_args
 
+    def _set_plot_file_path(
+        self,
+        file_name: str = PLOT_FILE_DEFAULT_NAME
+    ) -> tuple[str, str]:
+        """ Create the file path for the plot output file.
+
+            Args:
+                file_name (str, optional):
+                    Name of the plot file to write.  The '.html' file
+                    extension will append the file_name value.  Default
+                    value is PLOT_FILE_DEFAULT_NAME.
+
+            Returns:
+                plot_abs_path (str):
+                    Absolute path for the plot output file.
+        """
+
+        # Get the absolute path to the file running this code
+        current_file = path.abspath(__file__)
+
+        # Extract the parent directory from current_file
+        current_dir = Path(current_file).parent
+
+        # Set a directory path for plot files
+        plot_dir = path.join(current_dir, PLOT_FILE_PATH)
+
+        # Set the absolute path for the plot file
+        plot_abs_path = path.join(
+            plot_dir,
+            f'{file_name}.{PLOT_FILE_EXTENSION}'
+        )
+
+        return (plot_dir, plot_abs_path)
+
+    def _create_plot_dir(
+        self,
+        plot_dir: str,
+        exist_ok: bool = bool
+    ) -> None:
+        """ Create the file path for the plot output file.
+
+            Args:
+                plot_dir (str):
+                    Name of the plot directory to create.
+
+                exist_ok (str, optional):
+                    Determines whether or not Path.mkdir may continue
+                    when the directory to create already exists.
+                    Default is True.
+
+            Returns:
+                None.
+        """
+
+        # Create a file storage directory with a context manager
+        try:
+            with Path(plot_dir) as pd:
+                pd.mkdir(
+                    exist_ok=exist_ok
+                )
+
+        except FileExistsError as e:
+            # Display an error message
+            print(
+                f'\n{DIR_CREATE_ERROR_MSG}\n'
+                f'\n{e!r}\n'
+            )
+
+            # Re-raise the exception
+            raise
+
+        return None
+
+    def _create_plot_file(
+        self,
+        plot_file: str,
+        file_content: str
+    ) -> None:
+        """ Create a plot output file.
+
+            Args:
+                plot_file(str):
+                    Absolute path for the file to create.
+
+                file_content (str, optional):
+                    HTML content for the plot file.
+
+            Returns:
+                None.
+        """
+
+        # Write the file using a context manager
+        try:
+            with open(
+                file=plot_file,
+                mode='w',
+                encoding='utf=8'
+            ) as file:
+
+                file.write(file_content)
+
+        except FileNotFoundError as e:
+            # Display an error message
+            print(
+                f'\n{FILE_WRITE_ERROR_MSG}\n'
+                f'\n{e!r}\n'
+            )
+
+            # Re-raise the exception
+            raise
+
+        return None
+
     def transpose_data_for_graphing(
         self,
         data: Union[Dict, Union[List[Tuple], Tuple[Tuple]]]
@@ -877,20 +990,20 @@ class ClimateData:
 
             Transpose data set values to X and Y-axis coordinates.
 
-                Args:
-                    data (Dict or List[Tuple]):
-                        Data to be transposed.  Can be a dictionary or
-                        one or more lists of tuples.
+            Args:
+                data (Dict or List[Tuple]):
+                    Data to be transposed.  Can be a dictionary or
+                    one or more lists of tuples.
 
-                Returns:
-                    transposed_data (
-                        Union[Dict, Union[List[Tuple], Tuple[Tuple]]]
-                    ):
-                        - transposed_data.dates = Tuple of
-                          datetime.datetime objects.
+            Returns:
+                transposed_data (
+                    Union[Dict, Union[List[Tuple], Tuple[Tuple]]]
+                ):
+                    - transposed_data.dates = Tuple of
+                        datetime.datetime objects.
 
-                        - transposed_data.values: Tuple of float
-                          objects.
+                    - transposed_data.values: Tuple of float
+                        objects.
         """
 
         # Determine if the object class for 'data' is list or dictionary
@@ -1047,68 +1160,33 @@ class ClimateData:
         if pytest_1 is True and pytest_2 is True:
 
             # Set plot_dir to a directory that already exists
-            plot_dir = '../'
-
             # Set plot file to an invalid name
-            plot_file = ''
-
             # Set a variable for use in the exist_os parameter of os.mkdir
-            exist_ok = False
+            plot_dir, plot_file, exist_ok = ('../', '', False)
 
         # pytest calls test_...file_error, set vars to raise an exception
         elif pytest_1 is True and pytest_3 is True:
 
             # Set plot_dir to the current directory
-            plot_dir = ''
-
             # Set plot file to an invalid name
-            plot_file = ''
+            plot_dir, plot_file = ('', '')
 
         else:
-            # Determine the local path to the plot file directory
-            current_file = path.abspath(__file__)
-            current_dir = Path(current_file).parent
-            plot_dir = path.join(current_dir, PLOT_FILE_PATH)
-            plot_file = path.join(
-                plot_dir,
-                f'{file_name}.{PLOT_FILE_EXTENSION}'
+            # Determine the local path to the plot directory and file
+            plot_dir, plot_file = self._set_plot_file_path(
+                file_name=file_name
             )
 
         # Create a file storage directory with a context manager
-        try:
-            with Path(plot_dir) as pd:
-                pd.mkdir(
-                    exist_ok=exist_ok
-                )
-
-        except FileExistsError as e:
-            # Display an error message
-            print(
-                f'\n{DIR_CREATE_ERROR_MSG}\n'
-                f'\n{e!r}\n'
-            )
-
-            # Re-raise the exception
-            raise
+        self._create_plot_dir(
+            plot_dir=plot_dir,
+            exist_ok=exist_ok
+        )
 
         # Write the file using a context manager
-        try:
-            with open(
-                file=plot_file,
-                mode='w',
-                encoding='utf=8'
-            ) as file:
-
-                file.write(file_content)
-
-        except FileNotFoundError as e:
-            # Display an error message
-            print(
-                f'\n{FILE_WRITE_ERROR_MSG}\n'
-                f'\n{e!r}\n'
-            )
-
-            # Re-raise the exception
-            raise
+        self._create_plot_file(
+            plot_file=plot_file,
+            file_content=file_content
+        )
 
         return None
