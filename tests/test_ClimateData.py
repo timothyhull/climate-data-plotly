@@ -600,6 +600,50 @@ def test_get_co2_yoy_change_data(
     return None
 
 
+def test_compress_y_axis(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
+) -> None:
+    """ Test the ClimateData._compress_y_axis method.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+        Returns:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # Call the _compress_y_axis method
+    mock_response = cd._compress_y_axis(
+        transposed_data_values=MOCK_CO2_PPM_GRAPH_DATA.values
+    )
+
+    valid_response = dict(
+        range=[
+            MOCK_CO2_PPM_GRAPH_DATA.values[0] * .95,
+            MOCK_CO2_PPM_GRAPH_DATA.values[-1] * 1.05
+        ]
+    )
+
+    assert mock_response == valid_response
+
+    return None
+
+
 @mark.parametrize(
     argnames=[
         'co2_data',
