@@ -1,5 +1,7 @@
 # climate-data-plotly Repository
 
+Days 83 + 84 assignment for TalkPython #100DaysOfCode.
+
 ## Build & Quality Status
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/timothyhull/climate-data-plotly?branch=main)](https://bettercodehub.com/results/timothyhull/climate-data-plotly)
