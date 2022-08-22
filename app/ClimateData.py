@@ -677,13 +677,171 @@ class ClimateData:
 
         return range
 
-    def _plot_graph_px(
+    def _plot_px(
+        self,
+        plot_properties: PlotProperties,
+        graph_args: dict
+    ) -> Figure:
+
+        """ Create a graph with plotly.express.
+
+            Args:
+                plot_properties (PlotProperties):
+                    Instance of the PlotProperties class object,
+                    which is an instance of the NamedTuple class,
+                    that contains the following properties and
+                    default values:
+
+                    line_graph (bool, optional):
+                        Specifies whether the plot will be a line
+                        graph or not.  When True, the plot will be a
+                        line graph. When False, the plot will be a
+                        bar graph.  Default is True.
+
+                    date_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_DATE_LABEL.
+
+                    value_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_VALUE_LABEL.
+
+                    title (str, optional):
+                        Title of plot. Default is PLOT_TITLE.
+
+                    compress_y_axis (str, optional):
+                        Determine whether the y-axis starts at 0, which
+                        displays well with PPM data although poorly
+                        with YOY data.  When True, compresses the
+                        y-axis range to 95% of the first value of the
+                        y-axis data, and 100.5% of the last value in
+                        the y-axis data. Default is False.
+
+                    file_name (str, optional):
+                        Name of an HTML file to create with plot results,
+                        without the .html suffix.
+
+                    px_plot (str, optional):
+                        Specifies the type of plot for Plotly to render.
+                        True renders the plot with plotly.express.
+                        False renders the plot with plotly.graph_objects.
+                        Default is False.
+
+                graph_args(dict):
+                    Dictionary of graph arguments.
+
+            Returns:
+                Tuple of two values for use with multiple variable
+                assignment by the calling function:
+
+                    graph (plotly.graph_objs._figure.Figure):
+                        Modified Plotly graph Figure object.
+        """
+
+        # Create a line graph with plotly.express
+        if plot_properties.line_graph is True:
+            graph = px.line(
+                **graph_args,
+                markers=True
+            )
+
+        # Create a bar graph with plotly.express
+        else:
+            graph = px.bar(**graph_args)
+
+        return graph
+
+    def _plot_go(
+        self,
+        plot_properties: PlotProperties,
+        graph_args: dict
+    ) -> Figure:
+
+        """ Create a graph with plotly.graph_objects.
+
+            Args:
+                plot_properties (PlotProperties):
+                    Instance of the PlotProperties class object,
+                    which is an instance of the NamedTuple class,
+                    that contains the following properties and
+                    default values:
+
+                    line_graph (bool, optional):
+                        Specifies whether the plot will be a line
+                        graph or not.  When True, the plot will be a
+                        line graph. When False, the plot will be a
+                        bar graph.  Default is True.
+
+                    date_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_DATE_LABEL.
+
+                    value_label (str, optional):
+                        Label of plot y-axis.  Default is
+                        PLOT_VALUE_LABEL.
+
+                    title (str, optional):
+                        Title of plot. Default is PLOT_TITLE.
+
+                    compress_y_axis (str, optional):
+                        Determine whether the y-axis starts at 0, which
+                        displays well with PPM data although poorly
+                        with YOY data.  When True, compresses the
+                        y-axis range to 95% of the first value of the
+                        y-axis data, and 100.5% of the last value in
+                        the y-axis data. Default is False.
+
+                    file_name (str, optional):
+                        Name of an HTML file to create with plot results,
+                        without the .html suffix.
+
+                    px_plot (str, optional):
+                        Specifies the type of plot for Plotly to render.
+                        True renders the plot with plotly.express.
+                        False renders the plot with plotly.graph_objects.
+                        Default is False.
+
+                graph_args(dict):
+                    Dictionary of graph arguments.
+
+            Returns:
+                Tuple of two values for use with multiple variable
+                assignment by the calling function:
+
+                    graph (plotly.graph_objs._figure.Figure):
+                        Modified Plotly graph Figure object.
+        """
+
+        # Create a go.Figure object
+        graph = go.Figure()
+
+        # Create a line graph with plotly.graph_objects
+        if plot_properties.line_graph is True:
+
+            # Add a line trace to the figure object
+            graph.add_trace(
+                go.Scatter(**graph_args)
+            )
+
+        # Create a bar graph with plotly.graph_objects
+        else:
+            # Remove the mode key from graph_args
+            del graph_args['mode']
+
+            # Add a line trace to the figure object
+            graph.add_trace(
+                go.Bar(**graph_args)
+            )
+
+        return graph
+
+    def _create_graph_px(
         self,
         plot_properties: PlotProperties,
         transposed_data: TransposedData
     ) -> Tuple[Figure, dict]:
 
-        """ Plot a graph with plotly.express.
+        """ Create a graph with plotly.express.
 
             Args:
                 plot_properties (PlotProperties):
@@ -751,26 +909,21 @@ class ClimateData:
             transposed_data=transposed_data
         )
 
-        # Create a line graph with plotly.express
-        if plot_properties.line_graph is True:
-            graph = px.line(
-                **graph_args,
-                markers=True
-            )
-
-        # Create a bar graph with plotly.express
-        else:
-            graph = px.bar(**graph_args)
+        # Create the Plotly Express plot
+        graph = self._plot_px(
+            plot_properties=plot_properties,
+            graph_args=graph_args
+        )
 
         return graph, graph_args
 
-    def _plot_graph_go(
+    def _create_graph_go(
         self,
         plot_properties: PlotProperties,
         transposed_data: TransposedData
     ) -> Tuple[Figure, dict]:
 
-        """ Plot a graph with plotly.graph_objects.
+        """ Create a graph with plotly.graph_objects.
 
             Args:
                 plot_properties (PlotProperties):
@@ -832,9 +985,6 @@ class ClimateData:
                         Dictionary of graph arguments.
         """
 
-        # Create a go.Figure object
-        graph = go.Figure()
-
         # Setup arguments to use in a graph/plot function
         graph_args = self._setup_graph_args_go(
             plot_properties=plot_properties,
@@ -846,23 +996,10 @@ class ClimateData:
             plot_properties=plot_properties
         )
 
-        # Create a line graph with plotly.graph_objects
-        if plot_properties.line_graph is True:
-
-            # Add a line trace to the figure object
-            graph.add_trace(
-                go.Scatter(**graph_args)
-            )
-
-        # Create a bar graph with plotly.graph_objects
-        else:
-            # Remove the mode key from graph_args
-            del graph_args['mode']
-
-            # Add a line trace to the figure object
-            graph.add_trace(
-                go.Bar(**graph_args)
-            )
+        graph = self._plot_go(
+            plot_properties=plot_properties,
+            graph_args=graph_args
+        )
 
         # Update the graph layout
         graph.update_layout(**layout_args)
@@ -1090,14 +1227,14 @@ class ClimateData:
 
         # Graph with plotly.express
         if plot_properties.px_plot is True:
-            graph, graph_args = self._plot_graph_px(
+            graph, graph_args = self._create_graph_px(
                 plot_properties=plot_properties,
                 transposed_data=transposed_data
             )
 
         # Graph with plotly.graph_objects
         else:
-            graph, graph_args = self._plot_graph_go(
+            graph, graph_args = self._create_graph_go(
                 plot_properties=plot_properties,
                 transposed_data=transposed_data
             )
