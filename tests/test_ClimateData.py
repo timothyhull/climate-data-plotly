@@ -268,7 +268,6 @@ MOCK_HTML_PLOT_SNIPPETS_PX = {
 }
 MOCK_HTML_PLOT_PROPERTIES_GO = dict(
     date_label='Dates',
-    
     px_plot=False,
     title='Atmospheric YOY % Change Levels',
     value_label='Atmospheric YOY % Change'
