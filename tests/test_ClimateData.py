@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, mock_open, patch
 import builtins
 
 # Imports - Third-Party
+from plotly.graph_objs._figure import Figure
 from pytest import fixture, mark, raises
 from requests.exceptions import HTTPError
 import requests_mock.mocker
@@ -17,7 +18,8 @@ import requests_mock
 
 # Imports - Local
 from app.ClimateData import (
-    ATMOSPHERIC_CO2_URL, ClimateData, TransposedData, PlotProperties
+    ATMOSPHERIC_CO2_URL, ClimateData, GO_LINE_GRAPH_MODE,
+    TransposedData, PlotProperties
 )
 
 # Constants
@@ -234,6 +236,23 @@ MOCK_HTML_PLOT_PROPERTIES_PX = dict(
     title='Atmospheric Co2 Levels',
     value_label='Atmospheric Co2 PPM'
 )
+MOCK_CO2_GRAPH_ARGS = dict(
+    data_frame=dict(
+        dates=MOCK_CO2_PPM_GRAPH_DATA.dates,
+        values=MOCK_CO2_PPM_GRAPH_DATA.values
+    ),
+    labels=dict(
+        x=MOCK_HTML_PLOT_PROPERTIES_PX.get('date_label', None),
+        y=MOCK_HTML_PLOT_PROPERTIES_PX.get('value_label', None)
+    ),
+    range_x=[
+        MOCK_CO2_PPM_GRAPH_DATA[0],
+        MOCK_CO2_PPM_GRAPH_DATA[-1]
+    ],
+    title=MOCK_HTML_PLOT_PROPERTIES_PX.get('title', None),
+    x=MOCK_CO2_PPM_GRAPH_DATA.dates,
+    y=MOCK_CO2_PPM_GRAPH_DATA.values
+)
 MOCK_HTML_PLOT_SNIPPETS_PX = {
     '<html>': True,
     'window.PlotlyConfig = {MathJaxConfig: \'local\'};</script>': True,
@@ -249,9 +268,16 @@ MOCK_HTML_PLOT_SNIPPETS_PX = {
 }
 MOCK_HTML_PLOT_PROPERTIES_GO = dict(
     date_label='Dates',
+    
     px_plot=False,
     title='Atmospheric YOY % Change Levels',
     value_label='Atmospheric YOY % Change'
+)
+MOCK_YOY_GRAPH_ARGS = dict(
+    mode=GO_LINE_GRAPH_MODE,
+    name=MOCK_HTML_PLOT_PROPERTIES_GO.get('value_label', None),
+    x=MOCK_CO2_YOY_GRAPH_DATA.dates,
+    y=MOCK_CO2_YOY_GRAPH_DATA.values
 )
 MOCK_HTML_PLOT_SNIPPETS_GO = {
     '<html>': True,
@@ -640,6 +666,86 @@ def test_compress_y_axis(
     )
 
     assert mock_response == valid_response
+
+    return None
+
+
+def test_plot_px(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
+) -> None:
+    """ Test the ClimateData._plot_px method.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+        Returns:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # Call the _plot_px method
+    mock_response = cd._plot_px(
+        plot_properties=PlotProperties(
+            **MOCK_HTML_PLOT_PROPERTIES_PX
+        ),
+        graph_args=MOCK_CO2_GRAPH_ARGS
+    )
+
+    assert isinstance(mock_response, Figure)
+
+    return None
+
+
+def test_plot_go(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker
+) -> None:
+    """ Test the ClimateData._plot_go method.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+        Returns:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create an instance of the ClimateData.ClimateData class
+    cd = ClimateData()
+
+    # Call the _plot_px method
+    mock_response = cd._plot_go(
+        plot_properties=PlotProperties(
+            **MOCK_HTML_PLOT_PROPERTIES_GO
+        ),
+        graph_args=MOCK_YOY_GRAPH_ARGS
+    )
+
+    assert isinstance(mock_response, Figure)
 
     return None
 
