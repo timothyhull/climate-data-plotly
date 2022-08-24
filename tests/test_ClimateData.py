@@ -13,8 +13,8 @@ import builtins
 from plotly.graph_objs._figure import Figure
 from pytest import fixture, mark, raises
 from requests.exceptions import HTTPError
-import requests_mock.mocker
 import requests_mock
+import requests_mock.mocker
 
 # Imports - Local
 from app.ClimateData import (
