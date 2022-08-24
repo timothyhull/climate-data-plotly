@@ -44,11 +44,14 @@ classDiagram
         - climate_data_3.html
     }
     class tests{
-         # Pytest folder
+         # pytest folder
          - repo_root/tests/
          ---
          # Tests for ../app/ClimateData.py
          - file test_ClimateData.py
+
+         # Tests for ../app/climate_data.py
+         - file test_climate_data.py
     }
     class web{
         # Flask application folder
