@@ -6,7 +6,9 @@
 # Imports - Third-Party
 
 # Imports - Local
-from ClimateData import ClimateData, PlotProperties, TransposedData
+from app.ClimateData import (
+    ClimateData, PlotProperties, TransposedData
+)
 
 # Constants
 FILE_SUFFIX = '.html'
@@ -118,6 +120,8 @@ def plot_px_ppm_bar(
         f'\nGenerated the file {PX_PREFIX}{BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
+    return None
+
 
 def plot_px_ppm_line(
     climate_data: ClimateData
@@ -148,6 +152,8 @@ def plot_px_ppm_line(
     print(
         f'\nGenerated the file {PX_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
+
+    return None
 
 
 def plot_px_yoy_bar(
@@ -180,6 +186,8 @@ def plot_px_yoy_bar(
         f'\nGenerated the file {PX_PREFIX}{BAR_YOY_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
+    return None
+
 
 def plot_px_yoy_line(
     climate_data: ClimateData
@@ -210,6 +218,8 @@ def plot_px_yoy_line(
     print(
         f'\nGenerated the file {PX_PREFIX}{LINE_YOY_FILE_NAME}{FILE_SUFFIX}\n'
     )
+
+    return None
 
 
 def plot_go_ppm_bar(
@@ -242,6 +252,8 @@ def plot_go_ppm_bar(
         f'\nGenerated the file {GO_PREFIX}{BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
+    return None
+
 
 def plot_go_ppm_line(
     climate_data: ClimateData
@@ -272,6 +284,8 @@ def plot_go_ppm_line(
     print(
         f'\nGenerated the file {GO_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
+
+    return None
 
 
 def plot_go_yoy_bar(
@@ -304,6 +318,8 @@ def plot_go_yoy_bar(
         f'\nGenerated the file {GO_PREFIX}{BAR_YOY_FILE_NAME}{FILE_SUFFIX}\n'
     )
 
+    return None
+
 
 def plot_go_yoy_line(
     climate_data: ClimateData
@@ -334,6 +350,8 @@ def plot_go_yoy_line(
     print(
         f'\nGenerated the file {GO_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
     )
+
+    return None
 
 
 def px_graph_all() -> None:
