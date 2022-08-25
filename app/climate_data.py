@@ -114,7 +114,7 @@ def _plot_graph(
 
 def plot_graph(
     climate_data: ClimateData,
-    plot_properties: PlotProperties
+    plot_properties: dict
 ) -> bool:
     """ Helper function for the _plot_graph function.
 
@@ -152,6 +152,70 @@ def plot_graph(
     return plot_status
 
 
+def _create_ppm_plot_properties(
+    plot_properties: dict,
+    file_name: str
+) -> dict:
+    """ Create a plot_properties dictionary for Co2 PPM date data.
+
+        Args:
+            plot_properties (dict):
+                dict object with plot-specific properties.
+                Use one of PPM_BAR_PLOT_PROPERTIES,
+                PPM_LINE_PLOT_PROPERTIES, YOY_BAR_PLOT_PROPERTIES,
+                or YOY_LINE_PLOT_PROPERTIES constants.
+
+            file_name (str):
+                Name of the plot file to write.
+
+        Returns:
+            plot_properties (dict):
+                dict of plot properties.
+    """
+
+    # Update the plot_properties dict with Co2 PPM date data and a file name
+    plot_properties.update(
+        dict(
+            transposed_data=climate_data.transposed_co2_ppm_date_data,
+            file_name=file_name
+        )
+    )
+
+    return plot_properties
+
+
+def _create_yoy_plot_properties(
+    plot_properties: dict,
+    file_name: str
+) -> dict:
+    """ Create a plot_properties dictionary for Co2 YoY change data.
+
+        Args:
+            plot_properties (dict):
+                dict object with plot-specific properties.
+                Use one of PPM_BAR_PLOT_PROPERTIES,
+                PPM_LINE_PLOT_PROPERTIES, YOY_BAR_PLOT_PROPERTIES,
+                or YOY_LINE_PLOT_PROPERTIES constants.
+
+            file_name (str):
+                Name of the plot file to write.
+
+        Returns:
+            plot_properties (dict):
+                dict of plot properties.
+    """
+
+    # Update the plot_properties dict with Co2 PPM date data and a file name
+    plot_properties.update(
+        dict(
+            transposed_data=climate_data.transposed_co2_yoy_change_data,
+            file_name=file_name
+        )
+    )
+
+    return plot_properties
+
+
 def plot_px_ppm_bar(
     climate_data: ClimateData
 ) -> None:
@@ -165,13 +229,10 @@ def plot_px_ppm_bar(
             None.
     """
 
-    # Setup properties object with a plot-specific file name
-    plot_properties = PPM_BAR_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            file_name=f'{PX_PREFIX}{BAR_PPM_FILE_NAME}',
-            transposed_data=climate_data.transposed_co2_ppm_date_data
-        )
+    # Setup plot properties object with a plot-specific file name
+    plot_properties = _create_ppm_plot_properties(
+        plot_properties=PPM_BAR_PLOT_PROPERTIES,
+        file_name=f'{PX_PREFIX}{BAR_PPM_FILE_NAME}'
     )
 
     # Call the _plot_graph function
@@ -198,13 +259,10 @@ def plot_px_ppm_line(
             None.
     """
 
-    # Setup properties object with a plot-specific file name
-    plot_properties = PPM_LINE_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            file_name=f'{PX_PREFIX}{LINE_PPM_FILE_NAME}',
-            transposed_data=climate_data.transposed_co2_ppm_date_data
-        )
+    # Setup plot properties object with a plot-specific file name
+    plot_properties = _create_ppm_plot_properties(
+        plot_properties=PPM_LINE_PLOT_PROPERTIES,
+        file_name=f'{PX_PREFIX}{LINE_PPM_FILE_NAME}'
     )
 
     # Call the _plot_graph function
@@ -231,13 +289,10 @@ def plot_px_yoy_bar(
             None.
     """
 
-    # Setup properties object with a plot-specific file name
-    plot_properties = YOY_BAR_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            file_name=f'{PX_PREFIX}{BAR_YOY_FILE_NAME}',
-            transposed_data=climate_data.transposed_co2_yoy_change_data
-        )
+    # Setup plot properties object with a plot-specific file name
+    plot_properties = _create_yoy_plot_properties(
+        plot_properties=YOY_BAR_PLOT_PROPERTIES,
+        file_name=f'{PX_PREFIX}{BAR_YOY_FILE_NAME}'
     )
 
     # Call the _plot_graph function
@@ -264,13 +319,10 @@ def plot_px_yoy_line(
             None.
     """
 
-    # Setup properties object with a plot-specific file name
-    plot_properties = YOY_LINE_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            file_name=f'{PX_PREFIX}{LINE_YOY_FILE_NAME}',
-            transposed_data=climate_data.transposed_co2_yoy_change_data
-        )
+    # Setup plot properties object with a plot-specific file name
+    plot_properties = _create_yoy_plot_properties(
+        plot_properties=YOY_LINE_PLOT_PROPERTIES,
+        file_name=f'{PX_PREFIX}{LINE_YOY_FILE_NAME}'
     )
 
     # Call the _plot_graph function
@@ -297,13 +349,10 @@ def plot_go_ppm_bar(
             None.
     """
 
-    # Setup properties object with a plot-specific file name
-    plot_properties = PPM_BAR_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            file_name=f'{GO_PREFIX}{BAR_PPM_FILE_NAME}',
-            transposed_data=climate_data.transposed_co2_ppm_date_data
-        )
+    # Setup plot properties object with a plot-specific file name
+    plot_properties = _create_ppm_plot_properties(
+        plot_properties=PPM_BAR_PLOT_PROPERTIES,
+        file_name=f'{GO_PREFIX}{BAR_PPM_FILE_NAME}'
     )
 
     # Call the _plot_graph function
@@ -330,13 +379,10 @@ def plot_go_ppm_line(
             None.
     """
 
-    # Setup properties object with a plot-specific file name
-    plot_properties = PPM_LINE_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            file_name=f'{GO_PREFIX}{LINE_PPM_FILE_NAME}',
-            transposed_data=climate_data.transposed_co2_ppm_date_data
-        )
+    # Setup plot properties object with a plot-specific file name
+    plot_properties = _create_ppm_plot_properties(
+        plot_properties=PPM_LINE_PLOT_PROPERTIES,
+        file_name=f'{GO_PREFIX}{LINE_PPM_FILE_NAME}'
     )
 
     # Call the _plot_graph function
@@ -363,13 +409,10 @@ def plot_go_yoy_bar(
             None.
     """
 
-    # Setup properties object with a plot-specific file name
-    plot_properties = YOY_BAR_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            file_name=f'{GO_PREFIX}{BAR_YOY_FILE_NAME}',
-            transposed_data=climate_data.transposed_co2_yoy_change_data
-        )
+    # Setup plot properties object with a plot-specific file name
+    plot_properties = _create_yoy_plot_properties(
+        plot_properties=YOY_BAR_PLOT_PROPERTIES,
+        file_name=f'{GO_PREFIX}{BAR_YOY_FILE_NAME}'
     )
 
     # Call the _plot_graph function
@@ -396,13 +439,10 @@ def plot_go_yoy_line(
             None.
     """
 
-    # Setup properties object with a plot-specific file name
-    plot_properties = YOY_LINE_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            file_name=f'{GO_PREFIX}{LINE_YOY_FILE_NAME}',
-            transposed_data=climate_data.transposed_co2_yoy_change_data
-        )
+    # Setup plot properties object with a plot-specific file name
+    plot_properties = _create_yoy_plot_properties(
+        plot_properties=YOY_LINE_PLOT_PROPERTIES,
+        file_name=f'{GO_PREFIX}{LINE_YOY_FILE_NAME}'
     )
 
     # Call the _plot_graph function
