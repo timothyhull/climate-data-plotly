@@ -180,9 +180,6 @@ def plot_px_ppm_bar(
         plot_properties=plot_properties
     )
 
-    # Do something with the return value of plot_graph
-    # TODO
-
     return None
 
 
@@ -215,9 +212,6 @@ def plot_px_ppm_line(
         climate_data=climate_data,
         plot_properties=plot_properties
     )
-
-    # Do something with the return value of plot_graph
-    # TODO
 
     return None
 
@@ -252,9 +246,6 @@ def plot_px_yoy_bar(
         plot_properties=plot_properties
     )
 
-    # Do something with the return value of plot_graph
-    # TODO
-
     return None
 
 
@@ -287,9 +278,6 @@ def plot_px_yoy_line(
         climate_data=climate_data,
         plot_properties=plot_properties
     )
-
-    # Do something with the return value of plot_graph
-    # TODO
 
     return None
 
@@ -324,9 +312,6 @@ def plot_go_ppm_bar(
         plot_properties=plot_properties
     )
 
-    # Do something with the return value of plot_graph
-    # TODO
-
     return None
 
 
@@ -359,9 +344,6 @@ def plot_go_ppm_line(
         climate_data=climate_data,
         plot_properties=plot_properties
     )
-
-    # Do something with the return value of plot_graph
-    # TODO
 
     return None
 
@@ -396,9 +378,6 @@ def plot_go_yoy_bar(
         plot_properties=plot_properties
     )
 
-    # Do something with the return value of plot_graph
-    # TODO
-
     return None
 
 
@@ -431,9 +410,6 @@ def plot_go_yoy_line(
         climate_data=climate_data,
         plot_properties=plot_properties
     )
-
-    # Do something with the return value of plot_graph
-    # TODO
 
     return None
 
