@@ -7,7 +7,7 @@
 
 # Imports - Local
 from app.ClimateData import (
-    ClimateData, PlotProperties, TransposedData
+    ClimateData, PlotProperties
 )
 
 # Constants
@@ -53,18 +53,13 @@ YOY_LINE_PLOT_PROPERTIES = dict(
 
 
 # Plotly Express (px) function
-def plot_graph(
-    transposed_data: TransposedData,
+def _plot_graph(
     plot_properties: dict,
     climate_data: ClimateData
-) -> None:
+) -> bool:
     """ Generate a line or bar graph HTML file of atmospheric Co2 data.
 
         Args:
-            transposed_data (TransposedData):
-                Instance of the ClimateData.ClimateData.TransposedData
-                class with data transposed for graphing.
-
             plot_properties (dict):
                 dict object with plot-specific properties.
                 Use one of PPM_BAR_PLOT_PROPERTIES,
@@ -77,8 +72,14 @@ def plot_graph(
                 ClimateData.ClimateData.
 
         Returns:
-            None.
+            plot_status (bool):
+                Boolean value for whether or not the function
+                runs successfully.
     """
+
+    # Extract and remove the transposed plot data from plot_properties
+    transposed_data = plot_properties.get('transposed_data', None)
+    del plot_properties['transposed_data']
 
     # Convert the plot_properties dict to a PlotProperties object
     plot_properties = PlotProperties(**plot_properties)
@@ -108,7 +109,46 @@ def plot_graph(
         f'"{plot_properties.title}"\n'
     )
 
-    return None
+    return True
+
+
+def plot_graph(
+    climate_data: ClimateData,
+    plot_properties: PlotProperties
+) -> bool:
+    """ Helper function for the _plot_graph function.
+
+        Reduces duplicate instances of calling the _plot_graph
+        function directly.
+
+        Args:
+            climate_data (ClimateData):
+            Instance of the ClimateData.ClimateData class.
+
+        plot_properties (dict):
+            dict object with plot-specific properties.
+            Use one of PPM_BAR_PLOT_PROPERTIES,
+            PPM_LINE_PLOT_PROPERTIES, YOY_BAR_PLOT_PROPERTIES,
+            or YOY_LINE_PLOT_PROPERTIES constants.
+
+        Returns:
+            plot_status (bool):
+                Boolean value for whether or not the function
+                runs successfully.
+    """
+
+    # Generate a PPM bar graph
+    plot_status = _plot_graph(
+        plot_properties=plot_properties,
+        climate_data=climate_data
+    )
+
+    # Display a success message
+    print(
+        f'\nGenerated the file {PX_PREFIX}{BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
+    )
+
+    return plot_status
 
 
 def plot_px_ppm_bar(
@@ -126,19 +166,21 @@ def plot_px_ppm_bar(
 
     # Setup properties object with a plot-specific file name
     plot_properties = PPM_BAR_PLOT_PROPERTIES
-    plot_properties.update(dict(file_name=f'{PX_PREFIX}{BAR_PPM_FILE_NAME}'))
+    plot_properties.update(
+        dict(
+            file_name=f'{PX_PREFIX}{BAR_PPM_FILE_NAME}',
+            transposed_data=climate_data.transposed_co2_ppm_date_data
+        )
+    )
 
-    # Generate a PPM bar graph
+    # Call the _plot_graph function
     plot_graph(
-        transposed_data=climate_data.transposed_co2_ppm_date_data,
-        plot_properties=plot_properties,
-        climate_data=climate_data
+        climate_data=climate_data,
+        plot_properties=plot_properties
     )
 
-    # Display a success message
-    print(
-        f'\nGenerated the file {PX_PREFIX}{BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
-    )
+    # Do something with the return value of plot_graph
+    # TODO
 
     return None
 
@@ -160,19 +202,21 @@ def plot_px_ppm_line(
 
     # Setup properties object with a plot-specific file name
     plot_properties = PPM_LINE_PLOT_PROPERTIES
-    plot_properties.update(dict(file_name=f'{PX_PREFIX}{LINE_PPM_FILE_NAME}'))
+    plot_properties.update(
+        dict(
+            file_name=f'{PX_PREFIX}{LINE_PPM_FILE_NAME}',
+            transposed_data=climate_data.transposed_co2_ppm_date_data
+        )
+    )
 
-    # Generate a PPM bar graph
+    # Call the _plot_graph function
     plot_graph(
-        transposed_data=climate_data.transposed_co2_ppm_date_data,
-        plot_properties=plot_properties,
-        climate_data=climate_data
+        climate_data=climate_data,
+        plot_properties=plot_properties
     )
 
-    # Display a success message
-    print(
-        f'\nGenerated the file {PX_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
-    )
+    # Do something with the return value of plot_graph
+    # TODO
 
     return None
 
@@ -194,19 +238,21 @@ def plot_px_yoy_bar(
 
     # Setup properties object with a plot-specific file name
     plot_properties = YOY_BAR_PLOT_PROPERTIES
-    plot_properties.update(dict(file_name=f'{PX_PREFIX}{BAR_YOY_FILE_NAME}'))
+    plot_properties.update(
+        dict(
+            file_name=f'{PX_PREFIX}{BAR_YOY_FILE_NAME}',
+            transposed_data=climate_data.transposed_co2_yoy_change_data
+        )
+    )
 
-    # Generate a PPM bar graph
+    # Call the _plot_graph function
     plot_graph(
-        transposed_data=climate_data.transposed_co2_yoy_change_data,
-        plot_properties=plot_properties,
-        climate_data=climate_data
+        climate_data=climate_data,
+        plot_properties=plot_properties
     )
 
-    # Display a success message
-    print(
-        f'\nGenerated the file {PX_PREFIX}{BAR_YOY_FILE_NAME}{FILE_SUFFIX}\n'
-    )
+    # Do something with the return value of plot_graph
+    # TODO
 
     return None
 
@@ -228,19 +274,21 @@ def plot_px_yoy_line(
 
     # Setup properties object with a plot-specific file name
     plot_properties = YOY_LINE_PLOT_PROPERTIES
-    plot_properties.update(dict(file_name=f'{PX_PREFIX}{LINE_YOY_FILE_NAME}'))
+    plot_properties.update(
+        dict(
+            file_name=f'{PX_PREFIX}{LINE_YOY_FILE_NAME}',
+            transposed_data=climate_data.transposed_co2_yoy_change_data
+        )
+    )
 
-    # Generate a PPM bar graph
+    # Call the _plot_graph function
     plot_graph(
-        transposed_data=climate_data.transposed_co2_yoy_change_data,
-        plot_properties=plot_properties,
-        climate_data=climate_data
+        climate_data=climate_data,
+        plot_properties=plot_properties
     )
 
-    # Display a success message
-    print(
-        f'\nGenerated the file {PX_PREFIX}{LINE_YOY_FILE_NAME}{FILE_SUFFIX}\n'
-    )
+    # Do something with the return value of plot_graph
+    # TODO
 
     return None
 
@@ -262,19 +310,21 @@ def plot_go_ppm_bar(
 
     # Setup properties object with a plot-specific file name
     plot_properties = PPM_BAR_PLOT_PROPERTIES
-    plot_properties.update(dict(file_name=f'{GO_PREFIX}{BAR_PPM_FILE_NAME}'))
+    plot_properties.update(
+        dict(
+            file_name=f'{GO_PREFIX}{BAR_PPM_FILE_NAME}',
+            transposed_data=climate_data.transposed_co2_ppm_date_data
+        )
+    )
 
-    # Generate a PPM bar graph
+    # Call the _plot_graph function
     plot_graph(
-        transposed_data=climate_data.transposed_co2_ppm_date_data,
-        plot_properties=plot_properties,
-        climate_data=climate_data
+        climate_data=climate_data,
+        plot_properties=plot_properties
     )
 
-    # Display a success message
-    print(
-        f'\nGenerated the file {GO_PREFIX}{BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
-    )
+    # Do something with the return value of plot_graph
+    # TODO
 
     return None
 
@@ -296,19 +346,21 @@ def plot_go_ppm_line(
 
     # Setup properties object with a plot-specific file name
     plot_properties = PPM_LINE_PLOT_PROPERTIES
-    plot_properties.update(dict(file_name=f'{GO_PREFIX}{LINE_PPM_FILE_NAME}'))
+    plot_properties.update(
+        dict(
+            file_name=f'{GO_PREFIX}{LINE_PPM_FILE_NAME}',
+            transposed_data=climate_data.transposed_co2_ppm_date_data
+        )
+    )
 
-    # Generate a PPM bar graph
+    # Call the _plot_graph function
     plot_graph(
-        transposed_data=climate_data.transposed_co2_ppm_date_data,
-        plot_properties=plot_properties,
-        climate_data=climate_data
+        climate_data=climate_data,
+        plot_properties=plot_properties
     )
 
-    # Display a success message
-    print(
-        f'\nGenerated the file {GO_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
-    )
+    # Do something with the return value of plot_graph
+    # TODO
 
     return None
 
@@ -330,19 +382,21 @@ def plot_go_yoy_bar(
 
     # Setup properties object with a plot-specific file name
     plot_properties = YOY_BAR_PLOT_PROPERTIES
-    plot_properties.update(dict(file_name=f'{GO_PREFIX}{BAR_YOY_FILE_NAME}'))
+    plot_properties.update(
+        dict(
+            file_name=f'{GO_PREFIX}{BAR_YOY_FILE_NAME}',
+            transposed_data=climate_data.transposed_co2_yoy_change_data
+        )
+    )
 
-    # Generate a PPM bar graph
+    # Call the _plot_graph function
     plot_graph(
-        transposed_data=climate_data.transposed_co2_yoy_change_data,
-        plot_properties=plot_properties,
-        climate_data=climate_data
+        climate_data=climate_data,
+        plot_properties=plot_properties
     )
 
-    # Display a success message
-    print(
-        f'\nGenerated the file {GO_PREFIX}{BAR_YOY_FILE_NAME}{FILE_SUFFIX}\n'
-    )
+    # Do something with the return value of plot_graph
+    # TODO
 
     return None
 
@@ -364,19 +418,21 @@ def plot_go_yoy_line(
 
     # Setup properties object with a plot-specific file name
     plot_properties = YOY_LINE_PLOT_PROPERTIES
-    plot_properties.update(dict(file_name=f'{GO_PREFIX}{LINE_YOY_FILE_NAME}'))
+    plot_properties.update(
+        dict(
+            file_name=f'{GO_PREFIX}{LINE_YOY_FILE_NAME}',
+            transposed_data=climate_data.transposed_co2_yoy_change_data
+        )
+    )
 
-    # Generate a PPM bar graph
+    # Call the _plot_graph function
     plot_graph(
-        transposed_data=climate_data.transposed_co2_yoy_change_data,
-        plot_properties=plot_properties,
-        climate_data=climate_data
+        climate_data=climate_data,
+        plot_properties=plot_properties
     )
 
-    # Display a success message
-    print(
-        f'\nGenerated the file {GO_PREFIX}{LINE_PPM_FILE_NAME}{FILE_SUFFIX}\n'
-    )
+    # Do something with the return value of plot_graph
+    # TODO
 
     return None
 
