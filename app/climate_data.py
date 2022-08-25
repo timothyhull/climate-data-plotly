@@ -145,7 +145,8 @@ def plot_graph(
 
     # Display a success message
     print(
-        f'\nGenerated the file {PX_PREFIX}{BAR_PPM_FILE_NAME}{FILE_SUFFIX}\n'
+        '\nGenerated the file '
+        f'{plot_properties.get("file_name", "unknown")}{FILE_SUFFIX}\n'
     )
 
     return plot_status
