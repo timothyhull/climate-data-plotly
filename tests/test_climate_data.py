@@ -5,7 +5,6 @@
 from datetime import datetime
 from json import loads
 from pathlib import PosixPath
-from types import NoneType
 from typing import Callable
 
 # Imports - Third-Party
@@ -16,7 +15,7 @@ import requests_mock.mocker
 
 # Imports - Local
 from app.climate_data import (
-    main, plot_graph, PPM_BAR_PLOT_PROPERTIES
+    main, _plot_graph, PPM_BAR_PLOT_PROPERTIES
 )
 from app.ClimateData import (
      ATMOSPHERIC_CO2_URL, ClimateData, TransposedData
@@ -225,13 +224,13 @@ def test_main(
     return None
 
 
-def test_plot_graph(
+def test__plot_graph(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker,
     mock_climate_data_main: Callable,
     capsys: CaptureFixture
 ) -> None:
-    """ Test the climate_data.plot_graph function.
+    """ Test the climate_data._plot_graph function.
 
         Args:
             mock_api_request (Callable):
@@ -259,9 +258,15 @@ def test_plot_graph(
         requests_mock=requests_mock
     )
 
-    # Call the plot_graph function
-    mock_response = plot_graph(
-        transposed_data=MOCK_CO2_PPM_GRAPH_DATA,
+    plot_properties = PPM_BAR_PLOT_PROPERTIES
+    plot_properties.update(
+        dict(
+            transposed_data=MOCK_CO2_PPM_GRAPH_DATA
+        )
+    )
+
+    # Call the _plot_graph function
+    mock_response = _plot_graph(
         plot_properties=PPM_BAR_PLOT_PROPERTIES,
         climate_data=mock_climate_data_main
     )
@@ -269,6 +274,6 @@ def test_plot_graph(
     # Assign STDOUT data to a variable
     std_out = capsys.readouterr().out
 
-    assert isinstance(mock_response, NoneType)
+    assert isinstance(mock_response, bool)
     assert 'False' not in std_out
     assert 'unknown type' not in std_out
