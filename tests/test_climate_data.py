@@ -2,19 +2,24 @@
 """ Unit tests for climate_data.py. """
 
 # Imports - Python Standard Library
+from datetime import datetime
 from json import loads
 from pathlib import PosixPath
+from types import NoneType
 from typing import Callable
 
 # Imports - Third-Party
+from _pytest.capture import CaptureFixture
 from pytest import fixture
 import requests_mock
 import requests_mock.mocker
 
 # Imports - Local
-from app.climate_data import main
+from app.climate_data import (
+    main, plot_graph, PPM_BAR_PLOT_PROPERTIES
+)
 from app.ClimateData import (
-     ATMOSPHERIC_CO2_URL,  # ClimateData
+     ATMOSPHERIC_CO2_URL, ClimateData, TransposedData
 )
 
 # Constants
@@ -76,6 +81,18 @@ MOCK_RAW_CO2_JSON = '''
         }
     }]
 }'''
+MOCK_CO2_PPM_GRAPH_DATA = TransposedData(
+    dates=(
+        datetime(1958, 3, 1, 0, 0),
+        datetime(1958, 4, 1, 0, 0),
+        datetime(1958, 5, 1, 0, 0)
+    ),
+    values=(
+        315.7,
+        317.45,
+        317.51
+    )
+)
 
 
 # pytest fixtures
@@ -137,9 +154,43 @@ def mock_api_request(
     return _mock_api_request
 
 
-def test_main(
+@fixture
+def mock_climate_data_main(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
+) -> ClimateData:
+    """ Mock climate_data object returned by climate_data.main.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+        Returns:
+            climate_data (ClimateData):
+                Mock instance of the ClimateData.ClimateData class
+                returned by the climate_data.main function.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Call the main function
+    climate_data = main()
+
+    return climate_data
+
+
+def test_main(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable
 ) -> None:
     """ Test the climate_data.main function.
 
@@ -152,16 +203,72 @@ def test_main(
             requests_mock (requests_mock.mocker):
                 Mock HTTP request and response pytest fixture.
 
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
         Return:
             None.
     """
 
+    # Call the mock_api_request fixture
     mock_api_request(
         requests_mock=requests_mock
     )
 
-    mock_response = main()
+    # Call the main function
+    mock_response = mock_climate_data_main
 
     assert mock_response._raw_data.json() == loads(MOCK_RAW_CO2_JSON)
 
     return None
+
+
+def test_plot_graph(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture
+) -> None:
+    """ Test the climate_data.plot_graph function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Call the plot_graph function
+    mock_response = plot_graph(
+        transposed_data=MOCK_CO2_PPM_GRAPH_DATA,
+        plot_properties=PPM_BAR_PLOT_PROPERTIES,
+        climate_data=mock_climate_data_main
+    )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    assert isinstance(mock_response, NoneType)
+    assert 'False' not in std_out
+    assert 'unknown type' not in std_out
