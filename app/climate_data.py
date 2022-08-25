@@ -236,10 +236,7 @@ def plot_px_ppm_bar(
     )
 
     # Call the _plot_graph function
-    plot_graph(
-        climate_data=climate_data,
-        plot_properties=plot_properties
-    )
+    plot_graph(climate_data=climate_data, plot_properties=plot_properties)
 
     return None
 
@@ -266,10 +263,7 @@ def plot_px_ppm_line(
     )
 
     # Call the _plot_graph function
-    plot_graph(
-        climate_data=climate_data,
-        plot_properties=plot_properties
-    )
+    plot_graph(climate_data=climate_data, plot_properties=plot_properties)
 
     return None
 
@@ -296,10 +290,7 @@ def plot_px_yoy_bar(
     )
 
     # Call the _plot_graph function
-    plot_graph(
-        climate_data=climate_data,
-        plot_properties=plot_properties
-    )
+    plot_graph(climate_data=climate_data, plot_properties=plot_properties)
 
     return None
 
@@ -326,10 +317,7 @@ def plot_px_yoy_line(
     )
 
     # Call the _plot_graph function
-    plot_graph(
-        climate_data=climate_data,
-        plot_properties=plot_properties
-    )
+    plot_graph(climate_data=climate_data, plot_properties=plot_properties)
 
     return None
 
@@ -356,10 +344,7 @@ def plot_go_ppm_bar(
     )
 
     # Call the _plot_graph function
-    plot_graph(
-        climate_data=climate_data,
-        plot_properties=plot_properties
-    )
+    plot_graph(climate_data=climate_data, plot_properties=plot_properties)
 
     return None
 
@@ -386,10 +371,7 @@ def plot_go_ppm_line(
     )
 
     # Call the _plot_graph function
-    plot_graph(
-        climate_data=climate_data,
-        plot_properties=plot_properties
-    )
+    plot_graph(climate_data=climate_data, plot_properties=plot_properties)
 
     return None
 
@@ -416,10 +398,7 @@ def plot_go_yoy_bar(
     )
 
     # Call the _plot_graph function
-    plot_graph(
-        climate_data=climate_data,
-        plot_properties=plot_properties
-    )
+    plot_graph(climate_data=climate_data, plot_properties=plot_properties)
 
     return None
 
@@ -446,10 +425,7 @@ def plot_go_yoy_line(
     )
 
     # Call the _plot_graph function
-    plot_graph(
-        climate_data=climate_data,
-        plot_properties=plot_properties
-    )
+    plot_graph(climate_data=climate_data, plot_properties=plot_properties)
 
     return None
 
