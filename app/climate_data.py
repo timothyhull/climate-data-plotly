@@ -55,7 +55,8 @@ YOY_LINE_PLOT_PROPERTIES = dict(
 # Plotly Express (px) function
 def plot_graph(
     transposed_data: TransposedData,
-    plot_properties: dict
+    plot_properties: dict,
+    climate_data: ClimateData
 ) -> None:
     """ Generate a line or bar graph HTML file of atmospheric Co2 data.
 
@@ -66,9 +67,14 @@ def plot_graph(
 
             plot_properties (dict):
                 dict object with plot-specific properties.
-                Use one of PPM_BAR_PLOT_PROPERTIES, PPM_LINE_PLOT_PROPERTIES,
-                YOY_BAR_PLOT_PROPERTIES, or YOY_LINE_PLOT_PROPERTIES
-                constants.
+                Use one of PPM_BAR_PLOT_PROPERTIES,
+                PPM_LINE_PLOT_PROPERTIES, YOY_BAR_PLOT_PROPERTIES,
+                or YOY_LINE_PLOT_PROPERTIES constants.
+
+            climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
+                Default is creating a new instance of
+                ClimateData.ClimateData.
 
         Returns:
             None.
@@ -87,6 +93,19 @@ def plot_graph(
     climate_data.write_plot_html_file(
         file_name=plot_properties.file_name,
         file_content=plot_data
+    )
+
+    # Display a success message
+    if plot_properties.line_graph is True:
+        graph_type = 'line'
+    elif plot_properties.line_graph is False:
+        graph_type = 'bar'
+    else:
+        graph_type = 'unknown type'
+
+    print(
+        f'\nPlotted the {graph_type} graph '
+        f'"{plot_properties.title}"\n'
     )
 
     return None
@@ -112,7 +131,8 @@ def plot_px_ppm_bar(
     # Generate a PPM bar graph
     plot_graph(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
-        plot_properties=plot_properties
+        plot_properties=plot_properties,
+        climate_data=climate_data
     )
 
     # Display a success message
@@ -145,7 +165,8 @@ def plot_px_ppm_line(
     # Generate a PPM bar graph
     plot_graph(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
-        plot_properties=plot_properties
+        plot_properties=plot_properties,
+        climate_data=climate_data
     )
 
     # Display a success message
@@ -178,7 +199,8 @@ def plot_px_yoy_bar(
     # Generate a PPM bar graph
     plot_graph(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
-        plot_properties=plot_properties
+        plot_properties=plot_properties,
+        climate_data=climate_data
     )
 
     # Display a success message
@@ -211,7 +233,8 @@ def plot_px_yoy_line(
     # Generate a PPM bar graph
     plot_graph(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
-        plot_properties=plot_properties
+        plot_properties=plot_properties,
+        climate_data=climate_data
     )
 
     # Display a success message
@@ -244,7 +267,8 @@ def plot_go_ppm_bar(
     # Generate a PPM bar graph
     plot_graph(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
-        plot_properties=plot_properties
+        plot_properties=plot_properties,
+        climate_data=climate_data
     )
 
     # Display a success message
@@ -277,7 +301,8 @@ def plot_go_ppm_line(
     # Generate a PPM bar graph
     plot_graph(
         transposed_data=climate_data.transposed_co2_ppm_date_data,
-        plot_properties=plot_properties
+        plot_properties=plot_properties,
+        climate_data=climate_data
     )
 
     # Display a success message
@@ -310,7 +335,8 @@ def plot_go_yoy_bar(
     # Generate a PPM bar graph
     plot_graph(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
-        plot_properties=plot_properties
+        plot_properties=plot_properties,
+        climate_data=climate_data
     )
 
     # Display a success message
@@ -343,7 +369,8 @@ def plot_go_yoy_line(
     # Generate a PPM bar graph
     plot_graph(
         transposed_data=climate_data.transposed_co2_yoy_change_data,
-        plot_properties=plot_properties
+        plot_properties=plot_properties,
+        climate_data=climate_data
     )
 
     # Display a success message
