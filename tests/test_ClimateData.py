@@ -973,8 +973,23 @@ def test_write_plot_html_file(
             file_content=MOCK_HTML_FILE_CONTENT
         )
 
+    # Assign the mock write() return value to a variable
+    mock_write_value = write_html_mock.mock_calls[2].call_list()[0]
+
+    # Convert mock_write_value to a string and extract the mock file contents
+    mock_write_value = str(mock_write_value).split(sep="'")[1]
+
+    # Replace literal \n characters with new line characters
+    mock_write_value = mock_write_value.replace('\\n', '\n')
+
+    # Confirm write_html_mock was called once
     assert write_html_mock.assert_called_once
+
+    # Confirm the mock file name is in the write_html_mock.call_args_list
     assert MOCK_HTML_FILE_NAME in str(write_html_mock.call_args_list)
+
+    # Confirm the mock file input value matches the mock file write value
+    assert MOCK_HTML_FILE_CONTENT == mock_write_value
 
     return None
 
