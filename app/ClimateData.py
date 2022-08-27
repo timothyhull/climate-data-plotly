@@ -1083,7 +1083,7 @@ class ClimateData:
         self,
         plot_file: str,
         file_content: str
-    ) -> None:
+    ) -> int:
         """ Create a plot output file.
 
             Args:
@@ -1094,18 +1094,19 @@ class ClimateData:
                     HTML content for the plot file.
 
             Returns:
-                None.
+                plot_char_count (int):
+                    Integer of the number of characters written to the
+                    plot file.
         """
 
         # Write the file using a context manager
         try:
             with open(
                 file=plot_file,
-                mode='w',
+                mode='wt',
                 encoding='utf=8'
             ) as file:
-
-                file.write(file_content)
+                plot_char_count = file.write(file_content)
 
         except FileNotFoundError as e:
             # Display an error message
@@ -1117,7 +1118,7 @@ class ClimateData:
             # Re-raise the exception
             raise
 
-        return None
+        return plot_char_count
 
     def transpose_data_for_graphing(
         self,
@@ -1268,7 +1269,7 @@ class ClimateData:
         self,
         file_name: str = PLOT_FILE_DEFAULT_NAME,
         file_content: str = PLOT_FILE_DEFAULT_HTML
-    ) -> None:
+    ) -> int:
         """ Write a plot file to HTML on local storage.
 
             Args:
@@ -1282,7 +1283,8 @@ class ClimateData:
                     value is PLOT_FILE_DEFAULT_HTML.
 
             Returns:
-                None
+                Integer of the number of characters written to the
+                    plot file.
         """
 
         # Set a default value for use in the exist_os parameter of os.mkdir
@@ -1321,9 +1323,9 @@ class ClimateData:
         )
 
         # Write the file using a context manager
-        self._create_plot_file(
+        plot_char_count = self._create_plot_file(
             plot_file=plot_file,
             file_content=file_content
         )
 
-        return None
+        return plot_char_count
