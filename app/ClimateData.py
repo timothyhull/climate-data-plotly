@@ -1081,28 +1081,32 @@ class ClimateData:
 
     def _create_plot_file(
         self,
-        plot_file: str,
+        plot_file_path: str,
         file_content: str
-    ) -> int:
+    ) -> tuple([str, int]):
         """ Create a plot output file.
 
             Args:
-                plot_file(str):
+                plot_file_path (str):
                     Absolute path for the file to create.
 
                 file_content (str, optional):
                     HTML content for the plot file.
 
             Returns:
-                plot_char_count (int):
-                    Integer of the number of characters written to the
-                    plot file.
+                Tuple of plot_file and plot_char_count:
+                    plot_file (str):
+                        Absolute path for the new file.
+
+                    plot_char_count (int):
+                        Integer of the number of characters written to the
+                        plot file.
         """
 
         # Write the file using a context manager
         try:
             with open(
-                file=plot_file,
+                file=plot_file_path,
                 mode='wt',
                 encoding='utf=8'
             ) as file:
@@ -1118,7 +1122,7 @@ class ClimateData:
             # Re-raise the exception
             raise
 
-        return plot_char_count
+        return plot_file_path, plot_char_count
 
     def transpose_data_for_graphing(
         self,
@@ -1323,9 +1327,9 @@ class ClimateData:
         )
 
         # Write the file using a context manager
-        plot_char_count = self._create_plot_file(
-            plot_file=plot_file,
+        plot_file_path, plot_char_count = self._create_plot_file(
+            plot_file_path=plot_file,
             file_content=file_content
         )
 
-        return plot_char_count
+        return plot_file_path, plot_char_count
