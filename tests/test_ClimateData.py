@@ -991,6 +991,9 @@ def test_write_plot_html_file(
     # Confirm the mock file input value matches the mock file write value
     assert MOCK_HTML_FILE_CONTENT == mock_write_value
 
+    # Confirm the number of chars written matches the expected value
+    assert len(MOCK_HTML_FILE_CONTENT) == len(mock_write_value)
+
     return None
 
 
