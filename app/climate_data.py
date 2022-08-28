@@ -14,6 +14,9 @@ from app.ClimateData import (
 FILE_SUFFIX = '.html'
 GO_PREFIX = 'go_'
 PX_PREFIX = 'px_'
+PLOT_BAR_GRAPH_STR = 'bar'
+PLOT_LINE_GRAPH_STR = 'line'
+PLOT_UNKNOWN_GRAPH_STR = 'unknown type'
 # Plotly output file names
 BAR_PPM_FILE_NAME = 'ppm_bar_plot_1a'
 LINE_PPM_FILE_NAME = 'ppm_line_plot_1a'
@@ -91,22 +94,21 @@ def _plot_graph(
     )
 
     # Write climate data to a file
-    climate_data.write_plot_html_file(
+    plot_file_path, plot_char_count = climate_data.write_plot_html_file(
         file_name=plot_properties.file_name,
         file_content=plot_data
     )
 
-    # Display a success message
-    if plot_properties.line_graph is True:
-        graph_type = 'line'
-    elif plot_properties.line_graph is False:
-        graph_type = 'bar'
-    else:
-        graph_type = 'unknown type'
+    # Determine if the plot file generation is successful
+    plot_success = _validate_new_plot(
+        plot_file_path=plot_file_path,
+        plot_char_count=plot_char_count
+    )
 
-    print(
-        f'\nPlotted the {graph_type} graph '
-        f'"{plot_properties.title}"\n'
+    # Print the result of the plot file generation
+    _print_plot_result(
+        plot_success=plot_success,
+        plot_properties=plot_properties
     )
 
     return True
@@ -214,6 +216,81 @@ def _create_yoy_plot_properties(
     )
 
     return plot_properties
+
+
+def _validate_new_plot(
+    plot_file_path: str,
+    plot_char_count: int
+) -> bool:
+    """ Checks to determine if a plot file generates successfully.
+
+        Args:
+            plot_file_path (str):
+                Absolute path for the new file.
+
+            plot_char_count (int):
+                Integer of the number of characters written to the
+                plot file.
+
+        Returns:
+            plot_success (bool):
+                True if the file generates successfully.  False if the
+                file fails to generate.
+    """
+
+    # Read the plot file
+    with open(
+        file=plot_file_path,
+        mode='rt',
+        encoding='utf-8'
+    ) as file:
+        # Get the number of characters in the plot file
+        file_char_count = len(file.read())
+
+    # Determine if the plot file generation is successful
+    if file_char_count == plot_char_count:
+        plot_success = True
+    else:
+        plot_success = False
+
+    return plot_success
+
+
+def _print_plot_result(
+    plot_success: bool,
+    plot_properties: PlotProperties
+) -> None:
+    """ Display the result of the plot file generation status.
+
+        Args:
+            plot_success (bool):
+                Status of the plot generation validation.
+
+            plot_properties (PlotProperties):
+                Plot-specific information for us in result display.
+
+        Returns:
+            None.
+    """
+
+    if plot_success is True:
+        # Display a success message
+        if plot_properties.line_graph is True:
+            graph_type = PLOT_LINE_GRAPH_STR
+        elif plot_properties.line_graph is False:
+            graph_type = PLOT_BAR_GRAPH_STR
+        else:
+            graph_type = PLOT_UNKNOWN_GRAPH_STR
+
+        print(
+            f'\nPlotted the {graph_type} graph '
+            f'"{plot_properties.title}"\n'
+        )
+
+    else:
+        print('\nUnable to successfully generate a plot file.')
+
+    return None
 
 
 def plot_px_ppm_bar(
