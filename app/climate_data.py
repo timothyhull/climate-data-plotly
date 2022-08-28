@@ -14,9 +14,18 @@ from app.ClimateData import (
 FILE_SUFFIX = '.html'
 GO_PREFIX = 'go_'
 PX_PREFIX = 'px_'
+PLOT_FILE_NAME_STR = '\nGenerated the file {}{}\n'
+PLOT_FILE_NAME_ERROR_STR = '\nUnable to generate a plot file\n'
 PLOT_BAR_GRAPH_STR = 'bar'
 PLOT_LINE_GRAPH_STR = 'line'
 PLOT_UNKNOWN_GRAPH_STR = 'unknown type'
+PLOT_PRINT_GRAPH_TYPE = {
+        'True': PLOT_LINE_GRAPH_STR,
+        'False': PLOT_BAR_GRAPH_STR,
+        'None': PLOT_UNKNOWN_GRAPH_STR
+    }
+PLOT_RESULT_STR = '\nCreated the {} graph "{}"\n'
+PLOT_RESULT_ERROR_STR = '\nUnable to successfully generate a plot file.'
 # Plotly output file names
 BAR_PPM_FILE_NAME = 'ppm_bar_plot_1a'
 LINE_PPM_FILE_NAME = 'ppm_line_plot_1a'
@@ -100,18 +109,18 @@ def _plot_graph(
     )
 
     # Determine if the plot file generation is successful
-    plot_success = _validate_new_plot(
+    plot_valid = _validate_new_plot(
         plot_file_path=plot_file_path,
         plot_char_count=plot_char_count
     )
 
     # Print the result of the plot file generation
     _print_plot_result(
-        plot_success=plot_success,
+        plot_valid=plot_valid,
         plot_properties=plot_properties
     )
 
-    return True
+    return plot_valid
 
 
 def plot_graph(
@@ -145,11 +154,16 @@ def plot_graph(
         climate_data=climate_data
     )
 
-    # Display a success message
-    print(
-        '\nGenerated the file '
-        f'{plot_properties.get("file_name", "unknown")}{FILE_SUFFIX}\n'
-    )
+    # Display the generated file name with a status indication
+    if plot_status is True:
+        # Display the generated file name
+        print(PLOT_FILE_NAME_STR.format(
+            plot_properties.get('file_name', 'unknown')),
+            FILE_SUFFIX
+        )
+    else:
+        # Display an error message
+        print(PLOT_FILE_NAME_ERROR_STR)
 
     return plot_status
 
@@ -233,7 +247,7 @@ def _validate_new_plot(
                 plot file.
 
         Returns:
-            plot_success (bool):
+            plot_valid (bool):
                 True if the file generates successfully.  False if the
                 file fails to generate.
     """
@@ -249,21 +263,21 @@ def _validate_new_plot(
 
     # Determine if the plot file generation is successful
     if file_char_count == plot_char_count:
-        plot_success = True
+        plot_valid = True
     else:
-        plot_success = False
+        plot_valid = False
 
-    return plot_success
+    return plot_valid
 
 
 def _print_plot_result(
-    plot_success: bool,
+    plot_valid: bool,
     plot_properties: PlotProperties
 ) -> None:
     """ Display the result of the plot file generation status.
 
         Args:
-            plot_success (bool):
+            plot_valid (bool):
                 Status of the plot generation validation.
 
             plot_properties (PlotProperties):
@@ -273,22 +287,11 @@ def _print_plot_result(
             None.
     """
 
-    if plot_success is True:
-        # Display a success message
-        if plot_properties.line_graph is True:
-            graph_type = PLOT_LINE_GRAPH_STR
-        elif plot_properties.line_graph is False:
-            graph_type = PLOT_BAR_GRAPH_STR
-        else:
-            graph_type = PLOT_UNKNOWN_GRAPH_STR
+    # Determine the graph type with a dictionary lookup of str(plot_valid)
+    graph_type = PLOT_PRINT_GRAPH_TYPE.get(str(plot_valid), 'None')
 
-        print(
-            f'\nPlotted the {graph_type} graph '
-            f'"{plot_properties.title}"\n'
-        )
-
-    else:
-        print('\nUnable to successfully generate a plot file.')
+    # Display a success or error message
+    print(PLOT_RESULT_STR.format(graph_type, plot_properties.title))
 
     return None
 
