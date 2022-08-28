@@ -6,6 +6,8 @@ from datetime import datetime
 from json import loads
 from pathlib import PosixPath
 from typing import Callable
+from unittest.mock import mock_open, patch
+import builtins
 
 # Imports - Third-Party
 from _pytest.capture import CaptureFixture
@@ -258,6 +260,7 @@ def test__plot_graph(
         requests_mock=requests_mock
     )
 
+    # Add transposed data to the plot_properties dict
     plot_properties = PPM_BAR_PLOT_PROPERTIES
     plot_properties.update(
         dict(
@@ -265,15 +268,31 @@ def test__plot_graph(
         )
     )
 
-    # Call the _plot_graph function
-    mock_response = _plot_graph(
-        plot_properties=PPM_BAR_PLOT_PROPERTIES,
-        climate_data=mock_climate_data_main
-    )
+    # Create a mock file open object
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the _plot_graph function
+        mock_response = _plot_graph(
+            plot_properties=PPM_BAR_PLOT_PROPERTIES,
+            climate_data=mock_climate_data_main
+        )
 
     # Assign STDOUT data to a variable
     std_out = capsys.readouterr().out
 
+    # Confirm the mock_file object was called once
+    assert mock_file.assert_called_once
+
+    # Confirm the _plot_graph returns True or False
     assert isinstance(mock_response, bool)
+
+    # Confirm expected STDOUT content is present
     assert 'False' not in std_out
     assert 'unknown type' not in std_out
