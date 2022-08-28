@@ -17,7 +17,7 @@ import requests_mock.mocker
 
 # Imports - Local
 from app.climate_data import (
-    main, _plot_graph, PPM_BAR_PLOT_PROPERTIES
+    main, plot_graph, PPM_BAR_PLOT_PROPERTIES
 )
 from app.ClimateData import (
      ATMOSPHERIC_CO2_URL, ClimateData, TransposedData
@@ -226,13 +226,13 @@ def test_main(
     return None
 
 
-def test__plot_graph(
+def test_plot_graph(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker,
     mock_climate_data_main: Callable,
     capsys: CaptureFixture
 ) -> None:
-    """ Test the climate_data._plot_graph function.
+    """ Test the climate_data.plot_graph function.
 
         Args:
             mock_api_request (Callable):
@@ -269,6 +269,7 @@ def test__plot_graph(
     )
 
     # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
     mock_file = mock_open()
 
     # Perform a mock write to the mock file
@@ -278,8 +279,8 @@ def test__plot_graph(
         new=mock_file
     ):
 
-        # Call the _plot_graph function
-        mock_response = _plot_graph(
+        # Call the plot_graph function
+        mock_response = plot_graph(
             plot_properties=PPM_BAR_PLOT_PROPERTIES,
             climate_data=mock_climate_data_main
         )
@@ -294,5 +295,4 @@ def test__plot_graph(
     assert isinstance(mock_response, bool)
 
     # Confirm expected STDOUT content is present
-    assert 'False' not in std_out
-    assert 'unknown type' not in std_out
+    assert PPM_BAR_PLOT_PROPERTIES.get('title', None) in std_out
