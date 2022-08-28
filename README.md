@@ -71,6 +71,6 @@ classDiagram
 
 ## Sources
 
-Climate data sourced from the [IMF[^1] Climate Change Indicators Dashboard](https://climatedata.imf.org "IMF Climate Change Indicators Dashboard")
+Climate data sourced from the [IMF Climate Change Indicators Dashboard](https://climatedata.imf.org "IMF Climate Change Indicators Dashboard")[^1]
 
 [^1]: International Monetary Fund
