@@ -170,11 +170,15 @@ def plot_graph(
 
 def _create_ppm_plot_properties(
     plot_properties: dict,
-    file_name: str
+    file_name: str,
+    climate_data: ClimateData
 ) -> dict:
     """ Create a plot_properties dictionary for Co2 PPM date data.
 
         Args:
+            climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
+
             plot_properties (dict):
                 dict object with plot-specific properties.
                 Use one of PPM_BAR_PLOT_PROPERTIES,
@@ -312,7 +316,8 @@ def plot_px_ppm_bar(
     # Setup plot properties object with a plot-specific file name
     plot_properties = _create_ppm_plot_properties(
         plot_properties=PPM_BAR_PLOT_PROPERTIES,
-        file_name=f'{PX_PREFIX}{BAR_PPM_FILE_NAME}'
+        file_name=f'{PX_PREFIX}{BAR_PPM_FILE_NAME}',
+        climate_data=climate_data
     )
 
     # Call the _plot_graph function
