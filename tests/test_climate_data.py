@@ -11,13 +11,14 @@ import builtins
 
 # Imports - Third-Party
 from _pytest.capture import CaptureFixture
-from pytest import fixture
+from pytest import fixture, mark
 import requests_mock
 import requests_mock.mocker
 
 # Imports - Local
 from app.climate_data import (
-    main, plot_graph, PPM_BAR_PLOT_PROPERTIES
+    main, plot_graph,  plot_px_ppm_bar, PPM_BAR_PLOT_PROPERTIES,
+    YOY_BAR_PLOT_PROPERTIES
 )
 from app.ClimateData import (
      ATMOSPHERIC_CO2_URL, ClimateData, TransposedData
@@ -93,6 +94,35 @@ MOCK_CO2_PPM_GRAPH_DATA = TransposedData(
         317.45,
         317.51
     )
+)
+MOCK_CO2_YOY_DATE_DATA = TransposedData(
+    dates=(
+        datetime(1959, 3, 1, 0, 0),
+        datetime(1959, 4, 1, 0, 0),
+        datetime(1959, 5, 1, 0, 0)
+    ),
+    values=(
+        0.3,
+        0.09,
+        0.25
+    )
+)
+TEST_PLOT_GRAPH_MOCK = zip(
+    # Plot properties to send to plot_data for testing
+    [
+        PPM_BAR_PLOT_PROPERTIES,
+        YOY_BAR_PLOT_PROPERTIES
+    ],
+    # Data to send to plot_data for testing
+    [
+        MOCK_CO2_PPM_GRAPH_DATA,
+        MOCK_CO2_YOY_DATE_DATA
+    ],
+    # Expected results of assert checking for the presence of the title
+    [
+        PPM_BAR_PLOT_PROPERTIES.get('title', None),
+        YOY_BAR_PLOT_PROPERTIES.get('title', None)
+    ]
 )
 
 
@@ -226,7 +256,104 @@ def test_main(
     return None
 
 
+@mark.parametrize(
+    argnames=[
+        'mock_plot_properties',
+        'mock_graph_data',
+        'expected_value'
+    ],
+    argvalues=list(
+        TEST_PLOT_GRAPH_MOCK
+    )
+)
 def test_plot_graph(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture,
+    mock_plot_properties: dict,
+    mock_graph_data: dict,
+    expected_value: str
+) -> None:
+    """ Test the climate_data.plot_graph function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+            mock_plot_properties (dict):
+                pytest.mark.parameterize parameter for mock
+                plot_properties data.
+
+            mock_graph_data (dict):
+                pytest.mark.parameterize parameter for mock
+                graph data.
+
+            mock_plot_properties (str):
+                pytest.mark.parameterize parameter for expected
+                return values.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Add transposed data to the plot_properties dict
+    plot_properties = mock_plot_properties
+    plot_properties.update(
+        dict(
+            transposed_data=mock_graph_data
+        )
+    )
+
+    # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the plot_graph function
+        mock_response = plot_graph(
+            plot_properties=mock_plot_properties,
+            climate_data=mock_climate_data_main
+        )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    # Confirm the mock_file object was called once
+    assert mock_file.assert_called_once
+
+    # Confirm the _plot_graph returns True or False
+    assert isinstance(mock_response, bool)
+
+    # Confirm expected STDOUT content is present
+    assert expected_value in std_out
+
+
+def test_plot_px_ppm_bar(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker,
     mock_climate_data_main: Callable,
@@ -260,14 +387,6 @@ def test_plot_graph(
         requests_mock=requests_mock
     )
 
-    # Add transposed data to the plot_properties dict
-    plot_properties = PPM_BAR_PLOT_PROPERTIES
-    plot_properties.update(
-        dict(
-            transposed_data=MOCK_CO2_PPM_GRAPH_DATA
-        )
-    )
-
     # Create a mock file open object
     # When called, prevents plot_graph from writing a new file
     mock_file = mock_open()
@@ -280,19 +399,14 @@ def test_plot_graph(
     ):
 
         # Call the plot_graph function
-        mock_response = plot_graph(
-            plot_properties=PPM_BAR_PLOT_PROPERTIES,
+        plot_px_ppm_bar(
             climate_data=mock_climate_data_main
         )
 
     # Assign STDOUT data to a variable
     std_out = capsys.readouterr().out
 
-    # Confirm the mock_file object was called once
-    assert mock_file.assert_called_once
-
-    # Confirm the _plot_graph returns True or False
-    assert isinstance(mock_response, bool)
-
     # Confirm expected STDOUT content is present
-    assert PPM_BAR_PLOT_PROPERTIES.get('title', None) in std_out
+    assert PPM_BAR_PLOT_PROPERTIES.get('title') in std_out
+
+    return None
