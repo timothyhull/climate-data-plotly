@@ -206,11 +206,15 @@ def _create_ppm_plot_properties(
 
 def _create_yoy_plot_properties(
     plot_properties: dict,
-    file_name: str
+    file_name: str,
+    climate_data: ClimateData
 ) -> dict:
     """ Create a plot_properties dictionary for Co2 YoY change data.
 
         Args:
+            climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
+
             plot_properties (dict):
                 dict object with plot-specific properties.
                 Use one of PPM_BAR_PLOT_PROPERTIES,
@@ -344,7 +348,8 @@ def plot_px_ppm_line(
     # Setup plot properties object with a plot-specific file name
     plot_properties = _create_ppm_plot_properties(
         plot_properties=PPM_LINE_PLOT_PROPERTIES,
-        file_name=f'{PX_PREFIX}{LINE_PPM_FILE_NAME}'
+        file_name=f'{PX_PREFIX}{LINE_PPM_FILE_NAME}',
+        climate_data=climate_data
     )
 
     # Call the _plot_graph function
@@ -371,7 +376,8 @@ def plot_px_yoy_bar(
     # Setup plot properties object with a plot-specific file name
     plot_properties = _create_yoy_plot_properties(
         plot_properties=YOY_BAR_PLOT_PROPERTIES,
-        file_name=f'{PX_PREFIX}{BAR_YOY_FILE_NAME}'
+        file_name=f'{PX_PREFIX}{BAR_YOY_FILE_NAME}',
+        climate_data=climate_data
     )
 
     # Call the _plot_graph function
@@ -398,7 +404,8 @@ def plot_px_yoy_line(
     # Setup plot properties object with a plot-specific file name
     plot_properties = _create_yoy_plot_properties(
         plot_properties=YOY_LINE_PLOT_PROPERTIES,
-        file_name=f'{PX_PREFIX}{LINE_YOY_FILE_NAME}'
+        file_name=f'{PX_PREFIX}{LINE_YOY_FILE_NAME}',
+        climate_data=climate_data
     )
 
     # Call the _plot_graph function
@@ -425,7 +432,8 @@ def plot_go_ppm_bar(
     # Setup plot properties object with a plot-specific file name
     plot_properties = _create_ppm_plot_properties(
         plot_properties=PPM_BAR_PLOT_PROPERTIES,
-        file_name=f'{GO_PREFIX}{BAR_PPM_FILE_NAME}'
+        file_name=f'{GO_PREFIX}{BAR_PPM_FILE_NAME}',
+        climate_data=climate_data
     )
 
     # Call the _plot_graph function
@@ -452,7 +460,8 @@ def plot_go_ppm_line(
     # Setup plot properties object with a plot-specific file name
     plot_properties = _create_ppm_plot_properties(
         plot_properties=PPM_LINE_PLOT_PROPERTIES,
-        file_name=f'{GO_PREFIX}{LINE_PPM_FILE_NAME}'
+        file_name=f'{GO_PREFIX}{LINE_PPM_FILE_NAME}',
+        climate_data=climate_data
     )
 
     # Call the _plot_graph function
@@ -479,7 +488,8 @@ def plot_go_yoy_bar(
     # Setup plot properties object with a plot-specific file name
     plot_properties = _create_yoy_plot_properties(
         plot_properties=YOY_BAR_PLOT_PROPERTIES,
-        file_name=f'{GO_PREFIX}{BAR_YOY_FILE_NAME}'
+        file_name=f'{GO_PREFIX}{BAR_YOY_FILE_NAME}',
+        climate_data=climate_data
     )
 
     # Call the _plot_graph function
@@ -506,7 +516,8 @@ def plot_go_yoy_line(
     # Setup plot properties object with a plot-specific file name
     plot_properties = _create_yoy_plot_properties(
         plot_properties=YOY_LINE_PLOT_PROPERTIES,
-        file_name=f'{GO_PREFIX}{LINE_YOY_FILE_NAME}'
+        file_name=f'{GO_PREFIX}{LINE_YOY_FILE_NAME}',
+        climate_data=climate_data
     )
 
     # Call the _plot_graph function
@@ -579,6 +590,23 @@ def go_graph_all() -> None:
     )
 
     return None
+
+
+def graph_all() -> None:
+    """ Run all Plotly graph-generating functions.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+    """
+
+    # Graph all Plotly Express plots
+    px_graph_all()
+
+    # Graph all Plotly Graph Object plots
+    go_graph_all()
 
 
 def main() -> ClimateData:
