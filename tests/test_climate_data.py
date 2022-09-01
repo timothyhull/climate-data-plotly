@@ -17,8 +17,10 @@ import requests_mock.mocker
 
 # Imports - Local
 from app.climate_data import (
-    main, plot_graph,  plot_px_ppm_bar, PPM_BAR_PLOT_PROPERTIES,
-    YOY_BAR_PLOT_PROPERTIES
+    main, plot_graph,  plot_px_ppm_bar, plot_px_ppm_line, plot_px_yoy_bar,
+    plot_px_yoy_line, plot_go_ppm_bar, plot_go_ppm_line, plot_go_yoy_bar,
+    plot_go_yoy_line, PPM_BAR_PLOT_PROPERTIES, PPM_LINE_PLOT_PROPERTIES,
+    YOY_BAR_PLOT_PROPERTIES, YOY_LINE_PLOT_PROPERTIES
 )
 from app.ClimateData import (
      ATMOSPHERIC_CO2_URL, ClimateData, TransposedData
@@ -359,7 +361,7 @@ def test_plot_px_ppm_bar(
     mock_climate_data_main: Callable,
     capsys: CaptureFixture
 ) -> None:
-    """ Test the climate_data.plot_graph function.
+    """ Test the climate_data.plot_px_ppm_bar function.
 
         Args:
             mock_api_request (Callable):
@@ -407,6 +409,419 @@ def test_plot_px_ppm_bar(
     std_out = capsys.readouterr().out
 
     # Confirm expected STDOUT content is present
-    assert PPM_BAR_PLOT_PROPERTIES.get('title') in std_out
+    assert PPM_BAR_PLOT_PROPERTIES.get('title', None) in std_out
+
+    return None
+
+
+def test_plot_px_ppm_line(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture
+) -> None:
+    """ Test the climate_data.plot_px_ppm_line function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the plot_graph function
+        plot_px_ppm_line(
+            climate_data=mock_climate_data_main
+        )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    # Confirm expected STDOUT content is present
+    assert PPM_LINE_PLOT_PROPERTIES.get('title', None) in std_out
+
+    return None
+
+
+def test_plot_px_yoy_bar(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture
+) -> None:
+    """ Test the climate_data.plot_px_yoy_bar function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the plot_graph function
+        plot_px_yoy_bar(
+            climate_data=mock_climate_data_main
+        )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    # Confirm expected STDOUT content is present
+    assert YOY_BAR_PLOT_PROPERTIES.get('title', None) in std_out
+
+    return None
+
+
+def test_plot_px_yoy_line(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture
+) -> None:
+    """ Test the climate_data.plot_px_yoy_line function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the plot_graph function
+        plot_px_yoy_line(
+            climate_data=mock_climate_data_main
+        )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    # Confirm expected STDOUT content is present
+    assert YOY_LINE_PLOT_PROPERTIES.get('title', None) in std_out
+
+    return None
+
+
+def test_plot_go_ppm_bar(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture
+) -> None:
+    """ Test the climate_data.plot_go_ppm_bar function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the plot_graph function
+        plot_go_ppm_bar(
+            climate_data=mock_climate_data_main
+        )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    # Confirm expected STDOUT content is present
+    assert PPM_BAR_PLOT_PROPERTIES.get('title', None) in std_out
+
+    return None
+
+
+def test_plot_go_ppm_line(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture
+) -> None:
+    """ Test the climate_data.plot_go_ppm_line function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the plot_graph function
+        plot_go_ppm_line(
+            climate_data=mock_climate_data_main
+        )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    # Confirm expected STDOUT content is present
+    assert PPM_LINE_PLOT_PROPERTIES.get('title', None) in std_out
+
+    return None
+
+
+def test_plot_go_yoy_bar(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture
+) -> None:
+    """ Test the climate_data.plot_go_yoy_bar function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the plot_graph function
+        plot_go_yoy_bar(
+            climate_data=mock_climate_data_main
+        )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    # Confirm expected STDOUT content is present
+    assert YOY_BAR_PLOT_PROPERTIES.get('title', None) in std_out
+
+    return None
+
+
+def test_plot_go_yoy_line(
+    mock_api_request: Callable,
+    requests_mock: requests_mock.mocker,
+    mock_climate_data_main: Callable,
+    capsys: CaptureFixture
+) -> None:
+    """ Test the climate_data.plot_go_yoy_line function.
+
+        Args:
+            mock_api_request (Callable):
+                Callable pytest fixture factory function that
+                allows passing arguments to the _mock_api_request
+                function.
+
+            requests_mock (requests_mock.mocker):
+                Mock HTTP request and response pytest fixture.
+
+            mock_climate_data_main (Callable):
+                pytest fixture that creates a mock instance of the
+                ClimateData.ClimateData class returned by the
+                climate_data.main function.
+
+            capsys (_pytest.capture.CaptureFixture):
+                pytest fixture to capture STDOUT data.
+
+        Return:
+            None.
+    """
+
+    # Call the mock_api_request fixture
+    mock_api_request(
+        requests_mock=requests_mock
+    )
+
+    # Create a mock file open object
+    # When called, prevents plot_graph from writing a new file
+    mock_file = mock_open()
+
+    # Perform a mock write to the mock file
+    with patch.object(
+        target=builtins,
+        attribute='open',
+        new=mock_file
+    ):
+
+        # Call the plot_graph function
+        plot_go_yoy_line(
+            climate_data=mock_climate_data_main
+        )
+
+    # Assign STDOUT data to a variable
+    std_out = capsys.readouterr().out
+
+    # Confirm expected STDOUT content is present
+    assert YOY_LINE_PLOT_PROPERTIES.get('title', None) in std_out
 
     return None
