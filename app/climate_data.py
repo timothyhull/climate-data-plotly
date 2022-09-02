@@ -526,11 +526,13 @@ def plot_go_yoy_line(
     return None
 
 
-def px_graph_all() -> None:
+def px_graph_all(
+    climate_data: ClimateData
+) -> None:
     """ Run all Plotly Express (px) graph-generating functions.
 
-        Args:
-            None.
+        climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
 
         Returns:
             None.
@@ -559,11 +561,13 @@ def px_graph_all() -> None:
     return None
 
 
-def go_graph_all() -> None:
-    """ Run all Plotly Graph Object (go) graph-generating functions.
+def go_graph_all(
+    climate_data: ClimateData
+) -> None:
+    """ Run all Plotly Express (px) graph-generating functions.
 
-        Args:
-            None.
+        climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
 
         Returns:
             None.
@@ -592,21 +596,27 @@ def go_graph_all() -> None:
     return None
 
 
-def graph_all() -> None:
-    """ Run all Plotly graph-generating functions.
+def graph_all(
+    climate_data: ClimateData
+) -> None:
+    """ Run all Plotly Express (px) graph-generating functions.
 
-        Args:
-            None.
+        climate_data (ClimateData):
+                Instance of the ClimateData.ClimateData class.
 
         Returns:
             None.
     """
 
     # Graph all Plotly Express plots
-    px_graph_all()
+    px_graph_all(
+        climate_data=climate_data
+    )
 
     # Graph all Plotly Graph Object plots
-    go_graph_all()
+    go_graph_all(
+        climate_data=climate_data
+    )
 
 
 def main() -> ClimateData:
