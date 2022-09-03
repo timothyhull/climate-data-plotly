@@ -4,14 +4,14 @@
 # Imports - Python Standard Library
 
 # Imports - Third-Party
-from flask import Flask, render_template
+from flask import Flask  # , render_template
 
 # Imports - Local
 # from app.ClimateData import ClimateData
-import app as app_climate
+import app.ClimateData as app
 
 # Create Flask object
-app = Flask(__name__)
+flask_app = Flask(__name__)
 
 # Constants
 FLASK_HOST = 'localhost'
@@ -19,7 +19,7 @@ FLASK_PORT = 8088
 FLASK_DEBUG = False
 
 
-@app.route(
+@flask_app.route(
     rule='/'
 )
 def index() -> str:
@@ -33,21 +33,36 @@ def index() -> str:
                     HTML data for web browser consumption.
         """
 
+    # Create PlotProperties object
+    plot_properties = app.PlotProperties(
+        compress_y_axis=True,
+        line_graph=False,
+        date_label='Dates',
+        value_label='Atmospheric Co2 PPM',
+        title='Monthly Atmospheric Co2 PPM Levels History',
+        px_plot=False
+    )
+
     # Create an instance of ClimateData
-    cd = app_climate.ClimateData.ClimateData()
+    cd = app.ClimateData()
+
+    html_data = cd.plot_atmospheric_co2_data(
+        plot_properties=plot_properties,
+        transposed_data=cd.transposed_co2_ppm_date_data
+    )
 
     # Render HTML from the index template
-    html_data = render_template(
-        template_name_or_list='index.html',
-        atmospheric_co2_data=cd.atmospheric_co2_data[:10]
-    )
+    # html_data = render_template(
+    #     template_name_or_list='index.html',
+    #     atmospheric_co2_data=cd.atmospheric_co2_data[:10]
+    # )
 
     return html_data
 
 
 if __name__ == '__main__':
     # Run the Flask application
-    app.run(
+    flask_app.run(
         host=FLASK_HOST,
         port=FLASK_PORT,
         debug=FLASK_DEBUG
