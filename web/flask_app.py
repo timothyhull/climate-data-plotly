@@ -7,8 +7,8 @@
 from flask import Flask  # , render_template
 
 # Imports - Local
-# from app.ClimateData import ClimateData
-import app.ClimateData as app
+from app.ClimateData import ClimateData as app
+# import app.ClimateData as app
 
 # Create Flask object
 flask_app = Flask(__name__)
