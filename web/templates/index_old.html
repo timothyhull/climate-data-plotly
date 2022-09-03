@@ -1,0 +1,12 @@
+<!-- Template file for the default route ('/') -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Climate Data</title>
+    </head>
+    <body>
+        {% for data_point in atmospheric_co2_data %}
+            <p>{{ data_point.attributes['Date'] }}: {{ data_point.attributes['Value'] }}</p>
+        {% endfor %}
+    </body>
+</html>
