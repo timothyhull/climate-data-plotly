@@ -134,7 +134,7 @@ def plot_graph(
 
         Args:
             climate_data (ClimateData):
-            Instance of the ClimateData.ClimateData class.
+                Instance of the ClimateData.ClimateData class.
 
         plot_properties (dict):
             dict object with plot-specific properties.
@@ -158,8 +158,8 @@ def plot_graph(
     if plot_status is True:
         # Display the generated file name
         print(PLOT_FILE_NAME_STR.format(
-            plot_properties.get('file_name', 'unknown')),
-            FILE_SUFFIX
+            plot_properties.get('file_name', 'unknown'),
+            FILE_SUFFIX)
         )
     else:
         # Display an error message
@@ -532,7 +532,7 @@ def px_graph_all(
     """ Run all Plotly Express (px) graph-generating functions.
 
         climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            Instance of the ClimateData.ClimateData class.
 
         Returns:
             None.
@@ -567,7 +567,7 @@ def go_graph_all(
     """ Run all Plotly Express (px) graph-generating functions.
 
         climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            Instance of the ClimateData.ClimateData class.
 
         Returns:
             None.
@@ -602,7 +602,7 @@ def graph_all(
     """ Run all Plotly Express (px) graph-generating functions.
 
         climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            Instance of the ClimateData.ClimateData class.
 
         Returns:
             None.
