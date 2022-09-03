@@ -16,7 +16,7 @@ import requests_mock
 import requests_mock.mocker
 
 # Imports - Local
-from climate_data import (
+from app.climate_data import (
     main, plot_graph,  plot_px_ppm_bar, plot_px_ppm_line, plot_px_yoy_bar,
     plot_px_yoy_line, plot_go_ppm_bar, plot_go_ppm_line, plot_go_yoy_bar,
     plot_go_yoy_line, px_graph_all, go_graph_all, graph_all,
