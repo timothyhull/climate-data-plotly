@@ -7,7 +7,7 @@
 
 # Imports - Local
 from app.ClimateData import (
-    ClimateData, PlotProperties
+    AtmosphericCo2PPM, PlotProperties
 )
 
 # Constants
@@ -67,7 +67,7 @@ YOY_LINE_PLOT_PROPERTIES = dict(
 # Plotly Express (px) function
 def _plot_graph(
     plot_properties: dict,
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> bool:
     """ Generate a line or bar graph HTML file of atmospheric Co2 data.
 
@@ -78,10 +78,10 @@ def _plot_graph(
                 PPM_LINE_PLOT_PROPERTIES, YOY_BAR_PLOT_PROPERTIES,
                 or YOY_LINE_PLOT_PROPERTIES constants.
 
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
                 Default is creating a new instance of
-                ClimateData.ClimateData.
+                ClimateData.AtmosphericCo2PPM.
 
         Returns:
             plot_status (bool):
@@ -124,7 +124,7 @@ def _plot_graph(
 
 
 def plot_graph(
-    climate_data: ClimateData,
+    climate_data: AtmosphericCo2PPM,
     plot_properties: dict
 ) -> bool:
     """ Helper function for the _plot_graph function.
@@ -133,8 +133,8 @@ def plot_graph(
         function directly.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         plot_properties (dict):
             dict object with plot-specific properties.
@@ -171,13 +171,13 @@ def plot_graph(
 def _create_ppm_plot_properties(
     plot_properties: dict,
     file_name: str,
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> dict:
     """ Create a plot_properties dictionary for Co2 PPM date data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
             plot_properties (dict):
                 dict object with plot-specific properties.
@@ -207,13 +207,13 @@ def _create_ppm_plot_properties(
 def _create_yoy_plot_properties(
     plot_properties: dict,
     file_name: str,
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> dict:
     """ Create a plot_properties dictionary for Co2 YoY change data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
             plot_properties (dict):
                 dict object with plot-specific properties.
@@ -305,13 +305,13 @@ def _print_plot_result(
 
 
 def plot_px_ppm_bar(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Create a Plotly Express bar graph with monthly PPM data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -331,15 +331,15 @@ def plot_px_ppm_bar(
 
 
 def plot_px_ppm_line(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Create a Plotly Express line graph.
 
         Use monthly PPM data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -359,15 +359,15 @@ def plot_px_ppm_line(
 
 
 def plot_px_yoy_bar(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Create a Plotly Express bar graph.
 
         Use PPM YoY monthly % change data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -387,15 +387,15 @@ def plot_px_yoy_bar(
 
 
 def plot_px_yoy_line(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Create a Plotly Express bar graph.
 
         Use PPM YoY monthly % change data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -415,15 +415,15 @@ def plot_px_yoy_line(
 
 
 def plot_go_ppm_bar(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Create a Plotly Graph Object bar graph.
 
         Use monthly PPM data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -443,15 +443,15 @@ def plot_go_ppm_bar(
 
 
 def plot_go_ppm_line(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Create a Plotly Graph Object line graph.
 
         Use monthly PPM data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -471,15 +471,15 @@ def plot_go_ppm_line(
 
 
 def plot_go_yoy_bar(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Create a Plotly Graph Object bar graph.
 
         Use PPM YoY monthly % change data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -499,15 +499,15 @@ def plot_go_yoy_bar(
 
 
 def plot_go_yoy_line(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Create a Plotly Graph Object line graph.
 
         Use PPM YoY monthly % change data.
 
         Args:
-            climate_data (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            climate_data (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -527,12 +527,12 @@ def plot_go_yoy_line(
 
 
 def px_graph_all(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Run all Plotly Express (px) graph-generating functions.
 
-        climate_data (ClimateData):
-            Instance of the ClimateData.ClimateData class.
+        climate_data (AtmosphericCo2PPM):
+            Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -562,12 +562,12 @@ def px_graph_all(
 
 
 def go_graph_all(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Run all Plotly Express (px) graph-generating functions.
 
-        climate_data (ClimateData):
-            Instance of the ClimateData.ClimateData class.
+        climate_data (AtmosphericCo2PPM):
+            Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -597,12 +597,12 @@ def go_graph_all(
 
 
 def graph_all(
-    climate_data: ClimateData
+    climate_data: AtmosphericCo2PPM
 ) -> None:
     """ Run all Plotly Express (px) graph-generating functions.
 
-        climate_data (ClimateData):
-            Instance of the ClimateData.ClimateData class.
+        climate_data (AtmosphericCo2PPM):
+            Instance of the ClimateData.AtmosphericCo2PPM class.
 
         Returns:
             None.
@@ -619,19 +619,19 @@ def graph_all(
     )
 
 
-def main() -> ClimateData:
+def main() -> AtmosphericCo2PPM:
     """ Main application.
 
         Args:
             None.
 
         Returns:
-            cd (ClimateData):
-                Instance of the ClimateData.ClimateData class.
+            cd (AtmosphericCo2PPM):
+                Instance of the ClimateData.AtmosphericCo2PPM class.
     """
 
     # Create an instance of ClimateData
-    climate_data = ClimateData()
+    climate_data = AtmosphericCo2PPM()
 
     return climate_data
 

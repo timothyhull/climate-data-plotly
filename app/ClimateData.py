@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-""" ClimateData class and methods. """
+""" ClimateData classes and methods. """
 
 # Imports - Python Standard Library
+from abc import ABC, abstractmethod
 from collections import namedtuple
 from datetime import datetime
 from os import environ, path
@@ -134,11 +135,22 @@ TransposedData = namedtuple(
 )
 
 
-class ClimateData:
-    """ Climate Data class object. """
+# Abstract factory classes
+class ClimateData(ABC):
+    """ Abstract factory class for all climate data classes. """
+
+    @abstractmethod
+    def _get_api_data(self) -> None:
+        """ TODO """
+        pass
+
+
+# Concrete factory classes
+class AtmosphericCo2PPM(ClimateData):
+    """ Atmospheric Co2 PPM class object. """
 
     def __init__(self) -> None:
-        """ ClimateData initialization method.
+        """ AtmosphericCo2PPM initialization method.
 
             Args:
                 None.
@@ -148,7 +160,7 @@ class ClimateData:
         """
 
         # Retrieve atmospheric Co2 levels data
-        self.atmospheric_co2_data = self._get_atmospheric_co2_data()
+        self.atmospheric_co2_data = self._get_api_data()
 
         # Extract atmospheric Co2 PPM per month and matching date data
         self.co2_ppm_date_data = self._get_co2_ppm_date_data()
@@ -232,7 +244,7 @@ class ClimateData:
 
         return date_obj
 
-    def _get_atmospheric_co2_data(self) -> Dict:
+    def _get_api_data(self) -> Dict:
         """ Retrieve atmospheric Co2 levels data.
 
             Creates the self.atmospheric_co2_data attribute that

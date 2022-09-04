@@ -31,8 +31,9 @@ classDiagram
         # Runtime file with `main` function
         -climate_data.py
         ---
-        # ClimateData class
+        # ClimateData classes
         -ClimateData.py
+        
     }
     class plot_files{
         # HTML plot file folder

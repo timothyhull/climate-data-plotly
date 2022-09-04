@@ -24,7 +24,7 @@ from app.climate_data import (
     YOY_LINE_PLOT_PROPERTIES, PLOT_FILE_NAME_ERROR_STR
 )
 from app.ClimateData import (
-     ATMOSPHERIC_CO2_URL, ClimateData, TransposedData
+     ATMOSPHERIC_CO2_URL, AtmosphericCo2PPM, TransposedData
 )
 
 # Constants
@@ -192,7 +192,7 @@ def mock_api_request(
 def mock_climate_data_main(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
-) -> ClimateData:
+) -> AtmosphericCo2PPM:
     """ Mock climate_data object returned by climate_data.main.
 
         Args:
@@ -205,8 +205,8 @@ def mock_climate_data_main(
                 Mock HTTP request and response pytest fixture.
 
         Returns:
-            climate_data (ClimateData):
-                Mock instance of the ClimateData.ClimateData class
+            climate_data (AtmosphericCo2PPM):
+                Mock instance of the ClimateData.AtmosphericCo2PPM class
                 returned by the climate_data.main function.
     """
 
@@ -239,7 +239,7 @@ def test_main(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
         Return:
@@ -291,7 +291,7 @@ def test_plot_graph(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -375,7 +375,7 @@ def test_plot_px_ppm_bar(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -434,7 +434,7 @@ def test_plot_px_ppm_line(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -493,7 +493,7 @@ def test_plot_px_yoy_bar(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -552,7 +552,7 @@ def test_plot_px_yoy_line(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -611,7 +611,7 @@ def test_plot_go_ppm_bar(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -670,7 +670,7 @@ def test_plot_go_ppm_line(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -729,7 +729,7 @@ def test_plot_go_yoy_bar(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -788,7 +788,7 @@ def test_plot_go_yoy_line(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -847,7 +847,7 @@ def test_px_graph_all(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -908,7 +908,7 @@ def test_go_graph_all(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):
@@ -969,7 +969,7 @@ def test_graph_all(
 
             mock_climate_data_main (Callable):
                 pytest fixture that creates a mock instance of the
-                ClimateData.ClimateData class returned by the
+                ClimateData.AtmosphericCo2PPM class returned by the
                 climate_data.main function.
 
             capsys (_pytest.capture.CaptureFixture):

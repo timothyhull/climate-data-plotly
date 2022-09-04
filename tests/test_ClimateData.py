@@ -18,7 +18,7 @@ import requests_mock.mocker
 
 # Imports - Local
 from app.ClimateData import (
-    ATMOSPHERIC_CO2_URL, ClimateData, GO_LINE_GRAPH_MODE,
+    ATMOSPHERIC_CO2_URL, AtmosphericCo2PPM, GO_LINE_GRAPH_MODE,
     TransposedData, PlotProperties
 )
 
@@ -386,7 +386,7 @@ def test_convert_date_string(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData.convert_date_string method.
+    """ Test the AtmosphericCo2PPM.convert_date_string method.
 
         Args:
             date_input (List):
@@ -410,8 +410,8 @@ def test_convert_date_string(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Assert that _convert_date_string returns the expected values
     assert cd._convert_date_string(
@@ -426,7 +426,7 @@ def test_convert_date_string_error(
     requests_mock: requests_mock.mocker,
     tmp_path: PosixPath
 ) -> None:
-    """ Test the ClimateData.convert_date_string method.
+    """ Test the AtmosphericCo2PPM.convert_date_string method.
 
         Includes an invalid date string, to test the ValueError
         exception handling.
@@ -459,17 +459,17 @@ def test_convert_date_string_error(
             date_error=True
         )
 
-        # Instantiate the ClimateData.ClimateData class
-        ClimateData()
+        # Instantiate the ClimateData.AtmosphericCo2PPM class
+        AtmosphericCo2PPM()
 
     return None
 
 
-def test_get_atmospheric_co2_data(
+def test_get_api_data(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker,
 ) -> None:
-    """ Test the ClimateData._get_atmospheric_co2_data method.
+    """ Test the AtmosphericCo2PPM._get_api_data method.
 
         Args:
             mock_api_request (Callable):
@@ -489,23 +489,23 @@ def test_get_atmospheric_co2_data(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
-    # Call the _get_atmospheric_co2_data method
-    mock_response = cd._get_atmospheric_co2_data()
+    # Call the _get_api_data method
+    mock_response = cd._get_api_data()
 
     assert mock_response == MOCK_RAW_CO2_PPM_LIST + MOCK_RAW_CO2_YOY_LIST
 
     return None
 
 
-def test_get_atmospheric_co2_data_http_error(
+def test_get_api_data_http_error(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker,
     tmp_path: PosixPath,
 ) -> None:
-    """ Test the ClimateData._get_atmospheric_co2_data method.
+    """ Test the AtmosphericCo2PPM._get_api_data method.
 
         Determine if the method properly raises an HTTPError with a
         mock bad HTTP status code.
@@ -535,11 +535,11 @@ def test_get_atmospheric_co2_data_http_error(
             status_code=400
         )
 
-        # Create an instance of the ClimateData.ClimateData class
-        cd = ClimateData()
+        # Create an instance of the ClimateData.AtmosphericCo2PPM class
+        cd = AtmosphericCo2PPM()
 
-        # Call the _get_atmospheric_co2_data method
-        cd._get_atmospheric_co2_data()
+        # Call the _get_api_data method
+        cd._get_api_data()
 
     return None
 
@@ -549,7 +549,7 @@ def test_get_co2_ppm_date_data(
     requests_mock: requests_mock.mocker,
     tmp_path: PosixPath
 ) -> None:
-    """ Test the ClimateData._get_co2_ppm_date_data method.
+    """ Test the AtmosphericCo2PPM._get_co2_ppm_date_data method.
 
         Args:
             mock_api_request (Callable):
@@ -572,8 +572,8 @@ def test_get_co2_ppm_date_data(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Call the _get_co2_ppm_date_data method
     mock_response = cd._get_co2_ppm_date_data(
@@ -590,7 +590,7 @@ def test_get_co2_yoy_change_data(
     requests_mock: requests_mock.mocker,
     tmp_path: PosixPath
 ) -> None:
-    """ Test the ClimateData._get_co2_yoy_change_data method.
+    """ Test the AtmosphericCo2PPM._get_co2_yoy_change_data method.
 
         Args:
             mock_api_request (Callable):
@@ -612,8 +612,8 @@ def test_get_co2_yoy_change_data(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Call the _get_co2_yoy_change_data method
     mock_response = cd._get_co2_yoy_change_data(
@@ -629,7 +629,7 @@ def test_compress_y_axis(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData._compress_y_axis method.
+    """ Test the AtmosphericCo2PPM._compress_y_axis method.
 
         Args:
             mock_api_request (Callable):
@@ -649,8 +649,8 @@ def test_compress_y_axis(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Call the _compress_y_axis method
     mock_response = cd._compress_y_axis(
@@ -673,7 +673,7 @@ def test_plot_px(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData._plot_px method.
+    """ Test the AtmosphericCo2PPM._plot_px method.
 
         Args:
             mock_api_request (Callable):
@@ -693,8 +693,8 @@ def test_plot_px(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Call the _plot_px method
     mock_response = cd._plot_px(
@@ -713,7 +713,7 @@ def test_plot_go(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData._plot_go method.
+    """ Test the AtmosphericCo2PPM._plot_go method.
 
         Args:
             mock_api_request (Callable):
@@ -733,8 +733,8 @@ def test_plot_go(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Call the _plot_px method
     mock_response = cd._plot_go(
@@ -762,7 +762,7 @@ def test_transpose_data_for_graphing(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData.transpose_data_for_graphing method.
+    """ Test the AtmosphericCo2PPM.transpose_data_for_graphing method.
 
         Args:
             co2_data: (List[List]):
@@ -789,8 +789,8 @@ def test_transpose_data_for_graphing(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Call the transpose_data_for_graphing method
     mock_response = cd.transpose_data_for_graphing(
@@ -817,7 +817,7 @@ def test_plot_atmospheric_co2_data_px(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData.plot_atmospheric_co2_data method.
+    """ Test the AtmosphericCo2PPM.plot_atmospheric_co2_data method.
 
         Test with plotly.express.
 
@@ -845,8 +845,8 @@ def test_plot_atmospheric_co2_data_px(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Call the plot_atmospheric_co2_data_px method
     mock_response = cd.plot_atmospheric_co2_data(
@@ -874,7 +874,7 @@ def test_plot_atmospheric_co2_data_go(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData.plot_atmospheric_co2_data method.
+    """ Test the AtmosphericCo2PPM.plot_atmospheric_co2_data method.
 
         Test with plotly.graph_objects.
 
@@ -902,8 +902,8 @@ def test_plot_atmospheric_co2_data_go(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Call the plot_atmospheric_co2_data_go method
     mock_response = cd.plot_atmospheric_co2_data(
@@ -927,7 +927,7 @@ def test_write_plot_html_file(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData.write_plot_html_file method.
+    """ Test the AtmosphericCo2PPM.write_plot_html_file method.
 
         Args:
             mock_mkdir (unittest.mock.MagicMock):
@@ -952,8 +952,8 @@ def test_write_plot_html_file(
         requests_mock=requests_mock
     )
 
-    # Create an instance of the ClimateData.ClimateData class
-    cd = ClimateData()
+    # Create an instance of the ClimateData.AtmosphericCo2PPM class
+    cd = AtmosphericCo2PPM()
 
     # Define a mock_open object with mock_html_data
     write_html_mock = mock_open(
@@ -1001,7 +1001,7 @@ def test_write_plot_html_dir_error(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData.write_plot_html_file method exceptions.
+    """ Test the AtmosphericCo2PPM.write_plot_html_file method exceptions.
 
         Check for proper handling of an OSError exception when
         Python is unable to create a directory in storage.
@@ -1028,8 +1028,8 @@ def test_write_plot_html_dir_error(
             requests_mock=requests_mock
         )
 
-        # Create an instance of the ClimateData.ClimateData class
-        cd = ClimateData()
+        # Create an instance of the ClimateData.AtmosphericCo2PPM class
+        cd = AtmosphericCo2PPM()
 
         # Call the write_plot_html_file method
         cd.write_plot_html_file()
@@ -1041,7 +1041,7 @@ def test_write_plot_html_file_error(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
 ) -> None:
-    """ Test the ClimateData.write_plot_html_file method exceptions.
+    """ Test the AtmosphericCo2PPM.write_plot_html_file method exceptions.
 
         Check for proper handling of a FileNotFound exception when
         Python is unable to write a file to storage.
@@ -1067,8 +1067,8 @@ def test_write_plot_html_file_error(
             requests_mock=requests_mock
         )
 
-        # Create an instance of the ClimateData.ClimateData class
-        cd = ClimateData()
+        # Create an instance of the ClimateData.AtmosphericCo2PPM class
+        cd = AtmosphericCo2PPM()
 
         # Call the write_plot_html_file method
         cd.write_plot_html_file()
@@ -1076,4 +1076,4 @@ def test_write_plot_html_file_error(
     return None
 
 
-# Add pytest functions for new ClimateData methods
+# Add pytest functions for new AtmosphericCo2PPM methods
