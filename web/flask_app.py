@@ -7,7 +7,7 @@
 from flask import Flask  # , render_template
 
 # Imports - Local
-from app.ClimateData import ClimateDataCO2 as app
+from app.ClimateData import ClimateData as app
 # import app.ClimateData as app
 
 # Create Flask object
