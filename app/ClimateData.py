@@ -2,7 +2,6 @@
 """ ClimateData class and methods. """
 
 # Imports - Python Standard Library
-from abc import ABC, abstractmethod
 from collections import namedtuple
 from datetime import datetime
 from os import environ, path
@@ -135,14 +134,7 @@ TransposedData = namedtuple(
 )
 
 
-# Abstract factory class
-class AbstractClass(ABC):
-    @abstractmethod
-    def func():
-        pass
-
-
-class ClimateData(AbstractClass):
+class ClimateData:
     """ Climate Data class object. """
 
     def __init__(self) -> None:
