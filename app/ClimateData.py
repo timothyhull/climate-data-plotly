@@ -134,7 +134,13 @@ TransposedData = namedtuple(
 )
 
 
+# Abstract factory class
 class ClimateData:
+    def __init__(self) -> None:
+        pass
+
+
+class ClimateDataCO2(ClimateData):
     """ Climate Data class object. """
 
     def __init__(self) -> None:
