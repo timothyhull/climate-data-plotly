@@ -149,6 +149,58 @@ class ClimateData(ABC):
 class AtmosphericCo2PPM(ClimateData):
     """ Atmospheric Co2 PPM class object. """
 
+    class PlotProperties(NamedTuple):
+        """ Properties for formatting a graphed plot.
+
+            Typed version of the collections.namedtuple object with
+            field names and default values.
+
+            Field Names and Default Values:
+
+                line_graph (bool, optional):
+                    Specifies whether the plot will be a line graph
+                    or not.  When True, the plot will be a line graph.
+                    When False, the plot will be a bar graph.  Default
+                    is True.
+
+                date_label (str, optional):
+                    Label of plot y-axis.  Default is PLOT_DATE_LABEL.
+
+                value_label (str, optional):
+                    Label of plot y-axis.  Default is PLOT_VALUE_LABEL.
+
+                title (str, optional):
+                    Title of plot. Default is PLOT_TITLE.
+
+                compress_y_axis (str, optional):
+                    Determine whether the y-axis starts at 0, which
+                    displays well with PPM data although poorly with
+                    YOY data.  When True, compresses the y-axis range
+                    to 95% of the first value of the y-axis data,
+                    and 100.5% of the last value in the y-axis data.
+                    Default is False.
+
+                file_name (str, optional):
+                    Name of an HTML file to create with plot results,
+                    without the .html suffix.
+                    Default is PLOT_FILE_DEFAULT_NAME,
+
+                px_plot (bool, optional):
+                    Specifies the type of plot for Plotly to render.
+                    True renders the plot with plotly.express.
+                    False renders the plot with plotly.graph_objects.
+                    Default is False.
+        """
+
+        # Field names and default values
+        line_graph: bool = True,
+        date_label: str = PLOT_DATE_LABEL,
+        value_label: str = PLOT_VALUE_LABEL,
+        title: str = PLOT_TITLE,
+        compress_y_axis: bool = False,
+        file_name: str = PLOT_FILE_DEFAULT_NAME,
+        px_plot: bool = False
+
     def __init__(self) -> None:
         """ AtmosphericCo2PPM initialization method.
 
