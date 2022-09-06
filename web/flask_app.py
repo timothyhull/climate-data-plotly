@@ -8,7 +8,7 @@ from flask import Flask  # , render_template
 
 # Imports - Local
 # from app.ClimateData import AtmosphericCo2PPM, PlotProperties
-from app.ClimateData import AtmosphericCo2PPM as ppm
+from app.ClimateData import AtmosphericCo2PPM as APP
 
 # Create Flask object
 flask_app = Flask(__name__)
@@ -34,7 +34,7 @@ def index() -> str:
         """
 
     # Create PlotProperties object
-    plot_properties = ppm.PlotProperties(
+    plot_properties = APP.PlotProperties(
         compress_y_axis=True,
         line_graph=False,
         date_label='Dates',
@@ -45,7 +45,7 @@ def index() -> str:
 
     # Create an instance of AtmosphericCo2PPM
     # cd = AtmosphericCo2PPM()
-    cd = ppm()
+    cd = APP()
 
     html_data = cd.plot_atmospheric_co2_data(
         plot_properties=plot_properties,

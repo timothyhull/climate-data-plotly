@@ -24,7 +24,10 @@ from app.atmospheric_co2_ppm import (
     YOY_LINE_PLOT_PROPERTIES, PLOT_FILE_NAME_ERROR_STR
 )
 from app.ClimateData import (
-     ATMOSPHERIC_CO2_URL, AtmosphericCo2PPM, TransposedData
+    AtmosphericCo2PPM as APP
+)
+from app.ClimateData import (
+    ATMOSPHERIC_CO2_URL
 )
 
 # Constants
@@ -86,7 +89,7 @@ MOCK_RAW_CO2_JSON = '''
         }
     }]
 }'''
-MOCK_CO2_PPM_GRAPH_DATA = TransposedData(
+MOCK_CO2_PPM_GRAPH_DATA = APP.TransposedData(
     dates=(
         datetime(1958, 3, 1, 0, 0),
         datetime(1958, 4, 1, 0, 0),
@@ -98,7 +101,7 @@ MOCK_CO2_PPM_GRAPH_DATA = TransposedData(
         317.51
     )
 )
-MOCK_CO2_YOY_DATE_DATA = TransposedData(
+MOCK_CO2_YOY_DATE_DATA = APP.TransposedData(
     dates=(
         datetime(1959, 3, 1, 0, 0),
         datetime(1959, 4, 1, 0, 0),
@@ -192,7 +195,7 @@ def mock_api_request(
 def mock_climate_data_main(
     mock_api_request: Callable,
     requests_mock: requests_mock.mocker
-) -> AtmosphericCo2PPM:
+) -> APP:
     """ Mock climate_data object returned by climate_data.main.
 
         Args:
