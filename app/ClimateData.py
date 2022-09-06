@@ -80,7 +80,7 @@ class ClimateData(ABC):
         pass
 
 
-# Concrete factory classes
+# Concrete product classes
 class AtmosphericCo2PPM(ClimateData):
     """ Atmospheric Co2 PPM class object. """
 
