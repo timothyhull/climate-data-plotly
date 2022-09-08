@@ -75,14 +75,20 @@ class ClimateData(ABC):
     """ Abstract factory class for all climate data classes. """
 
     @abstractmethod
-    def _get_api_data(self) -> None:
-        """ TODO """
+    def test(self) -> None:
         pass
+    # def _get_api_data(self) -> None:
+    #     """ Retrieve source data from the API. """
+    #     pass
 
 
-# Concrete product classes
-class AtmosphericCo2PPM(ClimateData):
-    """ Atmospheric Co2 PPM class object. """
+# Concrete factory classes
+class CoreObjs(ClimateData):
+    """ Abstract factory class for climate data classes. """
+
+    # Abstract functions
+    def test(self) -> None:
+        pass
 
     # NamedTuple objects
     class PlotProperties(NamedTuple):
@@ -153,6 +159,11 @@ class AtmosphericCo2PPM(ClimateData):
         # Field names and type hints:
         dates: datetime
         values: float
+
+
+# Concrete product classes
+class AtmosphericCo2PPM(CoreObjs):
+    """ Atmospheric Co2 PPM class object. """
 
     def __init__(self) -> None:
         """ AtmosphericCo2PPM initialization method.
@@ -380,8 +391,8 @@ class AtmosphericCo2PPM(ClimateData):
 
     def _setup_graph_args_px(
         self,
-        plot_properties: PlotProperties,
-        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
+        plot_properties: CoreObjs.PlotProperties,
+        transposed_data: CoreObjs.TransposedData[Tuple[datetime], Tuple[float]]
     ) -> dict:
 
         """ Prepare a dictionary of graph arguments.
@@ -469,8 +480,8 @@ class AtmosphericCo2PPM(ClimateData):
 
     def _setup_graph_args_go(
         self,
-        plot_properties: PlotProperties,
-        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
+        plot_properties: CoreObjs.PlotProperties,
+        transposed_data: CoreObjs.TransposedData[Tuple[datetime], Tuple[float]]
     ) -> dict:
 
         """ Prepare a dictionary of graph arguments.
@@ -544,7 +555,7 @@ class AtmosphericCo2PPM(ClimateData):
 
     def _setup_layout_args(
         self,
-        plot_properties: PlotProperties,
+        plot_properties: CoreObjs.PlotProperties,
     ) -> dict:
         """ Prepare a dictionary of graph layout arguments.
 
@@ -696,7 +707,7 @@ class AtmosphericCo2PPM(ClimateData):
 
     def _plot_px(
         self,
-        plot_properties: PlotProperties,
+        plot_properties: CoreObjs.PlotProperties,
         graph_args: dict
     ) -> Figure:
 
@@ -770,7 +781,7 @@ class AtmosphericCo2PPM(ClimateData):
 
     def _plot_go(
         self,
-        plot_properties: PlotProperties,
+        plot_properties: CoreObjs.PlotProperties,
         graph_args: dict
     ) -> Figure:
 
@@ -854,8 +865,8 @@ class AtmosphericCo2PPM(ClimateData):
 
     def _create_graph_px(
         self,
-        plot_properties: PlotProperties,
-        transposed_data: TransposedData
+        plot_properties: CoreObjs.PlotProperties,
+        transposed_data: CoreObjs.TransposedData
     ) -> Tuple[Figure, dict]:
 
         """ Create a graph with plotly.express.
@@ -936,8 +947,8 @@ class AtmosphericCo2PPM(ClimateData):
 
     def _create_graph_go(
         self,
-        plot_properties: PlotProperties,
-        transposed_data: TransposedData
+        plot_properties: CoreObjs.PlotProperties,
+        transposed_data: CoreObjs.TransposedData
     ) -> Tuple[Figure, dict]:
 
         """ Create a graph with plotly.graph_objects.
@@ -1144,7 +1155,7 @@ class AtmosphericCo2PPM(ClimateData):
     def transpose_data_for_graphing(
         self,
         data: Union[Dict, Union[List[Tuple], Tuple[Tuple]]]
-    ) -> TransposedData[Tuple[datetime], Tuple[float]]:
+    ) -> CoreObjs.TransposedData[Tuple[datetime], Tuple[float]]:
         """ Transpose data for graphing.
 
             Transpose data set values to X and Y-axis coordinates.
@@ -1185,8 +1196,8 @@ class AtmosphericCo2PPM(ClimateData):
 
     def plot_atmospheric_co2_data(
         self,
-        plot_properties: PlotProperties,
-        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
+        plot_properties: CoreObjs.PlotProperties,
+        transposed_data: CoreObjs.TransposedData[Tuple[datetime], Tuple[float]]
     ) -> str:
         """ Display atmospheric Co2 Data using Plotly.
 
