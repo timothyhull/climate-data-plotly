@@ -84,7 +84,7 @@ class ClimateData(ABC):
 
 # Concrete factory classes
 class CoreObjs(ClimateData):
-    """ Abstract factory class for climate data classes. """
+    """ Concrete factory class for climate data classes. """
 
     # Abstract functions
     def test(self) -> None:
