@@ -1349,7 +1349,7 @@ class AtmosphericCo2PPM(CoreObjs):
             )
 
         # Create a file storage directory with a context manager
-        self.x(
+        self._create_plot_dir(
             plot_dir=plot_dir,
             exist_ok=exist_ok
         )
