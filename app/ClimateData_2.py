@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from os import environ, path
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Tuple, Union
+from typing import Callable, Dict, List, NamedTuple, Tuple, Union
 
 # Imports - Third-Party
 from plotly.offline import init_notebook_mode
@@ -70,102 +70,101 @@ PYTEST_WRITE_PLOT_HTML_FILE_FUNC = 'test_write_plot_html_file_error'
 SRTPTIME_FORMAT = '%YM%m'
 
 
+# NamedTuple objects
+class PlotProperties(NamedTuple):
+    """ Properties for formatting a graphed plot.
+
+        Typed version of the collections.namedtuple object with
+        field names, type hints, and default values.
+
+        Field names, type hints, and default values:
+
+            line_graph (bool, optional):
+                Specifies whether the plot will be a line graph
+                or not.  When True, the plot will be a line graph.
+                When False, the plot will be a bar graph.  Default
+                is True.
+
+            date_label (str, optional):
+                Label of plot y-axis.  Default is PLOT_DATE_LABEL.
+
+            value_label (str, optional):
+                Label of plot y-axis.  Default is PLOT_VALUE_LABEL.
+
+            title (str, optional):
+                Title of plot. Default is PLOT_TITLE.
+
+            compress_y_axis (str, optional):
+                Determine whether the y-axis starts at 0, which
+                displays well with PPM data although poorly with
+                YOY data.  When True, compresses the y-axis range
+                to 95% of the first value of the y-axis data,
+                and 100.5% of the last value in the y-axis data.
+                Default is False.
+
+            file_name (str, optional):
+                Name of an HTML file to create with plot results,
+                without the .html suffix.
+                Default is PLOT_FILE_DEFAULT_NAME,
+
+            px_plot (bool, optional):
+                Specifies the type of plot for Plotly to render.
+                True renders the plot with plotly.express.
+                False renders the plot with plotly.graph_objects.
+                Default is False.
+    """
+
+    # Field names and default values
+    line_graph: bool = True,
+    date_label: str = PLOT_DATE_LABEL,
+    value_label: str = PLOT_VALUE_LABEL,
+    title: str = PLOT_TITLE,
+    compress_y_axis: bool = False,
+    file_name: str = PLOT_FILE_DEFAULT_NAME,
+    px_plot: bool = False
+
+
+class TransposedData(NamedTuple):
+    """ Object to store data transposed plot data.
+
+        Typed version of the collections.namedtuple object with
+        field names and type hints.
+
+            dates (datetime.datetime):
+                Date values for the X axis.
+
+            values (float)
+                Numeric values for the Y axis.
+    """
+
+    # Field names and type hints:
+    dates: datetime
+    values: float
+
+
 # Abstract factory class
 class ClimateData(ABC):
     """ Abstract factory class for all climate data classes. """
 
+    # Abstract factory functions
     @abstractmethod
-    def _init_plotly_offline_mode(self) -> None:
-        """ Initialize Plotly in offline mode. """
-        pass
-
-    @abstractmethod
-    def _get_api_data(self) -> None:
-        """ Retrieve source data from the API. """
+    def create_climate_data_plot(self) -> None:
+        """ Create an HTML plot with climate data. """
         pass
 
 
 # Concrete factory classes
-class CoreObjs(ClimateData):
+class ClimatePlot(ClimateData):
     """ Concrete factory class for climate data classes. """
 
-    # Abstract functions
-    def test(self) -> None:
-        pass
-
-    # NamedTuple objects
-    class PlotProperties(NamedTuple):
-        """ Properties for formatting a graphed plot.
-
-            Typed version of the collections.namedtuple object with
-            field names, type hints, and default values.
-
-            Field names, type hints, and default values:
-
-                line_graph (bool, optional):
-                    Specifies whether the plot will be a line graph
-                    or not.  When True, the plot will be a line graph.
-                    When False, the plot will be a bar graph.  Default
-                    is True.
-
-                date_label (str, optional):
-                    Label of plot y-axis.  Default is PLOT_DATE_LABEL.
-
-                value_label (str, optional):
-                    Label of plot y-axis.  Default is PLOT_VALUE_LABEL.
-
-                title (str, optional):
-                    Title of plot. Default is PLOT_TITLE.
-
-                compress_y_axis (str, optional):
-                    Determine whether the y-axis starts at 0, which
-                    displays well with PPM data although poorly with
-                    YOY data.  When True, compresses the y-axis range
-                    to 95% of the first value of the y-axis data,
-                    and 100.5% of the last value in the y-axis data.
-                    Default is False.
-
-                file_name (str, optional):
-                    Name of an HTML file to create with plot results,
-                    without the .html suffix.
-                    Default is PLOT_FILE_DEFAULT_NAME,
-
-                px_plot (bool, optional):
-                    Specifies the type of plot for Plotly to render.
-                    True renders the plot with plotly.express.
-                    False renders the plot with plotly.graph_objects.
-                    Default is False.
-        """
-
-        # Field names and default values
-        line_graph: bool = True,
-        date_label: str = PLOT_DATE_LABEL,
-        value_label: str = PLOT_VALUE_LABEL,
-        title: str = PLOT_TITLE,
-        compress_y_axis: bool = False,
-        file_name: str = PLOT_FILE_DEFAULT_NAME,
-        px_plot: bool = False
-
-    class TransposedData(NamedTuple):
-        """ Object to store data transposed plot data.
-
-            Typed version of the collections.namedtuple object with
-            field names and type hints.
-
-                dates (datetime.datetime):
-                    Date values for the X axis.
-
-                values (float)
-                    Numeric values for the Y axis.
-        """
-
-        # Field names and type hints:
-        dates: datetime
-        values: float
+    # Concrete factory functions, from the ClimateData class
+    def create_climate_data_plot(self) -> Callable:
+        # Return an instance of the AtmosphericCo2PPMPlot class
+        return AtmosphericCo2PPMPlot()
 
 
 # Concrete product classes
-class AtmosphericCo2PPM(CoreObjs, ClimateData):
+class AtmosphericCo2PPMPlot(ClimatePlot):
     """ Atmospheric Co2 PPM class object. """
 
     def __init__(self) -> None:
@@ -394,8 +393,8 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
 
     def _setup_graph_args_px(
         self,
-        plot_properties: CoreObjs.PlotProperties,
-        transposed_data: CoreObjs.TransposedData[Tuple[datetime], Tuple[float]]
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
     ) -> dict:
 
         """ Prepare a dictionary of graph arguments.
@@ -483,8 +482,8 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
 
     def _setup_graph_args_go(
         self,
-        plot_properties: CoreObjs.PlotProperties,
-        transposed_data: CoreObjs.TransposedData[Tuple[datetime], Tuple[float]]
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
     ) -> dict:
 
         """ Prepare a dictionary of graph arguments.
@@ -558,7 +557,7 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
 
     def _setup_layout_args(
         self,
-        plot_properties: CoreObjs.PlotProperties,
+        plot_properties: PlotProperties,
     ) -> dict:
         """ Prepare a dictionary of graph layout arguments.
 
@@ -710,7 +709,7 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
 
     def _plot_px(
         self,
-        plot_properties: CoreObjs.PlotProperties,
+        plot_properties: PlotProperties,
         graph_args: dict
     ) -> Figure:
 
@@ -784,7 +783,7 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
 
     def _plot_go(
         self,
-        plot_properties: CoreObjs.PlotProperties,
+        plot_properties: PlotProperties,
         graph_args: dict
     ) -> Figure:
 
@@ -868,8 +867,8 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
 
     def _create_graph_px(
         self,
-        plot_properties: CoreObjs.PlotProperties,
-        transposed_data: CoreObjs.TransposedData
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData
     ) -> Tuple[Figure, dict]:
 
         """ Create a graph with plotly.express.
@@ -950,8 +949,8 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
 
     def _create_graph_go(
         self,
-        plot_properties: CoreObjs.PlotProperties,
-        transposed_data: CoreObjs.TransposedData
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData
     ) -> Tuple[Figure, dict]:
 
         """ Create a graph with plotly.graph_objects.
@@ -1158,7 +1157,7 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
     def transpose_data_for_graphing(
         self,
         data: Union[Dict, Union[List[Tuple], Tuple[Tuple]]]
-    ) -> CoreObjs.TransposedData[Tuple[datetime], Tuple[float]]:
+    ) -> TransposedData[Tuple[datetime], Tuple[float]]:
         """ Transpose data for graphing.
 
             Transpose data set values to X and Y-axis coordinates.
@@ -1199,8 +1198,8 @@ class AtmosphericCo2PPM(CoreObjs, ClimateData):
 
     def plot_atmospheric_co2_data(
         self,
-        plot_properties: CoreObjs.PlotProperties,
-        transposed_data: CoreObjs.TransposedData[Tuple[datetime], Tuple[float]]
+        plot_properties: PlotProperties,
+        transposed_data: TransposedData[Tuple[datetime], Tuple[float]]
     ) -> str:
         """ Display atmospheric Co2 Data using Plotly.
 
