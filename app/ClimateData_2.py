@@ -146,11 +146,21 @@ class TransposedData(NamedTuple):
 class ClimateData(ABC):
     """ Abstract factory class for all climate data classes. """
 
-    # Abstract factory functions
+    # Abstract factory methods
     @abstractmethod
     def create_climate_data_plot(self) -> None:
         """ Create an HTML plot with climate data. """
         pass
+
+
+# Abstract product classes
+class PXPlot(ABC):
+    """ Abstract product class for Plotly Express plots. """
+
+    # Abstract product methods
+    @abstractmethod
+    def px_plot(self) -> None:
+        """ Create an HTML plot with climate data. """
 
 
 # Concrete factory classes
